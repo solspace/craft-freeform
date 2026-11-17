@@ -42,7 +42,7 @@ vi.mock("@components/empty-block/empty-block", () => ({
   EmptyBlock: (): null => null,
 }));
 vi.mock("./limited-users.styles", () => ({
-  ContentContainer: ({ children }: { children: ReactNode }) => (
+  SettingsPage: ({ children }: { children: ReactNode }) => (
     <div>{children}</div>
   ),
 }));
@@ -72,26 +72,26 @@ function render() {
   );
 }
 
-it("offers group creation to Pro users with settings permission", () => {
+it("offers profile creation to Pro users with settings permission", () => {
   render();
   expect(host.querySelector(".ff-empty-state a.btn")?.textContent).toBe(
-    "Create group",
+    "Create profile",
   );
-  expect(host.textContent).toContain("New Group");
+  expect(host.textContent).toContain("New Profile");
 });
 
 it("keeps the empty state but hides both creation controls without settings permission", () => {
   state.canConfigure = false;
   render();
   expect(host.querySelector(".ff-empty-state h2")?.textContent).toBe(
-    "No Limited Users groups yet",
+    "No Limited Users profiles yet",
   );
   expect(host.querySelector("a.btn")).toBeNull();
-  expect(host.textContent).not.toContain("New Group");
+  expect(host.textContent).not.toContain("New Profile");
   expect(host.textContent).toContain("View documentation");
 });
 
-it("does not offer group creation below Pro even with settings permission", () => {
+it("does not offer profile creation below Pro even with settings permission", () => {
   state.pro = false;
   render();
   expect(host.querySelector("a.btn")).toBeNull();

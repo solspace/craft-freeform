@@ -138,6 +138,10 @@
 
         <hr>
 
+        {% include 'freeform/export/_formatting' with {formatting: profile.formatting, idPrefix: 'export-profile', formattingErrors: profile.getErrors('formatting')} only %}
+
+        <hr>
+
         <div class="field">
             <div class="heading">
                 <label>{{ "Fields to export"|t('freeform') }}</label>

@@ -25,7 +25,7 @@ class CodepackDemoContextTest extends TestCase
         $html = $this->twig()->render('demo/forms/form.twig', [
             'form' => null,
             'formHandle' => '<script>missing</script>',
-            'pageTemplate' => 'basic-light',
+            'pageTemplate' => 'freeform-light',
             'baseUrlSegments' => 2,
             'craft' => (object) ['app' => (object) ['request' => $request]],
             'demoBaseUrl' => '/nested/demo',
@@ -130,13 +130,13 @@ class CodepackDemoContextTest extends TestCase
 
     public function testEditHeaderUsesEntryContextAndKeepsTheSelectedTemplate(): void
     {
-        $context = ['demoBaseUrl' => '/demo', 'form' => $this->form(), 'editingSubmission' => new CodepackSubmission(), 'pageTemplate' => 'basic-dark'];
+        $context = ['demoBaseUrl' => '/demo', 'form' => $this->form(), 'editingSubmission' => new CodepackSubmission(), 'pageTemplate' => 'freeform-dark'];
         $html = $this->twig()->render('demo/forms/_edit-heading.twig', $context);
         self::assertStringContainsString('Editing submission #1042', $html);
         self::assertStringContainsString('href="/demo/submissions/contact/1042"', $html);
         self::assertStringContainsString('Contact &lt;team&gt;', $html);
         $context['editingSubmission'] = null;
-        self::assertStringContainsString('href="/demo/forms/basic-dark/contact"', $this->twig()->render('demo/forms/_edit-heading.twig', $context));
+        self::assertStringContainsString('href="/demo/forms/freeform-dark/contact"', $this->twig()->render('demo/forms/_edit-heading.twig', $context));
     }
 
     public function testManualExampleRendersSetupAndBothPageControls(): void
@@ -159,6 +159,11 @@ class CodepackDemoContextTest extends TestCase
                         public string $value = 'test';
                         public bool $hasErrors = false;
                         public array $options = [['value' => 'test', 'label' => '<Option>']];
+
+                        public function translateOptionLabel(array $option): string
+                        {
+                            return $option['label'];
+                        }
 
                         public function renderLabel(): Markup
                         {
@@ -197,7 +202,7 @@ class CodepackDemoContextTest extends TestCase
                     return $this->form;
                 }
             };
-            $html = $this->twig()->render('demo/extras/manual-multipage.twig', ['freeform' => $freeform, 'pageTemplateFile' => 'basic-light/index.twig', 'demoBaseUrl' => '/nested/demo']);
+            $html = $this->twig()->render('demo/extras/manual-multipage.twig', ['freeform' => $freeform, 'pageTemplateFile' => 'freeform-light/index.twig', 'demoBaseUrl' => '/nested/demo']);
             self::assertStringContainsString('Setup guide', $html);
             self::assertStringContainsString('freeformManualMultipage', $html);
             if (null === $page) {

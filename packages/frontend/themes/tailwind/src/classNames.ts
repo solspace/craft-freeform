@@ -51,7 +51,8 @@ export const lightClassNames: FreeformThemeClassNames = {
   form: "[--ff-email-suggestion-color:#6b7280] [--ff-email-suggestion-action:#6366f1] [--ff-phone-background:#fff] [--ff-phone-color:#1f2937] [--ff-phone-border:#d1d5db] w-full [&_a]:font-bold [&_a]:text-indigo-600 hover:[&_a]:text-indigo-500",
   page: "w-full",
   row: "mb-4 flex flex-wrap gap-x-2 -mx-2",
-  field: "mb-1 min-w-0 w-full flex-1 basis-0 px-2",
+  field:
+    "mb-1 min-w-0 w-full flex-1 basis-0 px-2 [&_label:has(input:focus-visible)]:outline-2 [&_label:has(input:focus-visible)]:outline-offset-2",
   fieldHidden: "hidden",
   label: "mb-1 block text-sm/6 font-medium text-gray-900",
   requiredMark: "ml-0.5 text-red-600",
@@ -84,7 +85,8 @@ export const darkClassNames: FreeformThemeClassNames = {
   form: "[--ff-phone-background:#292a2d] [--ff-phone-color:#f3f4f6] [--ff-phone-border:#4b5563] [--ff-email-suggestion-color:#9ca3af] [--ff-email-suggestion-action:#818cf8] w-full [&_a]:font-bold [&_a]:text-indigo-400 hover:[&_a]:text-indigo-300",
   page: "w-full",
   row: "mb-4 flex flex-wrap gap-x-2 -mx-2",
-  field: "mb-1 min-w-0 w-full flex-1 basis-0 px-2",
+  field:
+    "mb-1 min-w-0 w-full flex-1 basis-0 px-2 [&_label:has(input:focus-visible)]:outline-2 [&_label:has(input:focus-visible)]:outline-offset-2",
   fieldHidden: "hidden",
   label: "mb-1 block text-sm/6 font-medium text-white",
   requiredMark: "ml-0.5 text-red-500",

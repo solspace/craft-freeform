@@ -116,7 +116,6 @@ class ErrorNotificationsService extends BaseService
     {
         return match ($this->getSettingsService()->getSettingsModel()->getEffectiveLoggingStyle()) {
             'activity' => ['url' => UrlHelper::cpUrl('freeform/activity', ['view' => 'events', 'resolution' => 'open', 'level' => 'error']), 'label' => Freeform::t('View Activity Log')],
-            'classic' => ['url' => UrlHelper::cpUrl('freeform/settings/error-log'), 'label' => Freeform::t('View error log')],
             default => null,
         };
     }

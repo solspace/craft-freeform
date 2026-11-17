@@ -5,7 +5,11 @@ namespace Solspace\Freeform\Tests\Services;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Export\Collections\FieldDescriptorCollection;
+use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
@@ -99,6 +103,64 @@ class ExportProfileFormatsTest extends TestCase
         $notification = $this->notification('csv');
         $notification->validateFileType('fileType');
         self::assertTrue($notification->hasErrors('profileId'));
+    }
+
+    public function testScheduledExportsUseProfileFormattingWithoutAnInteractiveUser(): void
+    {
+        $previous = \Craft::$app;
+        \Craft::$app = new class {
+            public object $projectConfig;
+
+            public function __construct()
+            {
+                $this->projectConfig = new class {
+                    public function get($key)
+                    {
+                        return 'Europe/Berlin';
+                    }
+                };
+            }
+
+            public function getUser(): void
+            {
+                throw new \LogicException('Scheduled exports have no interactive user.');
+            }
+        };
+
+        try {
+            $profile = $this->getMockBuilder(ExportProfileModel::class)->onlyMethods(['getForm', 'getQuery', 'getFieldDescriptors'])->getMock();
+            $profile->method('getForm')->willReturn($this->createMock(Form::class));
+            $profile->method('getQuery')->willReturn($this->createMock(SubmissionQuery::class));
+            $profile->method('getFieldDescriptors')->willReturn(new FieldDescriptorCollection());
+            $profile->formatting = ['headings' => 'handles', 'options' => 'values', 'multiline' => 'singleLine', 'tracking' => 'include'];
+            $exporter = (new ExportProfilesService())->createProfileExporter('csv', $profile);
+            self::assertTrue($exporter->getSettings()->isHandlesAsNames());
+            self::assertFalse($exporter->getSettings()->isExportLabels());
+            self::assertTrue($exporter->getSettings()->isRemoveNewlines());
+            self::assertTrue($exporter->getSettings()->isExportTrackedUrlParameters());
+            self::assertSame('Europe/Berlin', $exporter->getSettings()->getTimezone());
+        } finally {
+            \Craft::$app = $previous;
+        }
+    }
+
+    #[TestWith([['headings' => 'handles']])]
+    #[TestWith([['headings' => ['labels']]])]
+    #[TestWith([['headings' => 'unknown']])]
+    public function testMalformedFormattingCannotReplaceAProfile(array $formatting): void
+    {
+        $profile = new ExportProfileModel(['formatting' => $formatting]);
+        self::assertFalse($this->service()->save($profile));
+        self::assertTrue($profile->hasErrors('formatting'));
+    }
+
+    public function testNewProfilesHaveCompleteIndependentFormattingDefaults(): void
+    {
+        $first = new ExportProfileModel();
+        $second = new ExportProfileModel();
+        $first->formatting['headings'] = 'handles';
+        self::assertSame(ExportFormatting::DEFAULTS, $second->formatting);
+        self::assertTrue(ExportFormatting::isValid($second->formatting));
     }
 
     private function service(array $activeNotifications = []): ExportProfilesService

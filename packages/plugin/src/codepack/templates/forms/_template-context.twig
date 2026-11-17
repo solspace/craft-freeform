@@ -14,10 +14,10 @@
                 {% endif %}
             {% else %}
                 <strong class="freeform-template-context-title">No formatting template assigned.</strong>
-                <p>Choose one in the form builder, or try the Basic Light preview below.</p>
+                <p>Choose one in the form builder, or try the Freeform Light preview below.</p>
             {% endif %}
             {% if not sampleTemplate %}
-                <a class="freeform-template-context-action" href="{{ demoBaseUrl }}/forms/basic-light/{{ form.handle }}{% if craft.app.request.segment(baseUrlSegments + 4) == 'edit' %}/edit/{{ craft.app.request.segment(baseUrlSegments + 5) }}{% endif %}">Preview with Basic Light →</a>
+                <a class="freeform-template-context-action" href="{{ demoBaseUrl }}/forms/freeform-light/{{ form.handle }}{% if craft.app.request.segment(baseUrlSegments + 4) == 'edit' %}/edit/{{ craft.app.request.segment(baseUrlSegments + 5) }}{% endif %}">Preview with Freeform Light →</a>
             {% endif %}
         </div>
     </div>

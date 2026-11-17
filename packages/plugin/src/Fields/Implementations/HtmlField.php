@@ -38,7 +38,7 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
     protected string $instructions = '';
     protected bool $required = false;
 
-    #[Lock('twigInHtml')]
+    #[Lock('twigEnabled')]
     #[Limitation('props.html', 'twig')]
     #[DefaultValue('props.html.twig')]
     #[Input\Boolean(
@@ -84,14 +84,14 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
             }
 
             $settings = Freeform::getInstance()->settings->getSettingsModel()->defaults;
-            if ($settings->twigInHtml) {
+            if ($settings->isTwigEnabled()) {
                 $variables = [
                     'form' => $this->getForm(),
                     'fields' => $this->getForm()->getLayout()->getFields()->getStorableFields(),
                     'allFields' => $this->getForm()->getLayout()->getFields(),
                 ];
 
-                if ($settings->twigIsolation) {
+                if ('form' === $settings->twigAccess) {
                     return (new IsolatedTwig())->render($content, $variables);
                 }
 

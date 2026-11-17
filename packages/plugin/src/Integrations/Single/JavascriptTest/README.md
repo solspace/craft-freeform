@@ -6,14 +6,14 @@ Freeform includes its own Javascript Test spam protection feature. It works by i
 
 ### 1. Enable the Freeform Javascript Test
 
-- If you'd like the Freeform Javascript Test to be enabled for all forms by default, toggle on the **Enabled by default** setting.
+- If you'd like the Freeform Javascript Test to be enabled for all forms by default, toggle on the **Enable on forms by default** setting.
 - If you wish to rename the default Freeform Javascript Test input name, enter a value in the **Custom Input Name** setting.
 - If you wish to change the default error message for the Freeform Javascript Test, enter a value in the **Custom Error Message** setting.
     - This is only applied if the _Spam Behavior_ setting is set to _Display Error Messages_.
 - Click the **Save** button.
 
 ### 2. Configure the Form
-To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enabled by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
+To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enable on forms by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
 
 - Visit the form inside the form builder.
 - Click on the **Integrations** tab.

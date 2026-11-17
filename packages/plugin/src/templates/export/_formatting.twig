@@ -1,0 +1,50 @@
+{% import '_includes/forms' as forms %}
+{% set compact = compact ?? false %}
+{% set multilineHelp %}<craft-info-icon label="{{ 'About Multiline Text'|t('freeform') }}">{{ 'Choose how textarea content appears in the export.'|t('freeform') }}</craft-info-icon>{% endset %}
+{% set trackingHelp %}<craft-info-icon label="{{ 'About Tracked URL Parameters'|t('freeform') }}">{{ 'Include recorded URL parameters, such as UTM campaign data.'|t('freeform') }}</craft-info-icon>{% endset %}
+<section class="ff-export-formatting" {% if compact %}aria-label="{{ 'Export Formatting'|t('freeform') }}"{% else %}aria-labelledby="{{ idPrefix }}-formatting-heading"{% endif %}>
+    {% if not compact %}<h2 id="{{ idPrefix }}-formatting-heading">{{ 'Export Formatting'|t('freeform') }}</h2>{% endif %}
+    {% if formattingErrors ?? [] %}<p class="error" role="alert">{{ formattingErrors|join(' ') }}</p>{% endif %}
+    <div class="ff-export-formatting-fields">
+        {{ forms.selectField({
+            id: idPrefix ~ '-headings',
+            name: 'formatting[headings]',
+            label: 'Column Headings'|t('freeform'),
+            options: {labels: 'Field labels'|t('freeform'), handles: 'Field handles'|t('freeform')},
+            value: formatting.headings,
+        }) }}
+        {{ forms.selectField({
+            id: idPrefix ~ '-options',
+            name: 'formatting[options]',
+            label: 'Option Text'|t('freeform'),
+            options: {labels: 'Option labels'|t('freeform'), values: 'Stored values'|t('freeform')},
+            value: formatting.options,
+        }) }}
+        {{ forms.selectField({
+            id: idPrefix ~ '-multiline',
+            name: 'formatting[multiline]',
+            label: 'Multiline Text'|t('freeform'),
+            instructions: compact ? null : 'Choose how textarea content appears in the export.'|t('freeform'),
+            labelExtra: compact ? multilineHelp : null,
+            options: {preserve: 'Preserve line breaks'|t('freeform'), singleLine: 'Single line'|t('freeform')},
+            value: formatting.multiline,
+        }) }}
+        {{ forms.selectField({
+            id: idPrefix ~ '-tracking',
+            name: 'formatting[tracking]',
+            label: 'Tracked URL Parameters'|t('freeform'),
+            instructions: compact ? null : 'Include recorded URL parameters, such as UTM campaign data.'|t('freeform'),
+            labelExtra: compact ? trackingHelp : null,
+            options: {exclude: 'Exclude'|t('freeform'), include: 'Include'|t('freeform')},
+            value: formatting.tracking,
+        }) }}
+    </div>
+</section>
+<style>
+    .ff-export-formatting { margin-block: var(--c-spacing-lg, 24px); }
+    .ff-export-formatting h2 { margin-block: 0 var(--c-spacing-lg, 24px); }
+    .ff-export-formatting-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--c-spacing-lg, 24px); }
+    .ff-export-formatting-fields > .field, .ff-export-formatting-fields > craft-field { margin: 0 !important; min-inline-size: 0; }
+    .ff-export-formatting-fields .input, .ff-export-formatting-fields craft-select, .ff-export-formatting-fields .select, .ff-export-formatting-fields select { inline-size: 100%; max-inline-size: 100%; }
+    @media (max-width: 600px) { .ff-export-formatting-fields { grid-template-columns: 1fr; } }
+</style>

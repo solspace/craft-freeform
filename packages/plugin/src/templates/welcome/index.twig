@@ -16,20 +16,16 @@
 				"defaultView": "{{ settings.defaultView }}",
 				"ajax": {{ settings.defaults.settings.processing.ajax.value ? 'true' : 'false' }},
 				"defaultFormattingTemplate": "{{ settings.defaults.settings.general.formattingTemplate.value }}",
-				"disableSubmit": {{ settings.formSubmitDisable ? 'true' : 'false' }},
 				"autoScroll": {{ settings.autoScrollToErrors ? 'true' : 'false' }},
 				"jsInsertLocation": "footer",
-				"jsInsertType": "{{ canInsertPointers ? "pointers" : "files" }}",
-				"canInsertPointers": false,
-				"sessionType": "payload"
+				"canInsertPointers": false
 			},
 			"spam": {
 				"spamFolder": {{ settings.spamFolderEnabled ? 'true' : 'false' }},
 				"spamBehavior": "{{ settings.spamProtectionBehavior }}"
 			},
 			"reliability": {
-				"errorRecipients": "{{ settings.alertNotificationRecipients }}",
-				"updateNotices": {{ settings.displayFeed ? 'true' : 'false' }},
+				"errorRecipients": "{{ settings.errorNotificationRecipients }}",
 				"digestRecipients": "{{ settings.digestRecipients }}",
 				"digestFrequency": {{ settings.digestFrequency }},
 				"clientDigestRecipients": "{{ settings.clientDigestRecipients }}",

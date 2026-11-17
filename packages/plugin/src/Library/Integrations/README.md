@@ -160,7 +160,7 @@ Render the field through the helper:
 {{ craft.freeform.renderContent(entry.body) }}
 {# Optional render properties apply to each embedded form. #}
 {{ craft.freeform.renderContent(entry.body, {
-    formattingTemplate: 'bootstrap-5/index.twig'
+    formattingTemplate: 'bootstrap-5-light/index.twig'
 }) }}
 ```
 
@@ -217,7 +217,7 @@ If your field has another handle, pass it explicitly:
 ```twig
 {% include 'freeform-integrations/ckeditor' with {
     freeformFieldHandle: 'contactForm',
-    renderProperties: {formattingTemplate: 'bootstrap-5/index.twig'},
+    renderProperties: {formattingTemplate: 'bootstrap-5-light/index.twig'},
 } %}
 ```
 
@@ -242,7 +242,7 @@ template to the block type:
 ```twig
 {% include 'freeform-integrations/vizy' with {
     freeformFieldHandle: 'contactForm',
-    renderProperties: {formattingTemplate: 'bootstrap-5/index.twig'},
+    renderProperties: {formattingTemplate: 'bootstrap-5-light/index.twig'},
 } %}
 ```
 

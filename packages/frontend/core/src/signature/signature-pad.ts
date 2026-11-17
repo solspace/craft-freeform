@@ -1,8 +1,10 @@
 import { getSignatureDataUrl, type SignatureConfig } from "./signature.js";
+import { typedSignature } from "./typed-signature.js";
 
 export type SignaturePadController = {
   update: (value: unknown, force?: boolean) => void;
   clear: () => void;
+  type: (text: string) => void;
   destroy: () => void;
 };
 
@@ -13,6 +15,7 @@ export function mountSignaturePad(
     onChange: (value: string) => void;
     onInkChange: (hasInk: boolean) => void;
     isEnabled: () => boolean;
+    onDrawStart?: () => void;
   },
 ): SignaturePadController {
   const width = config.width ?? 400;
@@ -152,6 +155,7 @@ export function mountSignaturePad(
       return;
     const position = point(event);
     if (!position) return;
+    callbacks.onDrawStart?.();
     pointerId = event.pointerId;
     moved = false;
     lastPoint = position;
@@ -207,6 +211,12 @@ export function mountSignaturePad(
 
   return {
     update,
+    type(text) {
+      if (!callbacks.isEnabled()) return;
+      const value = typedSignature(text, width, height, canvas.ownerDocument);
+      update(value, true);
+      callbacks.onChange(value);
+    },
     clear() {
       const changed = hasInk || hasValue;
       stopDrawing();

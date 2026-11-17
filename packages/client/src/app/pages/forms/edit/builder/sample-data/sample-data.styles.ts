@@ -116,23 +116,35 @@ export const OptionSampleToggle = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   width: 24px;
   height: 24px;
   padding: 3px;
   border: 1px solid transparent;
   border-radius: 12px;
   background: transparent;
-  color: ${colors.gray500};
+  color: var(--c-text-quiet);
   cursor: pointer;
 
-  &:hover, &:focus-visible { color: light-dark(#3476b8, var(--link-color)); background: light-dark(#e8f0fc, var(--ui-control-hover-bg-color)); }
-  &[aria-pressed='true'] {
-    color: #fff;
-    background: var(--bg-enabled, var(--enabled-color, #14b8a6));
-    border-color: #008f83;
-    border-color: oklch(from var(--bg-enabled, var(--enabled-color, #14b8a6)) calc(l - 0.1) c h);
+  svg { flex: none; width: 16px; height: 16px; }
+  &:hover:not(:disabled), &:focus-visible {
+    color: var(--c-text-default);
+    background: var(--c-color-neutral-fill-normal);
+    border-color: var(--c-color-neutral-border-quiet);
   }
-  &:focus-visible { outline: 1px solid transparent; box-shadow: var(--focus-ring); }
+  &[aria-pressed='true'] {
+    color: var(--c-color-accent-on-loud);
+    background: var(--c-color-accent-fill-loud);
+    border-color: var(--c-color-accent-fill-loud);
+    &:hover:not(:disabled) {
+      color: var(--c-color-accent-on-loud);
+      background: color-mix(in oklab, var(--c-color-accent-fill-loud), var(--c-color-mix-hover));
+    }
+  }
+  &:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
+  }
   &:disabled { cursor: default; opacity: .5; }
 `;
 

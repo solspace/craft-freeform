@@ -4,7 +4,7 @@ Check text and textarea fields for blocked words, phrases, and patterns. Keep a 
 
 ## Set up the default list
 
-1. Choose whether the integration is **Enabled by default**.
+1. Choose whether the integration is **Enable on forms by default**.
 2. Enter one word, phrase, or pattern per line in **Default Blocked Keywords**.
 3. Save the integration.
 

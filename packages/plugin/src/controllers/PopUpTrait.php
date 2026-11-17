@@ -27,7 +27,7 @@ trait PopUpTrait
             $messages = [$messages];
         }
 
-        $this->getLoggerService()->getLogger('oauth', 'freeform-integrations.log')->error(
+        $this->getLoggerService()->getLogger('oauth', 'integrations')->error(
             'Integration authorization failed',
             ['controller' => static::class, 'action' => $this->action?->id]
         );

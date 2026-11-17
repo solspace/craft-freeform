@@ -33,7 +33,6 @@ class SignatureFieldTest extends TestCase
         $field->method('getTranslationTable')->willReturn(new TranslationTable());
         $field->method('getLabel')->willReturn('Signature');
         $field->setValue($value);
-        (new \ReflectionProperty(SignatureField::class, 'showClearButton'))->setValue($field, false);
 
         $document = new \DOMDocument();
         $previous = libxml_use_internal_errors(true);
@@ -114,5 +113,40 @@ class SignatureFieldTest extends TestCase
             'boolean style' => [['style' => false], 'margin-top: 10px;'],
             'numeric style' => [['style' => 0], 'margin-top: 10px;'],
         ];
+    }
+
+    public function testTypedSignaturesAreOptInAndKeepTemplateAndAccessibilityAttributes(): void
+    {
+        $attributes = new FieldAttributesCollection([
+            'input' => ['class' => 'clear-button', 'aria-describedby' => 'signature-help', 'aria-invalid' => 'true', 'disabled' => true],
+            'typedInput' => ['class' => 'form-control'],
+            'typedLabel' => ['class' => 'form-label'],
+        ]);
+        $field = $this->getMockBuilder(SignatureField::class)
+            ->setConstructorArgs([$this->createMock(Form::class)])
+            ->onlyMethods(['getAttributes', 'getHandle', 'getIdAttribute', 'getRequiredAttribute', 'getTranslationTable'])
+            ->getMock()
+        ;
+        $field->method('getAttributes')->willReturn($attributes);
+        $field->method('getHandle')->willReturn('signature');
+        $field->method('getIdAttribute')->willReturn('signature-pad');
+        $field->method('getRequiredAttribute')->willReturn('required');
+        $field->method('getTranslationTable')->willReturn(new TranslationTable());
+        $render = new \ReflectionMethod($field, 'getInputHtml');
+        self::assertFalse($field->isAllowTypedSignature());
+        self::assertStringNotContainsString('data-signature-typed', $render->invoke($field));
+        (new \ReflectionProperty(SignatureField::class, 'allowTypedSignature'))->setValue($field, true);
+        $document = new \DOMDocument();
+        @$document->loadHTML($render->invoke($field));
+        $xpath = new \DOMXPath($document);
+        $input = $xpath->query('//input[@type="text"]')->item(0);
+        self::assertSame('form-control', $input->getAttribute('class'));
+        self::assertSame('signature-help', $input->getAttribute('aria-describedby'));
+        self::assertSame('true', $input->getAttribute('aria-invalid'));
+        self::assertTrue($input->hasAttribute('disabled'));
+        self::assertFalse($input->hasAttribute('name'));
+        self::assertFalse($input->hasAttribute('required'));
+        self::assertSame('signature-pad-typed', $xpath->evaluate('string(//label/@for)'));
+        self::assertSame('form-label', $xpath->evaluate('string(//label/@class)'));
     }
 }

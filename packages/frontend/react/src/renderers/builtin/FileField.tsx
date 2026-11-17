@@ -1,3 +1,4 @@
+import { fieldId } from "@solspace/freeform-core";
 import type { ReactFieldRendererProps } from "../../types.js";
 import { inputProps } from "./inputProps.js";
 
@@ -22,7 +23,7 @@ export function FileFieldRenderer(props: ReactFieldRendererProps) {
         config.uploadRequirements
           ? [
               input["aria-describedby"],
-              `freeform-${props.field.handle}-upload-requirements`,
+              `${fieldId(props.field)}-upload-requirements`,
             ]
               .filter(Boolean)
               .join(" ")

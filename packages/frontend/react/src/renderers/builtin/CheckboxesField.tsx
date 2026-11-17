@@ -1,6 +1,8 @@
 import type { ReactFieldRendererProps } from "../../types.js";
+import { inputProps } from "./inputProps.js";
 
 export function CheckboxesFieldRenderer(props: ReactFieldRendererProps) {
+  const input = inputProps(props);
   const selected = Array.isArray(props.value)
     ? props.value.map(String)
     : props.value
@@ -17,6 +19,8 @@ export function CheckboxesFieldRenderer(props: ReactFieldRendererProps) {
             name={`${props.field.handle}[]`}
             value={option.value}
             checked={selected.includes(option.value)}
+            aria-invalid={input["aria-invalid"]}
+            aria-describedby={input["aria-describedby"]}
             disabled={!props.form.isFieldEnabled(props.field.handle)}
             onChange={(event) => {
               const next = new Set(selected);

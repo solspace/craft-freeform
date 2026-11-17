@@ -46,12 +46,12 @@ $gutter: 15px;
       margin-top: -10px;
     }
 
-    label {
+    :is(label, legend) {
       display: block;
     }
 
     .input-group-one-line {
-      label {
+      :is(label, legend) {
         display: inline-block;
         padding-right: 10px;
       }

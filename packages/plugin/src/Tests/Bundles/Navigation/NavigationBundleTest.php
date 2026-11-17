@@ -119,8 +119,6 @@ class NavigationBundleTest extends TestCase
     #[TestWith(['activity', [Freeform::PERMISSION_SETTINGS_ACCESS], true])]
     #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], true])]
     #[TestWith(['activity', [], false])]
-    #[TestWith(['classic', [Freeform::PERMISSION_SETTINGS_ACCESS], false])]
-    #[TestWith(['classic', [Freeform::PERMISSION_ACTIVITY_ACCESS], false])]
     #[TestWith(['none', [Freeform::PERMISSION_SETTINGS_ACCESS], false])]
     #[TestWith(['none', [Freeform::PERMISSION_ACTIVITY_ACCESS], false])]
     #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], false, false])]

@@ -29,11 +29,15 @@ export const RequiredStar = styled.span`
 
 const iconSize = 18;
 export const TranslateIconWrapper = styled.span`
-  fill: ${colors.gray500};
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: var(--c-text-quiet);
+  fill: currentColor;
 
   &.active {
     cursor: pointer;
-    fill: ${colors.blue500};
+    color: var(--c-color-accent-on-quiet);
   }
 
   svg {

@@ -4,7 +4,7 @@ Block values submitted through Email fields. Keep a shared list here and add ext
 
 ## Set up the default list
 
-1. Choose whether the integration is **Enabled by default**.
+1. Choose whether the integration is **Enable on forms by default**.
 2. Enter one address or pattern per line in **Default Blocked Email Addresses**.
 3. Save the integration.
 

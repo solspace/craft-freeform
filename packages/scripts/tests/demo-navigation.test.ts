@@ -235,9 +235,9 @@ describe("demo navigation", () => {
 
 describe("demo preview preference", () => {
   const storageKey = "freeform-demo-preview-template";
-  const preview = (template = "basic-light", implicit = true) => {
+  const preview = (template = "freeform-light", implicit = true) => {
     document.body.innerHTML = `<header data-demo-preview="${template}" data-demo-forms-url="https://example.test/qa/demo/forms" ${implicit ? "data-demo-preview-implicit" : ""}>
-      ${["basic-light", "basic-dark", "default"].map((choice) => `<a class="freeform-nav-template-option" href="https://example.test/qa/demo/forms/${choice}/contact/edit/token">${choice}</a>`).join("")}
+      ${["freeform-light", "freeform-dark", "default"].map((choice) => `<a class="freeform-nav-template-option" href="https://example.test/qa/demo/forms/${choice}/contact/edit/token">${choice}</a>`).join("")}
     </header>`;
     const location = {
       href: "https://example.test/qa/demo/forms?search=contact#forms",
@@ -254,7 +254,7 @@ describe("demo preview preference", () => {
 
   it("starts with Basic Light, including when storage is unavailable", () => {
     expect(preview()).not.toHaveBeenCalled();
-    expect(localStorage.getItem(storageKey)).toBe("basic-light");
+    expect(localStorage.getItem(storageKey)).toBe("freeform-light");
     vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("Storage blocked");
     });
@@ -262,9 +262,9 @@ describe("demo preview preference", () => {
   });
 
   it("restores a saved template only on the implicit overview and preserves query/hash", () => {
-    localStorage.setItem(storageKey, "basic-dark");
+    localStorage.setItem(storageKey, "freeform-dark");
     expect(preview()).toHaveBeenCalledWith(
-      "https://example.test/qa/demo/forms/basic-dark?search=contact#forms",
+      "https://example.test/qa/demo/forms/freeform-dark?search=contact#forms",
     );
     expect(preview("default", false)).not.toHaveBeenCalled();
     expect(localStorage.getItem(storageKey)).toBe("default");
@@ -274,10 +274,10 @@ describe("demo preview preference", () => {
   });
 
   it("does not redirect for the current template or unrecognized stored values", () => {
-    localStorage.setItem(storageKey, "basic-light");
+    localStorage.setItem(storageKey, "freeform-light");
     expect(preview()).not.toHaveBeenCalled();
     localStorage.setItem(storageKey, "https://untrusted.test");
     expect(preview()).not.toHaveBeenCalled();
-    expect(localStorage.getItem(storageKey)).toBe("basic-light");
+    expect(localStorage.getItem(storageKey)).toBe("freeform-light");
   });
 });

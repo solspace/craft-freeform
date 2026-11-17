@@ -70,6 +70,7 @@ describe("confirmation", () => {
   it("focuses Cancel and renders names as plain text without deleting", async () => {
     const onConfirm = vi.fn();
     const { dialog, cancel } = await setup(onConfirm);
+    expect((dialog as HTMLElement & { open: boolean }).open).toBe(true);
     expect(document.activeElement).toBe(cancel);
     expect(dialog.textContent).toContain("<img src=x onerror=alert(1)>");
     expect(dialog.querySelector("img")).toBeNull();

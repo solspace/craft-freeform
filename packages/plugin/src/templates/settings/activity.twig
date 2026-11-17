@@ -4,10 +4,10 @@
 {% import 'freeform/_components/settings-cards' as cards %}
 {% set title = 'Logging'|t('freeform') %}
 {% set additionalButtons %}
-    <a class="btn ff-activity-open-log" href="{{ cpUrl('freeform/activity') }}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5"/></svg>
+    <craft-button class="ff-activity-open-log" variant="outline" href="{{ cpUrl('freeform/activity') }}">
+        <svg slot="prefix" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5"/></svg>
         <span>{{ 'Open Activity Log'|t('freeform') }}</span>
-    </a>
+    </craft-button>
 {% endset %}
 {% set crumbs = [
     {label:craft.freeform.name, url:cpUrl('freeform')},
@@ -20,60 +20,44 @@
 {{ parent() }}
 {{ actionInput('freeform/activity/save-settings') }}
 <div class="ff-activity-settings" data-activity-settings {{ readOnly ? 'data-readonly' }}>
-    {% set styleOptions = {
-        activity: {label:'Activity Logging', description:'Structured, searchable event history with related records and storage limits.', path:'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5'},
-        classic: {label:'Classic Logging', description:'Traditional log files with Errors, Info, and Debug levels.', path:'M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h6'},
-        none: {label:'None', description:'Stops new Activity events and Classic log files. Existing logs remain available.', path:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM6 6l12 12'},
-    } %}
-    {% set styleInput %}
-        <div class="ff-choice-cards">
-            {% for value, option in styleOptions %}
-                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
-                {{ cards.compactChoice({id:'logging-style-' ~ value, name:'settings[loggingStyle]', value:value, selected:loggingStyle == value, recommended:value == 'activity', disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
-            {% endfor %}
-        </div>
-    {% endset %}
-    {{ forms.field({id:'logging-style', fieldset:true, label:'Logging Style'|t('freeform'), instructions:'Choose how Freeform records new logs. Switching styles preserves existing logs and each style’s settings.'|t('freeform'), errors:settings.errors().get('loggingStyle')}, styleInput) }}
-    <hr>
-    <div data-logging-panel="activity" {{ loggingStyle != 'activity' ? 'hidden' }}>
-    <div class="ff-activity-settings-intro"><h2>{{ 'Activity recording'|t('freeform') }}</h2><p class="light">{{ 'Choose which events Freeform records and how long to keep them.'|t('freeform') }}</p></div>
-    <div data-recording-options>
+    {{ hiddenInput('settings[activityMode]', settings.activityMode, {data:{'activity-previous-mode':true}}) }}
+    {% set selectedMode = loggingStyle == 'none' ? 'off' : settings.activityMode %}
     {% set modeInput %}
     <div class="ff-activity-modes">
         {% set modes = {
             minimal: ['Minimal', 'Failures only', 'System, email, and integration errors. The default for upgraded sites.'],
             standard: ['Standard', 'The important outcomes', 'Failures, warnings, saved submissions, spam, and key email and integration outcomes. The default for new installs.'],
             detailed: ['Detailed', 'Every supported event type', 'Everything in Standard, plus validation failures, HTTP responses, integration start/finish events, and form changes.'],
-            custom: ['Custom', 'Your own combination', 'Start with Standard, then choose each event type. Your saved choices are remembered.']
+            custom: ['Custom', 'Your own combination', 'Start with Standard, then choose each event type. Your saved choices are remembered.'],
+            off: ['Off', 'No new events', 'Stops recording new events. Existing history and your recording preferences are preserved.']
         } %}
-        {% set modeTones = {minimal:'slate', standard:'blue', detailed:'purple', custom:'teal'} %}
+        {% set modeTones = {minimal:'slate', standard:'blue', detailed:'purple', custom:'teal', off:'slate'} %}
         {% for mode,details in modes %}
-            {% set includedCount = presets[mode]|filter(enabled => enabled)|length %}
+            {% set includedCount = mode == 'off' ? 0 : presets[mode]|filter(enabled => enabled)|length %}
             {% set illustration %}{% include 'freeform/settings/_activity-mode-art' with {mode:mode} only %}{% endset %}
             {{ cards.compactChoice({
-                id:'activity-mode-' ~ mode, name:'settings[activityMode]', value:mode,
-                selected:settings.activityMode == mode, disabled:readOnly,
+                id:'activity-mode-' ~ mode, name:'settings[activityLogging]', value:mode,
+                selected:selectedMode == mode, disabled:readOnly,
                 label:details[0]|t('freeform'), subtitle:details[1]|t('freeform'), description:details[2]|t('freeform'),
                 illustration:illustration, tone:modeTones[mode],
-                footer:mode == 'custom' ? 'You choose'|t('freeform') : '{count} event types'|t('freeform', {count:includedCount}),
+                footer:mode == 'off' ? 'Recording paused'|t('freeform') : (mode == 'custom' ? 'You choose'|t('freeform') : '{count} event types'|t('freeform', {count:includedCount})),
                 attributes:{data:{'mode-card':true, mode:mode}}
             }) }}
         {% endfor %}
     </div>
     {% endset %}
-    {{ forms.field({id:'activity-mode', fieldset:true, label:'Recording mode'|t('freeform'), errors:settings.errors().get('activityMode')}, modeInput) }}
+    {{ forms.field({id:'activity-mode', fieldset:true, label:'Activity Logging'|t('freeform'), instructions:'Choose which events Freeform records. Off preserves your recording preferences and existing history.'|t('freeform'), errors:settings.errors().get('activityMode')}, modeInput) }}
+    <div data-logging-panel="none" {{ selectedMode != 'off' ? 'hidden' }}>
+        <div class="pane warning ff-activity-logging-warning" role="status"><p>
+            <strong>{{ 'Logging is off.'|t('freeform') }}</strong>
+            {{ 'Choose Minimal for basic error tracking. Existing history remains subject to the storage limits below.'|t('freeform') }}
+        </p></div>
+    </div>
+    <div data-logging-panel="activity" {{ selectedMode == 'off' ? 'hidden' }}>
+    <div data-recording-options>
     {% set eventInstructions %}<p data-options-hint><span data-mode-hint="preset">{{ 'These event types are included in this mode. Choose {option} to change them.'|t('freeform', {option: '<strong>' ~ ('Custom'|t('freeform')|e) ~ '</strong>'})|raw }}</span><span data-mode-hint="custom" hidden>{{ 'Choose each event type independently.'|t('freeform') }}</span></p>{% endset %}
     {% set eventInput %}
     <div class="ff-activity-event-grid">
-        <details class="ff-activity-data-disclosure ff-activity-data-panel">
-            {% include 'freeform/settings/_activity-disclosure-summary' with {label:'About recorded data'|t('freeform')} only %}
-            <div class="ff-activity-data-content">
-                <p>{{ 'Every event includes its type and time. Other details are recorded when available. Activity records up to 100 events per request or background job. Additional events are skipped to keep form processing responsive.'|t('freeform') }}</p>
-                <p>{{ 'Email addresses and recognized keys are masked. Passwords and authorization headers are removed. Errors and warnings may include sanitized messages and stack locations without arguments or full server paths. Masking is best effort. Review details before sharing.'|t('freeform') }}</p>
-                <p>{{ 'Activity is stored in your Craft database. Related records require permission to access. Form, integration, and notification names reflect their current values.'|t('freeform') }}</p>
-                <p>{{ 'Recording choices apply to new events. Retention and storage limits also apply to existing history.'|t('freeform') }}</p>
-            </div>
-        </details>
         {% set eventGuidance = {
             error: ['When a Freeform operation reports an error.', 'Failure reason, related form/submission IDs, error count, and sanitized diagnostics.', 'Submitted field values and request/response bodies.'],
             warning: ['When Freeform reports a warning that may need attention.', 'Related IDs and sanitized diagnostics.', 'Submitted field values and request/response bodies.'],
@@ -111,27 +95,38 @@
                     </details>
                 {% endif %}
             {% endset %}
-            {% set recordingDetails %}<dl><dt>{{ 'Recorded'|t('freeform') }}</dt><dd>{{ eventGuidance[key][1]|t('freeform') }}</dd><dt>{{ 'Excluded'|t('freeform') }}</dt><dd>{{ eventGuidance[key][2]|t('freeform') }}</dd></dl>{% endset %}
-            {{ cards.helper({layout:'split', id:'activity-event-' ~ key, label:definition[0]|t('freeform'), description:eventGuidance[key][0]|t('freeform'), icon:icon, control:control, controlHidden:settings.activityMode != 'custom', example:example, details:recordingDetails, tone:eventColors[definition[3]], attributes:{hidden:settings.activityMode != 'custom' and not options[key], data:{'event-row':true}}}) }}
+            {% set recordingDetails %}
+                <details class="ff-activity-data-disclosure ff-activity-event-disclosure">
+                    <summary aria-label="{{ 'Recorded data and example for {event}'|t('freeform', {event:definition[0]|t('freeform')}) }}">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg>
+                        <span>{{ 'Details'|t('freeform') }}</span>
+                    </summary>
+                    <div class="ff-activity-event-disclosure-content">
+                        <dl><dt>{{ 'Recorded'|t('freeform') }}</dt><dd>{{ eventGuidance[key][1]|t('freeform') }}</dd><dt>{{ 'Excluded'|t('freeform') }}</dt><dd>{{ eventGuidance[key][2]|t('freeform') }}</dd></dl>
+                        <div>{{ example }}</div>
+                    </div>
+                </details>
+            {% endset %}
+            {{ cards.helper({id:'activity-event-' ~ key, label:definition[0]|t('freeform'), description:eventGuidance[key][0]|t('freeform'), icon:icon, control:control, controlHidden:settings.activityMode != 'custom', details:recordingDetails, tone:eventColors[definition[3]], attributes:{hidden:settings.activityMode != 'custom' and not options[key], data:{'event-row':true}}}) }}
         {% endfor %}
+        <details class="ff-activity-data-disclosure ff-activity-data-panel">
+            {% include 'freeform/settings/_activity-disclosure-summary' with {label:'About recorded data'|t('freeform')} only %}
+            <div class="ff-activity-data-content">
+                <p>{{ 'Every event includes its type and time. Other details are recorded when available. Activity records up to 100 events per request or background job. Additional events are skipped to keep form processing responsive.'|t('freeform') }}</p>
+                <p>{{ 'Email addresses and recognized keys are masked. Passwords and authorization headers are removed. Errors and warnings may include sanitized messages and stack locations without arguments or full server paths. Masking is best effort. Review details before sharing.'|t('freeform') }}</p>
+                <p>{{ 'Activity is stored in your Craft database. Related records require permission to access. Form, integration, and notification names reflect their current values.'|t('freeform') }}</p>
+                <p>{{ 'Recording choices apply to new events. Retention and storage limits also apply to existing history.'|t('freeform') }}</p>
+            </div>
+        </details>
     </div>
     {% endset %}
     {{ forms.field({id:'activity-events', fieldset:true, label:'Recorded events'|t('freeform'), instructions:eventInstructions, errors:settings.errors().get('activityEvents')}, eventInput) }}
     </div>
+    </div>
     <hr>
-    <h2>{{ 'Storage limits'|t('freeform') }}</h2><div class="ff-activity-limits">
+    <h2><span data-storage-title="active" {{ selectedMode == 'off' ? 'hidden' }}>{{ 'Storage limits'|t('freeform') }}</span><span data-storage-title="off" {{ selectedMode != 'off' ? 'hidden' }}>{{ 'Existing History'|t('freeform') }}</span></h2><div class="ff-activity-limits">
         {{ measurement.field({label:'Keep events for'|t('freeform'), id:'activity-retention-days', unit:'days'|t('freeform'), name:'settings[activityRetentionDays]', type:'number', min:1, max:365, value:settings.activityRetentionDays, errors:settings.errors().get('activityRetentionDays'), disabled:readOnly, instructions:'Choose 1–365 days. Expired events are hidden immediately and removed by background cleanup.'|t('freeform')}) }}
         {{ measurement.field({label:'Event storage limit'|t('freeform'), id:'activity-max-events', unit:'events'|t('freeform'), name:'settings[activityMaxRows]', type:'number', min:1000, max:1000000, value:settings.activityMaxRows, errors:settings.errors().get('activityMaxRows'), disabled:readOnly, instructions:'Choose 1,000–1,000,000 events. Background cleanup removes the oldest events above this limit. The count can exceed the limit until cleanup runs.'|t('freeform')}) }}
-    </div>
-    </div>
-    <div data-logging-panel="classic" {{ loggingStyle != 'classic' ? 'hidden' }}>
-        {% include 'freeform/settings/_technical-file-logging' with {settings:settings, readOnly:readOnly} only %}
-    </div>
-    <div data-logging-panel="none" {{ loggingStyle != 'none' ? 'hidden' }}>
-        <div class="pane warning ff-activity-logging-warning" role="status"><p>
-            <strong>{{ 'Turning off logging is not recommended.'|t('freeform') }}</strong>
-            {{ 'For basic error tracking, choose {style} and set {setting} to {level}.'|t('freeform', {style: '<strong>' ~ ('Classic Logging'|t('freeform')|e) ~ '</strong>', setting: '<strong>' ~ ('Log Detail'|t('freeform')|e) ~ '</strong>', level: '<strong>' ~ ('Errors'|t('freeform')|e) ~ '</strong>'})|raw }}
-        </p></div>
     </div>
     <script type="application/json" data-activity-presets>{{ presets|json_encode|raw }}</script>
     <script type="application/json" data-activity-custom>{{ customOptions|json_encode|raw }}</script>

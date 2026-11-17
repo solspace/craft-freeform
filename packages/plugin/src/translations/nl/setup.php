@@ -25,8 +25,6 @@ return [
     'Keep your existing custom event choices.' => 'Behoud je bestaande aangepaste gebeurteniskeuzes.',
     'Leave the setup guide without saving your changes?' => 'De installatiehandleiding verlaten zonder wijzigingen op te slaan?',
     'Loading your current settings…' => 'Je huidige instellingen laden…',
-    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform. Classic Logging writes technical files.' => 'Logboeken helpen je problemen achteraf te onderzoeken. Activiteitenregistratie bewaart een doorzoekbare geschiedenis in Freeform. Klassieke logging schrijft technische bestanden.',
-    'Turning logging off is not recommended. Use Classic Logging with Errors to retain important failures.' => 'Logging uitschakelen wordt afgeraden. Gebruik klassieke logging met Fouten om belangrijke fouten vast te leggen.',
     'Not set' => 'Niet ingesteld',
     'Previous' => 'Vorige',
     'Record errors and critical failures.' => 'Leg fouten en kritieke storingen vast.',
@@ -249,4 +247,6 @@ return [
     'Set up an upload volume' => 'Een uploadvolume instellen',
     'Configure an asset volume in Craft, then allow it under Allowed Upload Volumes in Freeform settings.' => 'Configureer een assetvolume in Craft en sta het daarna toe onder Toegestane uploadvolumes in de Freeform-instellingen.',
     'The Setup Guide requires an administrator and an environment that allows admin changes.' => 'De installatiehandleiding vereist een beheerder en een omgeving waarin beheerderswijzigingen zijn toegestaan.',
+    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform.' => 'Logboeken helpen bij het onderzoeken van problemen. Het activiteitenlogboek bewaart een doorzoekbare geschiedenis in Freeform.',
+    'Turning logging off is not recommended. Use Activity Logging with the Minimal recording mode to retain important failures.' => 'Logregistratie uitschakelen wordt afgeraden. Gebruik het activiteitenlogboek met de opnamemodus Minimaal om belangrijke fouten te bewaren.',
 ];

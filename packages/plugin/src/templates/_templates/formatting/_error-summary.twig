@@ -1,0 +1,9 @@
+{% set summary = form.errorSummary %}
+{% if summary|length %}
+    <p>{{ 'Please correct the following fields:'|t('freeform') }}</p>
+    <ul data-freeform-error-summary>
+        {% for item in summary %}
+            <li><a href="#{{ item.id|e('html_attr') }}" data-freeform-error-field="{{ item.handle|e('html_attr') }}">{{ item.label|e }}: {{ item.errors|join('; ')|e }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}

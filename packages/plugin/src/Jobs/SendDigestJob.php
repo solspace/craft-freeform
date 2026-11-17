@@ -20,7 +20,6 @@ class SendDigestJob extends BaseJob
         try {
             $freeform = Freeform::getInstance();
 
-            $freeform->feed->fetchFeed();
             $freeform->digest->triggerDigest($this->refDate);
         } catch (\Throwable $exception) {
             \Craft::error('SendDigestJob execute - Failed: '.$exception->getMessage(), __METHOD__);

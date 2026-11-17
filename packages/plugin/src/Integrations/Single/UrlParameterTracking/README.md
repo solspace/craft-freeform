@@ -6,7 +6,7 @@ Freeform can automatically capture UTM and other URL tracking parameters (e.g., 
 
 ### 1. Enable URL Parameter Tracking
 
-- If you'd like the Freeform URL Parameter Tracking integration to be enabled for all forms by default, toggle on the **Enabled by default** setting.
+- If you'd like the Freeform URL Parameter Tracking integration to be enabled for all forms by default, toggle on the **Enable on forms by default** setting.
 - Add any **URL tracking parameters** you'd like the integration to detect by default:
   - E.g. `utm_source`, `utm_medium`, `utm_campaign`, etc.
 - **Store in Cookies**
@@ -16,7 +16,7 @@ Freeform can automatically capture UTM and other URL tracking parameters (e.g., 
 - Click the **Save** button.
 
 ### 2. Configure the Form
-To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enabled by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
+To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enable on forms by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
 
 - Visit the form inside the form builder.
 - Click on the **Integrations** tab.

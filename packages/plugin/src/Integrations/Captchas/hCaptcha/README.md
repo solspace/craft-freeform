@@ -9,7 +9,7 @@ Existing integrations keep their saved settings.
 2. Choose **Captcha Type**:
    - **Invisible** starts on submit and may show a puzzle. This is the recommended option.
    - **Checkbox** shows a checkbox and may also ask the visitor to solve a puzzle.
-3. Choose whether the integration should be **Enabled by default** on forms.
+3. Choose whether the integration should be **Enable on forms by default** on forms.
 4. Click **Save**.
 5. Open your form in the builder, go to **Integrations → Captchas**, and select
    **hCaptcha**. Make sure it is enabled, review its settings, and save the form.

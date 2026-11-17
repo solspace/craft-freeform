@@ -31,6 +31,7 @@ use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Events\Fields\FieldRenderEvent;
 use Solspace\Freeform\Events\Fields\SetParametersEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -239,7 +240,7 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
     final public function render(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
-        $instructionsBelow = 'below' === strtolower($this->parameters->instructions);
+        $instructionsBelow = 'below' === strtolower($this->parameters->instructions ?? '');
 
         $output = $this->renderContainerOpeningTag();
 
@@ -453,65 +454,45 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
 
     public function getAttributes(): FieldAttributesCollection
     {
-        // CP submission rendering still needs compiled runtime attributes, but
-        // should not inherit the builder's custom frontend HTML attributes.
-        $attributes = false === $this->parameters->useCustomAttributes
-            ? new FieldAttributesCollection()
-            : $this->attributes->clone();
-
-        $event = new CompileFieldAttributesEvent(
-            $this,
-            $attributes,
-            FieldAttributesCollection::class
-        );
-
-        Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
-
-        /** @var FieldAttributesCollection $attributes */
-        $attributes = $event->getAttributes();
-
+        $attributes = $this->compileAttributes();
         if (!$this->canRender()) {
             return $attributes;
         }
 
-        $fieldId = $this->getIdAttribute();
+        $this->compiledAttributes = $attributes;
+
+        try {
+            $fieldId = $this->getIdAttribute();
+        } finally {
+            $this->compiledAttributes = null;
+        }
+        if ($this instanceof GroupedFieldInterface) {
+            $attributes->getContainer()->setIfEmpty('tag', 'fieldset');
+            $attributes->getLabel()->setIfEmpty('tag', 'legend');
+        }
+
+        if ('legend' === $attributes->getLabel()->getTag('label')) {
+            $attributes->getLabel()->remove('for')->setIfEmpty('id', "{$fieldId}-legend");
+            if (self::TYPE_MULTIPLE_SELECT === $this->getType()) {
+                $attributes->getInput()->setIfEmpty('aria-labelledby', $attributes->getLabel()->get('id'));
+            }
+        }
+
         $describedBy = [];
-
         if ($this->getInstructions()) {
-            $instructionAttributes = $attributes->getInstructions();
-            $instructionAttributes->setIfEmpty(
-                'id',
-                "{$fieldId}-instructions"
-            );
-
-            $describedBy[] = $instructionAttributes->get('id');
+            $instructions = $attributes->getInstructions();
+            $instructions->setIfEmpty('id', "{$fieldId}-instructions");
+            $describedBy[] = $instructions->get('id');
         }
-
-        $errorAttributes = $attributes->getError();
-        $errorAttributes->setIfEmpty('id', "{$fieldId}-error");
-
-        $errorId = $errorAttributes->get('id');
-
-        // Allows AJAX validation to use the same error ID.
-        $attributes
-            ->getContainer()
-            ->replace('data-field-error-id', $errorId)
-        ;
-
+        $errors = $attributes->getError();
+        $errors->setIfEmpty('id', "{$fieldId}-error");
+        $attributes->getContainer()->replace('data-field-error-id', $errors->get('id'));
         if ($this->hasErrors()) {
-            $attributes
-                ->getInput()
-                ->replace('aria-invalid', 'true')
-            ;
-
-            $describedBy[] = $errorId;
+            $attributes->getInput()->replace('aria-invalid', 'true');
+            $describedBy[] = $errors->get('id');
         }
-
         if ($describedBy) {
-            $attributes
-                ->getInput()
-                ->append('aria-describedby', $describedBy)
-            ;
+            $attributes->getInput()->append('aria-describedby', $describedBy);
         }
 
         return $attributes;
@@ -562,21 +543,21 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
         return $this->getValueAsString();
     }
 
-    /**
-     * Either gets the ID attribute specified in custom attributes
-     * or generates a new one: "form-input-{handle}".
-     */
+    /** Resolve explicit IDs first, otherwise namespace the generated field ID. */
     public function getIdAttribute(): string
     {
-        $attribute = \sprintf('form-input-%s', $this->getHandle());
-
-        if ($this->parameters->id) {
-            $attribute = $this->parameters->id;
+        $attributes = $this->compiledAttributes ?? $this->compileAttributes();
+        $explicit = $attributes->getInput()->get('id');
+        if (\is_string($explicit) && '' !== $explicit) {
+            return $explicit;
         }
 
-        $fieldIdPrefix = $this->getForm()->getProperties()->get('fieldIdPrefix', '');
+        $explicitPrefix = $this->getForm()->getProperties()->get('fieldIdPrefix');
+        if (null !== $this->parameters->id && '' !== $this->parameters->id) {
+            return (string) $explicitPrefix.$this->parameters->id;
+        }
 
-        return $fieldIdPrefix.$attribute;
+        return $this->getForm()->getFieldPrefix().\sprintf('form-input-%s', $this->getHandle());
     }
 
     public function getContentGqlHandle(): ?string
@@ -674,14 +655,6 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
         return false;
     }
 
-    /**
-     * @deprecated No longer used. Rules are automatically added to the form html as a separate dataset.
-     */
-    public function getRulesHtmlData(): string
-    {
-        return '';
-    }
-
     protected function getContainerOpeningTagHtml(): string
     {
         $attributes = $this->getAttributes()->getContainer();
@@ -702,13 +675,13 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
      */
     protected function getLabelHtml(): string
     {
-        $attributes = $this->getAttributes()
-            ->getLabel()
-            ->clone()
-            ->replace('for', $this->getIdAttribute())
-        ;
-
-        $tag = $this->getAttributes()->getLabel()->getTag('label');
+        $attributes = $this->getAttributes()->getLabel()->clone();
+        $tag = $attributes->getTag('label');
+        if ('label' === $tag) {
+            $attributes->replace('for', $this->getIdAttribute());
+        } else {
+            $attributes->remove('for');
+        }
 
         return Html::tag($tag, $this->getLabel(), $attributes->toHtmlTagArray());
     }
@@ -818,5 +791,25 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
     protected function renderRaw(string $output): Markup
     {
         return Template::raw($output);
+    }
+
+    private function compileAttributes(): FieldAttributesCollection
+    {
+        // CP submission rendering still needs compiled runtime attributes, but
+        // should not inherit the builder's custom frontend HTML attributes.
+        $attributes = false === $this->parameters->useCustomAttributes
+            ? new FieldAttributesCollection()
+            : $this->attributes->clone();
+
+        $event = new CompileFieldAttributesEvent(
+            $this,
+            $attributes,
+            FieldAttributesCollection::class
+        );
+
+        Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
+
+        /** @var FieldAttributesCollection $attributes */
+        return $event->getAttributes();
     }
 }

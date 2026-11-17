@@ -3,15 +3,11 @@ import type Freeform from "@components/front-end/plugin/freeform";
 export type FreeformOptions = {
   ajax?: boolean;
   disableReset?: boolean;
-  disableSubmit?: boolean;
   autoScroll?: boolean;
-  focusFirstError?: boolean;
   scrollToAnchor?: boolean;
   scrollOffset?: number;
   scrollElement?: HTMLElement | Window | null;
-  showProcessingSpinner?: boolean;
-  showProcessingText?: boolean;
-  showProcessingOverlay?: boolean;
+  processingDisplay?: "button" | "overlay" | "both";
   processingText?: string;
   prevButtonName?: string;
 

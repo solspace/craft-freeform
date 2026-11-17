@@ -111,7 +111,6 @@ use Solspace\Freeform\Services\FormGenerationService;
 use Solspace\Freeform\Services\FormGroupsService;
 use Solspace\Freeform\Services\FormIconService;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -179,7 +178,6 @@ use yii\db\Query;
  * @property RelationsService            $relations
  * @property DigestService               $digest
  * @property SummaryService              $summary
- * @property FreeformFeedService         $feed
  * @property LockService                 $lock
  * @property AiService                   $ai
  * @property FormGenerationService       $formGeneration
@@ -848,7 +846,6 @@ class Freeform extends Plugin
                 'exportNotifications' => ExportNotificationsService::class,
                 'errorNotifications' => ErrorNotificationsService::class,
                 'exportProfiles' => ExportProfilesService::class,
-                'feed' => FreeformFeedService::class,
                 'files' => FilesService::class,
                 'formLayouts' => LayoutsService::class,
                 'forms' => FormsService::class,

@@ -25,6 +25,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -37,7 +38,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
     iconPath: __DIR__.'/Icons/checkboxes.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkboxes.ejs',
 )]
-class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInterface, OneLineInterface, DefaultValueInterface
+class CheckboxesField extends BaseGeneratedOptionsField implements GroupedFieldInterface, MultiValueInterface, OneLineInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
     use OneLineTrait;
@@ -98,7 +99,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
             [
                 'handle' => 'container',
                 'label' => 'Container',
-                'previewTag' => 'div',
+                'previewTag' => 'fieldset',
             ],
             [
                 'handle' => 'input',
@@ -113,7 +114,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
             [
                 'handle' => 'label',
                 'label' => 'Container Label',
-                'previewTag' => 'label',
+                'previewTag' => 'legend',
             ],
             [
                 'handle' => 'instructions',
@@ -209,7 +210,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
 
             $output .= Html::tag(
                 $labelAttributes->getTag('label'),
-                $inputTag.$option->getLabel(),
+                $inputTag.$this->translateOptionLabel($option),
                 $labelAttributes->toHtmlTagArray($twigVariables),
             );
         }

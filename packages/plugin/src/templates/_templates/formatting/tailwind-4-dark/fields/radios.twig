@@ -15,8 +15,7 @@
         {% if field.hasErrors %}aria-invalid="true"{% endif %}
       />
       <label for="{{ field.idAttribute }}-{{ index }}" class="{{ field.attributes.optionLabel.get("class") }}{{ field.hasErrors ? ' text-red-700' }}">
-        {{ field.translateOptionLabel(option) }} {# Use this for form builder translations #}
-        {# {{ option.label|t('freeform')|raw }} #} {# Use this instead if using static translations #}
+        {{ field.translateOptionLabel(option) }}
       </label>
     </div>
   {% endfor %}

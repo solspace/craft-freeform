@@ -321,6 +321,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('filters', $this->longText())
                 ->addField('statuses', $this->text()->notNull())
                 ->addField('allowedExportTypes', $this->json()->null())
+                ->addField('formatting', $this->json()->null())
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_export_notifications'))
@@ -341,6 +342,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('userId', $this->integer()->notNull())
                 ->addField('setting', $this->longText())
+                ->addField('formatting', $this->json()->null())
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
 
             // Payments
@@ -378,24 +380,6 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['submissionId', 'reasonType'])
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
 
-            (new Table('freeform_feeds'))
-                ->addField('id', $this->primaryKey())
-                ->addField('hash', $this->string()->notNull())
-                ->addField('min', $this->string())
-                ->addField('max', $this->string())
-                ->addField('issueDate', $this->dateTime()->notNull())
-                ->addIndex(['hash'], true),
-
-            (new Table('freeform_feed_messages'))
-                ->addField('id', $this->primaryKey())
-                ->addField('feedId', $this->integer()->notNull())
-                ->addField('message', $this->text()->notNull())
-                ->addField('conditions', $this->longText()->notNull())
-                ->addField('type', $this->string()->notNull())
-                ->addField('seen', $this->boolean()->notNull()->defaultValue(false))
-                ->addField('issueDate', $this->dateTime()->notNull())
-                ->addForeignKey('feedId', 'freeform_feeds', 'id', ForeignKey::CASCADE),
-
             (new Table('freeform_notification_log'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(30)->notNull())
@@ -404,17 +388,6 @@ class Install extends StreamlinedInstallMigration
                 ->addField('name', $this->string())
                 ->addIndex(['type', 'identifier', 'name', 'digestDate'], name: 'idx_type_identifier_name_digestDate')
                 ->addIndex(['type', 'dateCreated']),
-
-            (new Table('freeform_session_context'))
-                ->addField('id', $this->primaryKey())
-                ->addField('contextKey', $this->string(100)->notNull())
-                ->addField('sessionId', $this->string(100)->notNull())
-                ->addField('formId', $this->integer()->notNull())
-                ->addField('propertyBag', $this->longText())
-                ->addField('attributeBag', $this->longText())
-                ->addIndex(['contextKey', 'formId'])
-                ->addIndex(['sessionId'])
-                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_saved_forms'))
                 ->addField('id', $this->primaryKey())

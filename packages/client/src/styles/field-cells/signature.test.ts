@@ -15,11 +15,27 @@ const render = template(
 const stored = {
   width: 300,
   height: 200,
-  showClearButton: true,
   borderColor: "#999999",
   backgroundColor: "#000000",
   penColor: "#ffffff",
 };
+
+it.each([undefined, false, true])(
+  "renders Clear for new and legacy fields without depending on the retired setting: %s",
+  (showClearButton) => {
+    const host = document.createElement("div");
+    host.innerHTML = render({
+      ...stored,
+      customizeAppearance: false,
+      ...(showClearButton === undefined ? {} : { showClearButton }),
+    });
+    expect(host.querySelector(".ff-signature-preview__pad svg")).not.toBeNull();
+    expect(
+      host.querySelector(".ff-signature-preview__clear")?.textContent,
+    ).toBe("Clear");
+  },
+);
+
 function preview(customizeAppearance?: boolean) {
   const props = {
     ...stored,

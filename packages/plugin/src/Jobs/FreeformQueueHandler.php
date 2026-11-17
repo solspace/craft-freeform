@@ -62,17 +62,17 @@ class FreeformQueueHandler
 
     public function executeNotificationJob(NotificationJobInterface $job, ?int $priority = null): void
     {
-        $this->queueJob($job, $priority, $this->settingsService->isNotificationQueueEnabled());
+        $this->queueJob($job, $priority, $this->settingsService->isQueueEnabled());
     }
 
     public function executeIntegrationJob(IntegrationJobInterface $job, ?int $priority = null): void
     {
-        $this->queueJob($job, $priority, $this->settingsService->isIntegrationQueueEnabled());
+        $this->queueJob($job, $priority, $this->settingsService->isQueueEnabled());
     }
 
     public function executeAiFieldsJob(AiFieldsJobInterface $job, ?int $priority = null): void
     {
-        $this->queueJob($job, $priority, $this->settingsService->isAiFieldQueueEnabled());
+        $this->queueJob($job, $priority, $this->settingsService->isQueueEnabled());
     }
 
     private function isJobInQueue(JobInterface $job): bool

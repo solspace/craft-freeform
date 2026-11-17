@@ -105,7 +105,7 @@
                     <select id="demo-state" name="state">
                         {# You may also manually hardcode each option as well, as long as these options exist inside the form builder #}
                         {% for option in state.options %}
-                            <option value="{{ option.value }}"{{ option.value == state.value ? ' selected' }}>{{ option.label }}</option>
+                            <option value="{{ option.value }}"{{ option.value == state.value ? ' selected' }}>{{ state.translateOptionLabel(option) }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -116,7 +116,7 @@
                     <select id="demo-recipients" name="recipients">
                         {% for recipient in recipients.options %}
                             {# value is required to be 0, 1, 2, etc instead of actual email value #}
-                            <option value="{{ loop.index0 }}">{{ recipient.label }}</option>
+                            <option value="{{ loop.index0 }}">{{ recipients.translateOptionLabel(recipient) }}</option>
                         {% endfor %}
                     </select>
                 </div>

@@ -121,6 +121,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const PROPERTY_PAGE_HISTORY = 'pageHistory';
     public const PROPERTY_SPAM_REASONS = 'spamReasons';
     public const PROPERTY_ASYNC_SPAM_VALIDATED = 'asyncSpamValidated';
+    public const PROPERTY_FIELD_ID_PREFIX = 'autoFieldIdPrefix';
 
     public const RETURN_URI_KEY = 'formReturnUrl';
     public const SOURCE_URL_KEY = 'formSourceUrl';
@@ -131,6 +132,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     protected FormLayout $layout;
     protected FormAttributesCollection $attributes;
     private PropertyBag $propertyBag;
+    private bool $renderContextRegistered = false;
 
     private bool $preview = false;
 
@@ -541,6 +543,20 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         return $errorCount > 0;
     }
 
+    public function getErrorSummary(): array
+    {
+        $summary = [];
+        foreach ($this->getFields() as $field) {
+            if (!$field->hasErrors() || !$field->canRender()) {
+                continue;
+            }
+            $errors = array_map(static fn ($error) => \is_array($error) ? implode(', ', $error) : (string) $error, $field->getErrors());
+            $summary[] = ['id' => $field->getIdAttribute(), 'handle' => $field->getHandle(), 'label' => strip_tags($field->getLabel()) ?: $field->getHandle(), 'errors' => $errors];
+        }
+
+        return $summary;
+    }
+
     public function isSubmittedSuccessfully(): bool
     {
         return $this->getSubmissionHandler()->wasFormFlashSubmitted($this);
@@ -775,6 +791,14 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function registerContext(?array $renderProperties = null): void
     {
         $this->setProperties($renderProperties);
+        // FormsService can reuse a Form object for multiple placements. Each
+        // new rendering gets its own namespace; restored request context keeps
+        // the original namespace for validation and multipage responses.
+        if ($this->renderContextRegistered) {
+            $this->propertyBag->remove(self::PROPERTY_FIELD_ID_PREFIX);
+        }
+        $this->renderContextRegistered = true;
+        $this->getFieldPrefix();
 
         if ($this->preview) {
             return;
@@ -1054,7 +1078,19 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
     public function getFieldPrefix(): ?string
     {
-        return $this->getProperties()->get('fieldIdPrefix');
+        $explicit = $this->propertyBag->get('fieldIdPrefix');
+        if (null !== $explicit) {
+            return (string) $explicit;
+        }
+
+        $prefix = $this->propertyBag->get(self::PROPERTY_FIELD_ID_PREFIX);
+        if (!\is_string($prefix) || '' === $prefix) {
+            $name = preg_replace('/[^a-zA-Z0-9_-]/', '-', $this->getHandle());
+            $prefix = 'freeform-'.($name ?: 'form').'-'.bin2hex(random_bytes(6)).'-';
+            $this->propertyBag->set(self::PROPERTY_FIELD_ID_PREFIX, $prefix);
+        }
+
+        return $prefix;
     }
 
     public function isLastPage(): bool
@@ -1126,42 +1162,6 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function normalize(): array
     {
         return $this->jsonSerialize();
-    }
-
-    /**
-     * Legacy alias for older FF versions.
-     *
-     * @deprecated {@see getAttributes()} instead. Will be removed in FF v6.0
-     */
-    public function customAttributes(): array
-    {
-        \Craft::$app->deprecator->log(
-            'freeform.form.customAttributes',
-            'Freeform\'s `form.customAttributes` have been deprecated. Please use `form.attributes` and `form.properties` instead. Will be removed in Freeform 6.0',
-        );
-
-        $attributes = $this->getAttributes();
-
-        return [
-            'id' => $this->getId(),
-            'class' => $attributes->getForm()->get('class'),
-            'method' => $this->getProperties()->get('method', 'post'),
-            'action' => $attributes->getForm()->get('action'),
-            'status' => '',
-            'returnUrl' => '',
-            'rowClass' => $attributes->getRow()->get('class'),
-            'columnClass' => '',
-            'submitClass' => '',
-            'inputClass' => '',
-            'labelClass' => '',
-            'errorClass' => '',
-            'instructionsClass' => '',
-            'instructionsBelowField' => true,
-            'overrideValues' => [],
-            'formAttributes' => $attributes->getForm(),
-            'inputAttributes' => '',
-            'useRequiredAttribute' => true,
-        ];
     }
 
     public function getErrorMessage(): string

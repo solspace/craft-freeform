@@ -13,19 +13,15 @@ class SetupSettings
         'emailTemplateMethod' => ['form', 'global', 'all'],
         'spamProtectionBehavior' => ['simulate_success', 'display_errors'],
         'spamFolderEnabled' => ['true', 'false'],
-        'loggingStyle' => ['activity', 'classic', 'none'],
+        'loggingStyle' => ['activity', 'none'],
         'activityMode' => ['minimal', 'standard', 'detailed', 'custom'],
-        'loggingLevel' => ['error', 'info', 'debug'],
         'defaultFromEmail' => null,
         'defaultFromName' => null,
         'emailTemplateStorageType' => ['files', 'database', 'files_database'],
         'emailTemplateDefault' => ['files', 'database'],
         'defaultView' => ['forms', 'submissions'],
         'defaultAiIntegration' => null,
-        'useQueueForEmailNotifications' => ['true', 'false'],
-        'useQueueForIntegrations' => ['true', 'false'],
-        'useQueueForAiFields' => ['true', 'false'],
-        'alertNotificationRecipients' => null,
+        'useQueue' => ['true', 'false'],
         'errorNotificationRecipients' => null,
         'clientDigestRecipients' => null,
         'clientDigestFrequency' => null,
@@ -53,7 +49,7 @@ class SetupSettings
         $values = [];
         foreach (self::OPTIONS as $key => $options) {
             $item = self::defaultItem($settings, $key);
-            $value = isset(self::PATHS[$key]) ? ($item?->getValue() ?? '') : $settings->{$key};
+            $value = isset(self::PATHS[$key]) ? ($item?->getValue() ?? '') : ('useQueue' === $key ? $settings->getQueueControlValue() : $settings->{$key});
             $value = \is_array($value) ? implode(',', $value) : $value;
             $values[$key] = \is_bool($value) ? ($value ? 'true' : 'false') : (string) ($value ?? '');
         }
@@ -93,7 +89,10 @@ class SetupSettings
                 $locked[] = $key;
             }
         }
-        foreach (['activityEnabled', 'technicalFileLogging'] as $guard) {
+        if (\is_array($settings->useQueue)) {
+            $locked[] = 'useQueue';
+        }
+        foreach (['activityEnabled'] as $guard) {
             if (\array_key_exists($guard, $overrides) || str_starts_with($settings->{$guard}, '$')) {
                 $locked[] = 'loggingStyle';
             }
@@ -123,7 +122,7 @@ class SetupSettings
             if ('defaultFromEmail' === $key && '' !== $value && !str_contains($value, '{{') && !filter_var($value, \FILTER_VALIDATE_EMAIL)) {
                 throw new \InvalidArgumentException('Enter a valid sender email address or Twig variable.');
             }
-            if (\in_array($key, ['alertNotificationRecipients', 'errorNotificationRecipients', 'clientDigestRecipients'], true) && '' !== $value) {
+            if (\in_array($key, ['errorNotificationRecipients', 'clientDigestRecipients'], true) && '' !== $value) {
                 foreach (explode(',', $value) as $email) {
                     if (!filter_var(trim($email), \FILTER_VALIDATE_EMAIL)) {
                         throw new \InvalidArgumentException('Enter valid comma-separated email addresses.');
@@ -148,12 +147,8 @@ class SetupSettings
             }
             $result[$key] = $value;
         }
-        if (isset($result['loggingStyle'])) {
-            if ('activity' === $result['loggingStyle']) {
-                $result['activityEnabled'] = 'true';
-            } elseif ('classic' === $result['loggingStyle']) {
-                $result['technicalFileLogging'] = 'true';
-            }
+        if ('activity' === ($result['loggingStyle'] ?? null)) {
+            $result['activityEnabled'] = 'true';
         }
 
         return $result;

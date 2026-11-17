@@ -1,3 +1,4 @@
+import { fieldId } from "@solspace/freeform-core";
 // @ts-nocheck
 import type { VueFieldRendererProps } from "../../types.js";
 import { inputProps } from "./inputProps.js";
@@ -23,7 +24,7 @@ export function FileFieldRenderer(props: VueFieldRendererProps) {
         config.uploadRequirements
           ? [
               input["aria-describedby"],
-              `freeform-${props.field.handle}-upload-requirements`,
+              `${fieldId(props.field)}-upload-requirements`,
             ]
               .filter(Boolean)
               .join(" ")
@@ -32,7 +33,7 @@ export function FileFieldRenderer(props: VueFieldRendererProps) {
       accept={config.accept || undefined}
       multiple={Boolean(config.multiple ?? (config.maxFiles ?? 1) > 1)}
       onChange={(event) => {
-        const files = event.target.files;
+        const files = (event.target as HTMLInputElement).files;
         if (!files || files.length === 0) {
           props.form.setValue(props.field.handle, null);
           return;

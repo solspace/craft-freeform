@@ -12,6 +12,10 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class Signature extends BaseCategory
 {
+    #[Label('Allow Typed Signatures')]
+    #[SetDefaultValue(false)]
+    public BoolItem $allowTyped;
+
     #[Label('Width of Pad')]
     #[SetDefaultValue('400')]
     #[Unit('px')]
@@ -22,23 +26,19 @@ class Signature extends BaseCategory
     #[Unit('px')]
     public TextItem $height;
 
-    #[Label("Show 'Clear' button")]
-    #[SetDefaultValue(true)]
-    public BoolItem $clear;
-
-    #[Label('Border color of Pad')]
+    #[Label('Border Color of Pad')]
     #[SetDefaultValue('#999999')]
     public ColorItem $borderColor;
 
-    #[Label('Background color of Pad')]
+    #[Label('Background Color of Pad')]
     #[SetDefaultValue('TRANSPARENT')]
     public ColorItem $backgroundColor;
 
-    #[Label('Pen color')]
+    #[Label('Pen Color')]
     #[SetDefaultValue('#000000')]
     public ColorItem $penColor;
 
-    #[Label('Pen dot size')]
+    #[Label('Pen Dot Size')]
     #[SetDefaultValue('2.5')]
     #[Unit('px')]
     public TextItem $penDotSize;

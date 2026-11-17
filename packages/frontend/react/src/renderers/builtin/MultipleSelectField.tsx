@@ -21,6 +21,7 @@ export function MultipleSelectFieldRenderer(props: ReactFieldRendererProps) {
       disabled={input.disabled}
       aria-invalid={input["aria-invalid"]}
       aria-describedby={input["aria-describedby"]}
+      aria-labelledby={input["aria-labelledby"]}
       value={selected}
       onChange={(event) => {
         const next = Array.from(event.target.selectedOptions).map(

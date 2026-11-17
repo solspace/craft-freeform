@@ -2,6 +2,7 @@ import { initColorPickers } from "../../../lib/color-picker";
 import { whenCpReady } from "../../../lib/cp/ready";
 import { initializeSettingsControls } from "./controls";
 import { initDigestSchedules } from "./digest-schedule";
+import { initializeFormBuilderSettings } from "./form-builder-settings";
 import { initScriptInsertLocation } from "./script.location";
 import { loadFormattingTemplatesScript } from "./templates.formatting";
 import {
@@ -16,37 +17,9 @@ whenCpReady(() => {
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();
   initializeSettingsControls();
+  initializeFormBuilderSettings();
   initToolbarEditors();
   initDigestSchedules();
-
-  const sessionTime = $("#session-time");
-  const sessionCount = $("#session-count");
-  const sessionSecret = $("#session-secret");
-
-  const sessionContext = $("select#session-context");
-  sessionContext.on({
-    change: function () {
-      const self = $(this);
-      const value = self.val();
-
-      switch (value) {
-        case "payload":
-          sessionSecret.removeClass("hidden");
-          sessionCount.addClass("hidden");
-          sessionTime.addClass("hidden");
-
-          break;
-
-        case "session":
-        case "database":
-          sessionSecret.addClass("hidden");
-          sessionCount.removeClass("hidden");
-          sessionTime.removeClass("hidden");
-
-          break;
-      }
-    },
-  });
 
   initScriptInsertLocation();
   const templateDefault = $("#template-default");
@@ -110,10 +83,4 @@ whenCpReady(() => {
       },
     });
   }
-
-  $(".lock-button").on("click", function () {
-    const input = $("input", this);
-    input.val(input.val() === "1" ? "0" : "1");
-    input.toggleClass("locked", input.val() === "1");
-  });
 });

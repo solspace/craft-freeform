@@ -45,12 +45,6 @@
         input: { "+class": "outline-1 -outline-offset-1 outline-red-600" },
       },
     },
-    "@checkboxes, @radios, @opinion-scale, @rating, @cards": {
-      attributes: {
-        container: { tag: "fieldset" },
-        label: { tag: "legend" },
-      },
-    },
     "@checkboxes, @radios": {
       attributes: {
         input: {
@@ -165,6 +159,8 @@
     },
     "@signature": {
       attributes: {
+        typedInput: { class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" },
+        typedLabel: { class: "block text-sm/6 mb-1 font-medium text-gray-900" },
         input: { "-class": "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6", "+class": "freeform-signature-clear" },
       },
     },
@@ -222,6 +218,7 @@
 
 {# Render page tabs if multi-page #}
 {% if form.pages|length > 1 %}
+    {% include "freeform/_templates/formatting/_page-heading.twig" %}
 
 <nav class="mb-10" aria-label="Progress">
   <ol role="list" class="divide-y divide-gray-300 rounded-md border border-gray-300 sm:flex sm:divide-y-0">
@@ -240,7 +237,8 @@
           </span>
           <span class="ml-4 text-sm font-medium {% if form.currentPage.index > page.index %}text-gray-900{% elseif form.currentPage.index == page.index %}text-indigo-600 font-semibold{% else %}text-gray-500{% endif %}">{{ page.label }}</span>
         </span>
-      </div>
+          {% include "freeform/_templates/formatting/_error-summary.twig" %}
+        </div>
       {% if (page.index + 1) != form.pages.count %}
       <div class="absolute top-0 right-0 hidden h-full w-5 sm:block" aria-hidden="true">
         <svg aria-hidden="true" focusable="false" class="size-full text-gray-300" viewBox="0 0 22 80" fill="none" preserveAspectRatio="none">

@@ -33,6 +33,14 @@ import {
   removeElement,
 } from "@lib/plugin/helpers/elements";
 import { dispatchCustomEvent } from "@lib/plugin/helpers/event-handling";
+import { prepareFieldIds } from "@lib/plugin/helpers/field-ids";
+import {
+  appendErrorSummary,
+  fieldFocusTarget,
+  focusPage,
+  isVisible,
+  processingStatus,
+} from "@lib/plugin/helpers/form-accessibility";
 import type {
   Callback,
   FreeformEvent,
@@ -55,15 +63,11 @@ export default class Freeform {
   options: FreeformOptions = {
     ajax: false,
     disableReset: false,
-    disableSubmit: false,
     autoScroll: false,
-    focusFirstError: false,
     scrollToAnchor: false,
     scrollOffset: 0,
     scrollElement: window,
-    showProcessingSpinner: false,
-    showProcessingText: false,
-    showProcessingOverlay: false,
+    processingDisplay: "button",
     processingText: null,
     prevButtonName: "form_previous_page_button",
 
@@ -135,8 +139,26 @@ export default class Freeform {
       return Freeform.instances.get(form);
     }
 
+    prepareFieldIds(form);
     this.id = form.dataset.id;
     this.form = form;
+    form.addEventListener("click", (event) => {
+      const link = (event.target as Element)?.closest<HTMLAnchorElement>(
+        "a[data-freeform-error-field]",
+      );
+      if (!link || !form.contains(link)) return;
+      const container = Array.from(
+        form.querySelectorAll<HTMLElement>("[data-field-container]"),
+      ).find(
+        (node) =>
+          node.dataset.fieldContainer === link.dataset.freeformErrorField,
+      );
+      const target = container && fieldFocusTarget(container, form);
+      if (target) {
+        event.preventDefault();
+        target.focus();
+      }
+    });
     this._successBannerAttributes = this._readBannerAttributes("success");
     this._errorBannerAttributes = this._readBannerAttributes("error");
 
@@ -147,14 +169,11 @@ export default class Freeform {
       disableReset: form.getAttribute("data-disable-reset") !== null,
       scrollToAnchor: form.getAttribute("data-scroll-to-anchor") !== null,
       autoScroll: form.getAttribute("data-auto-scroll") !== null,
-      focusFirstError: form.getAttribute("data-focus-first-error") !== null,
-      disableSubmit: form.getAttribute("data-disable-submit") !== null,
-      showProcessingSpinner:
-        form.getAttribute("data-show-processing-spinner") !== null,
-      showProcessingText:
-        form.getAttribute("data-show-processing-text") !== null,
-      showProcessingOverlay:
-        form.getAttribute("data-show-processing-overlay") !== null,
+      processingDisplay: ["button", "overlay", "both"].includes(
+        form.dataset.processingDisplay,
+      )
+        ? (form.dataset.processingDisplay as "button" | "overlay" | "both")
+        : "button",
       processingText: form.getAttribute("data-processing-text"),
       successBannerMessage: form.getAttribute("data-success-message"),
       errorBannerMessage: form.getAttribute("data-error-message"),
@@ -191,6 +210,7 @@ export default class Freeform {
         };
 
         this._setUp();
+        processingStatus(form);
         this._initHandlers();
 
         this.enableSubmit("init");
@@ -198,7 +218,6 @@ export default class Freeform {
         const { scrollToAnchor } = this.options;
         const focusedError =
           !this.options.ajax &&
-          this.options.focusFirstError &&
           form.querySelector("[data-freeform-error-banner]") &&
           this._focusFirstError();
         if (scrollToAnchor && !focusedError) {
@@ -219,38 +238,6 @@ export default class Freeform {
   };
 
   _focusFirstError = (errors?: Record<string, string[]>): boolean => {
-    const isVisible = (element: HTMLElement): boolean => {
-      if (
-        (element instanceof HTMLInputElement && element.type === "hidden") ||
-        element.matches(":disabled")
-      ) {
-        return false;
-      }
-
-      for (
-        let current: HTMLElement | null = element;
-        current;
-        current = current.parentElement
-      ) {
-        if (
-          current.hasAttribute("hidden") ||
-          current.hasAttribute("inert") ||
-          current.getAttribute("aria-hidden") === "true"
-        ) {
-          return false;
-        }
-
-        const style = window.getComputedStyle(current);
-        if (style.display === "none" || style.visibility === "hidden") {
-          return false;
-        }
-
-        if (current === this.form) break;
-      }
-
-      return true;
-    };
-
     for (const container of Array.from(
       this.form.querySelectorAll<HTMLElement>("[data-field-container]"),
     )) {
@@ -264,24 +251,8 @@ export default class Freeform {
         continue;
       }
 
-      const fields = Array.from(
-        container.querySelectorAll<HTMLElement>(
-          "input, select, textarea, [data-freeform-file-upload]",
-        ),
-      );
-      const invalidFields = fields.filter(
-        (field) => field.getAttribute("aria-invalid") === "true",
-      );
-      for (const field of invalidFields.length ? invalidFields : fields) {
-        const target = field.hasAttribute("data-freeform-file-upload")
-          ? field.matches("button, [tabindex]")
-            ? field
-            : field.querySelector<HTMLElement>(
-                "button, [tabindex], input:not([type=hidden])",
-              )
-          : field;
-        if (!target || !isVisible(target)) continue;
-
+      const target = fieldFocusTarget(container, this.form);
+      if (target) {
         target.focus();
         if (document.activeElement === target) return true;
       }
@@ -290,7 +261,7 @@ export default class Freeform {
     const banner = this.form.querySelector<HTMLElement>(
       '[data-freeform-ajax-banner="error"], [data-freeform-error-banner]',
     );
-    if (!banner || !isVisible(banner)) return false;
+    if (!banner || !isVisible(banner, this.form)) return false;
 
     const needsTabIndex = !banner.hasAttribute("tabindex");
     if (needsTabIndex) banner.tabIndex = -1;
@@ -374,6 +345,7 @@ export default class Freeform {
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = true;
+      submit.setAttribute("aria-busy", "true");
       submit.ariaDisabled = "true";
       submit.dataset.disabled = "true";
     }
@@ -389,6 +361,7 @@ export default class Freeform {
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = false;
+      submit.removeAttribute("aria-busy");
       submit.ariaDisabled = undefined;
       delete submit.dataset.disabled;
     }
@@ -396,18 +369,17 @@ export default class Freeform {
 
   lockSubmit = (id: string = "freeform") => {
     this._lockList.add(id);
+    processingStatus(this.form).textContent =
+      this.options.processingText || "Processing...";
 
     // Perform the actual lock only initially
     if (this._lockList.size > 1) {
       return;
     }
 
-    const { disableSubmit, showProcessingSpinner, showProcessingText } =
-      this.options;
+    const showButtonFeedback = this.options.processingDisplay !== "overlay";
 
-    if (disableSubmit) {
-      this.disableSubmit(id);
-    }
+    this.disableSubmit(id);
 
     let lastButton: HTMLButtonElement | undefined = this._lastButtonPressed;
     if (!lastButton) {
@@ -416,11 +388,11 @@ export default class Freeform {
     }
 
     if (lastButton) {
-      if (showProcessingSpinner) {
+      if (showButtonFeedback) {
         lastButton.classList.add("freeform-processing");
       }
 
-      if (showProcessingText) {
+      if (showButtonFeedback) {
         lastButton.innerHTML = lastButton.dataset.processingText;
       }
     }
@@ -442,7 +414,7 @@ export default class Freeform {
 
   _showProcessingOverlay = (): void => {
     if (
-      !this.options.showProcessingOverlay ||
+      this.options.processingDisplay === "button" ||
       this._processingOverlay?.isConnected
     ) {
       return;
@@ -450,8 +422,7 @@ export default class Freeform {
 
     const overlay = document.createElement("div");
     overlay.className = "freeform-processing-overlay";
-    overlay.setAttribute("role", "status");
-    overlay.setAttribute("aria-live", "polite");
+    overlay.setAttribute("aria-hidden", "true");
 
     const message = document.createElement("div");
     message.className = "freeform-processing-overlay__message";
@@ -552,23 +523,21 @@ export default class Freeform {
 
   _unlockSubmitButtons = (id?: string): void => {
     this._hideProcessingOverlay();
+    processingStatus(this.form).textContent = "";
 
-    const { disableSubmit, showProcessingSpinner, showProcessingText } =
-      this.options;
+    const showButtonFeedback = this.options.processingDisplay !== "overlay";
 
-    if (disableSubmit) {
-      this.enableSubmit(id);
-    }
+    this.enableSubmit(id);
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
       const submit = submitButtons[i];
 
-      if (showProcessingSpinner) {
+      if (showButtonFeedback) {
         submit.classList.remove("freeform-processing");
       }
 
-      if (showProcessingText) {
+      if (showButtonFeedback) {
         submit.innerHTML = submit.dataset.originalText;
       }
     }
@@ -888,8 +857,8 @@ export default class Freeform {
     const fieldContainer = field.closest<HTMLElement>("[data-field-container]");
     const errorId = fieldContainer?.dataset.fieldErrorId;
 
-    let errorContainerNode = field.parentNode;
-    if (field.type) {
+    let errorContainerNode = fieldContainer ?? field.parentNode;
+    if (!fieldContainer && field.type) {
       if (
         field.type === "radio" ||
         (field.type === "checkbox" && /\[]$/.test(field.name))
@@ -1233,6 +1202,7 @@ export default class Freeform {
       errorBlock.appendChild(errorsList);
     }
 
+    appendErrorSummary(form, errorBlock);
     form.insertBefore(errorBlock, form.childNodes[0]);
   };
 
@@ -1339,11 +1309,7 @@ export default class Freeform {
 
     this.unlockSubmit();
 
-    if (
-      validationErrors &&
-      this.options.focusFirstError &&
-      this._focusFirstError(validationErrors)
-    ) {
+    if (validationErrors && this._focusFirstError(validationErrors)) {
       return;
     }
     if (response.status === 200 && this.options.autoScroll) {
@@ -1384,6 +1350,7 @@ export default class Freeform {
       .then((serverResponse) => {
         this._removeMessages();
         let validationErrors: Record<string, string[]> | undefined;
+        let pageChanged = false;
 
         if (serverResponse.status === 200) {
           const response = serverResponse.data as FreeformResponseWithToken;
@@ -1428,6 +1395,7 @@ export default class Freeform {
               }
 
               if (response.html !== null && !this.options.skipHtmlReload) {
+                pageChanged = !finished;
                 form.innerHTML = response.html
                   .replace(/<form[^>]*>/, "")
                   .replace("</form>", "");
@@ -1500,13 +1468,10 @@ export default class Freeform {
         }
 
         this.unlockSubmit();
-        if (
-          validationErrors &&
-          this.options.focusFirstError &&
-          this._focusFirstError(validationErrors)
-        ) {
+        if (validationErrors && this._focusFirstError(validationErrors)) {
           return;
         }
+        if (pageChanged && focusPage(form)) return;
         if (serverResponse.status === 200 && this.options.autoScroll) {
           this._scrollToForm();
         }

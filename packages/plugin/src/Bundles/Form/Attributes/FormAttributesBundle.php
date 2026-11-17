@@ -57,15 +57,12 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->replace('data-disable-reset', $form->isAjaxResetDisabled());
         $attributes->replace('data-id', $form->getAnchor());
         $attributes->replace('data-handle', $form->getHandle());
+        $attributes->replace('data-freeform-id-prefix', null === $form->getProperties()->get('fieldIdPrefix') ? $form->getFieldPrefix() : false);
         $attributes->replace('data-ajax', $form->isAjaxEnabled());
-        $attributes->replace('data-focus-first-error', $behaviorSettings->focusFirstError);
-        if ($behaviorSettings->focusFirstError && !$form->isAjaxEnabled() && $form->hasErrors()) {
+        if (!$form->isAjaxEnabled() && $form->hasErrors()) {
             $attributes->getErrors()->replace('data-freeform-error-banner', true);
         }
-        $attributes->replace('data-disable-submit', $formService->isFormSubmitDisable());
-        $attributes->replace('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
-        $attributes->replace('data-show-processing-overlay', $behaviorSettings->showProcessingOverlay);
-
+        $attributes->replace('data-processing-display', $behaviorSettings->processingDisplay);
         if (null === $attributes->get('method')) {
             $attributes->set('method', 'post');
         }
@@ -74,7 +71,7 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->replace('enctype', 'multipart/form-data');
         }
 
-        $autoScroll = Freeform::getInstance()->settings->isAutoScroll();
+        $autoScroll = Freeform::getInstance()->settings->isAutoScrollToErrors();
         if ($autoScroll) {
             $attributes->replace('data-auto-scroll', $autoScroll);
         }
@@ -83,25 +80,16 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->replace('data-scroll-to-anchor', true);
         }
 
-        if ($behaviorSettings->showProcessingText) {
-            $attributes->replace('data-show-processing-text', true);
-        }
-
-        if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingOverlay) {
-            $attributes->replace(
-                'data-processing-text',
-                $this->translationProvider
-                    ->getTranslation(
-                        $form,
-                        'behavior',
-                        'processingText',
-                        $behaviorSettings->processingText,
-                    )
-            );
-        }
+        $attributes->replace('data-processing-text', $this->translationProvider->getTranslation(
+            $form,
+            'behavior',
+            'processingText',
+            $behaviorSettings->processingText,
+        ));
 
         $attributes->replace('data-success-message', $form->getSuccessMessage());
         $attributes->replace('data-error-message', $form->getErrorMessage());
+        $attributes->replace('data-error-summary-message', Freeform::t('Please correct the following fields:'));
 
         if ($behaviorSettings->customMessageColors) {
             $dark = true === $attributes->getForm()->get('data-freeform-sample-dark');

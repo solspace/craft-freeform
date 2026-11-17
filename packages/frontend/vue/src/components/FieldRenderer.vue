@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ManifestFieldDefinition } from "@solspace/freeform-core";
+import { fieldAccessibility, fieldId, type ManifestFieldDefinition } from "@solspace/freeform-core";
 import { computed } from "vue";
 import { builtinComponents } from "../renderers/builtin/index.js";
 import { resolveFieldRenderer } from "../renderers/resolve.js";
@@ -22,6 +22,10 @@ const props = defineProps<{
   allowRawHtml?: boolean;
 }>();
 
+const resolvedField = computed(() => ({
+  ...props.field,
+  attributes: { ...props.field.attributes, input: { ...props.field.attributes?.input, id: String(props.form.getFieldProps(props.field.handle).id ?? props.field.attributes?.input?.id ?? `freeform-${props.field.handle}`) } },
+}));
 const strategy = computed(() => props.theme.classNameStrategy ?? "merge");
 const errors = computed(() => props.form.fieldErrors[props.field.handle] ?? []);
 const classNames = computed(() =>
@@ -113,11 +117,11 @@ const fieldClassName = computed(() =>
 );
 
 const rendererProps = computed(() => ({
-  field: props.field,
+  field: resolvedField.value,
   form: props.form,
   value: value.value,
   errors: errors.value,
-  input: props.form.getFieldProps(props.field.handle),
+  input: { ...props.form.getFieldProps(props.field.handle), ...fieldAccessibility(resolvedField.value, errors.value, showInstructions.value, showErrors.value, showLabel.value) },
   classNames: classNames.value,
   allowRawHtml: props.allowRawHtml,
   renderLabel: () => null,
@@ -131,7 +135,7 @@ const rendererProps = computed(() => ({
     <component
       :is="components.FieldWrapper"
       v-if="isVisuallyHidden"
-      :field="field"
+      :field="resolvedField"
       :form="form"
       :class="fieldClassName"
     >
@@ -140,15 +144,15 @@ const rendererProps = computed(() => ({
 
     <component
       :is="components.FieldWrapper"
-      v-else-if="field.type === 'group'"
-      :field="field"
+      v-else-if="resolvedField.type === 'group'"
+      :field="resolvedField"
       :form="form"
       :class="fieldClassName"
     >
       <component
         :is="components.Label"
         v-if="showLabel"
-        :field="field"
+        :field="resolvedField"
         :class="classNames.label"
         :required-indicator="theme.defaults?.requiredIndicator"
         :required-mark-class-name="classNames.requiredMark"
@@ -156,13 +160,13 @@ const rendererProps = computed(() => ({
       <component
         :is="components.Instructions"
         v-if="showInstructions"
-        :field="field"
+        :field="resolvedField"
         :class="classNames.instructions"
       />
-      <div :class="classNames.input" :data-freeform-group="field.handle">
+      <div :class="classNames.input" :data-freeform-group="resolvedField.handle">
         <component
           :is="components.Row"
-          v-for="row in field.layout?.rows ?? []"
+          v-for="row in resolvedField.layout?.rows ?? []"
           :key="row.uid"
           :class="
             joinClassNames(
@@ -186,6 +190,7 @@ const rendererProps = computed(() => ({
       </div>
       <component
         :is="components.Errors"
+        :field="resolvedField"
         v-if="showErrors"
         :errors="errors"
         :class="classNames.errors"
@@ -196,14 +201,14 @@ const rendererProps = computed(() => ({
     <component
       :is="components.FieldWrapper"
       v-else
-      :field="field"
+      :field="resolvedField"
       :form="form"
       :class="fieldClassName"
     >
       <component
         :is="components.Label"
         v-if="showLabel"
-        :field="field"
+        :field="resolvedField"
         :class="classNames.label"
         :required-indicator="theme.defaults?.requiredIndicator"
         :required-mark-class-name="classNames.requiredMark"
@@ -211,13 +216,13 @@ const rendererProps = computed(() => ({
       <component
         :is="components.Instructions"
         v-if="showInstructions"
-        :field="field"
+        :field="resolvedField"
         :class="classNames.instructions"
       />
       <component :is="Renderer" v-bind="rendererProps" />
       <div
         v-if="uploadRequirements"
-        :id="`freeform-${field.handle}-upload-requirements`"
+        :id="`${fieldId(resolvedField)}-upload-requirements`"
         :class="['freeform-upload-requirements', classNames.instructions]"
         style="margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4"
       >
@@ -225,6 +230,7 @@ const rendererProps = computed(() => ({
       </div>
       <component
         :is="components.Errors"
+        :field="resolvedField"
         v-if="showErrors"
         :errors="errors"
         :class="classNames.errors"

@@ -19,11 +19,19 @@ use CraftCms\Cms\Plugin\PluginSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
+use Solspace\Freeform\Library\Configuration\ErrorAlertRecipients;
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
+use Solspace\Freeform\Library\Configuration\FormBehaviorUpgrade;
+use Solspace\Freeform\Library\Configuration\PayloadContextUpgrade;
+use Solspace\Freeform\Library\Configuration\QueueProcessingUpgrade;
+use Solspace\Freeform\Library\Configuration\TwigAccessUpgrade;
+use Solspace\Freeform\Library\Configuration\UploadRetentionUpgrade;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Integrations\ExternalIntegrations;
+use Solspace\Freeform\Library\Templates\SampleTemplateUpgrade;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -36,9 +44,6 @@ class Settings extends PluginSettings
     public const PROTECTION_DISPLAY_ERRORS = 'display_errors';
     public const PROTECTION_RELOAD_FORM = 'reload_form';
 
-    public const DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE = 'Invalid Email Address';
-    public const DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE = 'Invalid Entry Data';
-
     public const EMAIL_TEMPLATE_STORAGE_TYPE_FILES = 'files';
     public const EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE = 'database';
     public const EMAIL_TEMPLATE_STORAGE_TYPE_BOTH = 'files_database';
@@ -50,38 +55,21 @@ class Settings extends PluginSettings
     public const THROTTLING_TIME_FRAME_MINUTES = 'm';
     public const THROTTLING_TIME_FRAME_SECONDS = 's';
 
-    public const SCRIPT_INSERT_LOCATION_HEADER = 'header';
     public const SCRIPT_INSERT_LOCATION_FOOTER = 'footer';
     public const SCRIPT_INSERT_LOCATION_FORM = 'form';
     public const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
-
-    /** @deprecated No longer used since Freeform v5.2.3. Use SCRIPT_INSERT_TYPE_FILES instead. */
-    public const SCRIPT_INSERT_TYPE_POINTERS = 'pointers';
-    public const SCRIPT_INSERT_TYPE_FILES = 'files';
-    public const SCRIPT_INSERT_TYPE_INLINE = 'inline';
-
-    public const CONTEXT_TYPE_PAYLOAD = 'payload';
-    public const CONTEXT_TYPE_SESSION = 'session';
-    public const CONTEXT_TYPE_DATABASE = 'database';
 
     public const CSRF_REFRESH_NONE = 'none';
     public const CSRF_REFRESH_ONCE = 'once';
     public const CSRF_REFRESH_ALWAYS = 'always';
 
     public const DEFAULT_AJAX = true;
-    public const DEFAULT_FORMATTING_TEMPLATE = 'basic-light/index.twig';
-
-    public const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
-    public const DEFAULT_SESSION_ENTRY_TTL = 10800; // 3 hours
+    public const DEFAULT_FORMATTING_TEMPLATE = 'freeform-light/index.twig';
 
     public const DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES = 180;
 
     public const SAVE_FORM_TTL = 30;
     public const SAVE_FORM_SESSION_LIMIT = 10;
-
-    public const LOGGING_LEVEL_ERROR = 'error';
-    public const LOGGING_LEVEL_INFO = 'info';
-    public const LOGGING_LEVEL_DEBUG = 'debug';
 
     public ?string $pluginName = null;
 
@@ -107,19 +95,7 @@ class Settings extends PluginSettings
     /** '*' allows all volumes, 'none' allows none, and arrays contain volume handles. */
     public array|string $allowedUploadVolumes = '*';
 
-    public string $removeNewlines = 'false';
-    public string $exportLabels = 'false';
-    public string $exportHandlesAsNames = 'false';
-    public string $exportTrackedUrlParameters = 'false';
-
-    /** @deprecated use $scriptInsertLocation instead */
-    public bool $footerScripts = false;
-
     public string $scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
-    public string $scriptInsertType = self::SCRIPT_INSERT_TYPE_FILES;
-
-    public string $formSubmitDisable = 'true';
-    public string $rememberPageSubmitOrder = 'true';
 
     public ?int $formSubmitExpiration = null;
     public ?int $minimumSubmitTime = null;
@@ -129,57 +105,21 @@ class Settings extends PluginSettings
     public ?int $submissionThrottlingCount = null;
     public ?string $submissionThrottlingTimeFrame = null;
 
-    /**
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public ?string $blockedEmails = null;
-
-    /**
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public ?string $blockedKeywords = null;
-
-    /**
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public string $blockedKeywordsError = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
-
-    /**
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public string $blockedEmailsError = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
-
-    /**
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public bool $showErrorsForBlockedEmails = false;
-
-    /**
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public bool $showErrorsForBlockedKeywords = false;
-
     public ?string $blockedIpAddresses = null;
     public ?int $purgableSubmissionAgeInDays = null;
     public ?int $purgableSpamAgeInDays = null;
     public ?array $purgableFormIds = null;
     public int $purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
-    public bool $purgeAssets = true;
 
     public string $spamFolderEnabled = 'true';
 
     public bool $renderFormHtmlInCpViews = true;
 
     public string $autoScrollToErrors = 'true';
-    public string $autoScroll = 'true';
     public string $fillWithGet = 'false';
 
     public string $formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
 
-    public int $sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
-    public int $sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
-
-    public ?string $alertNotificationRecipients = null;
     public ?string $errorNotificationRecipients = null;
 
     public ?string $digestRecipients = null;
@@ -188,14 +128,10 @@ class Settings extends PluginSettings
     public int $clientDigestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
 
     public string $digestOnlyOnProduction = 'false';
-    public string $displayFeed = 'true';
-    public string $badgeType = 'all';
+    public string $badgeType = 'errors';
     public string $updateSearchIndexes = 'true';
     public string $formFieldShowOnlyAllowedForms = 'false';
 
-    public string $sessionContext = self::CONTEXT_TYPE_PAYLOAD;
-    public int $sessionContextTimeToLiveMinutes = 180;
-    public int $sessionContextCount = 100;
     public string $sessionContextSecret = '';
 
     public int $saveFormTtl = self::SAVE_FORM_TTL;
@@ -206,20 +142,20 @@ class Settings extends PluginSettings
     public ?int $queuePriority = null;
     public array $hiddenFieldTypes = [];
     public array $surveys = [];
+
+    /** Config-only compatibility option; existing stored values remain supported. */
     public string $allowDashesInFieldHandles = 'false';
     public string $sitesEnabled = 'false';
     public string $abTests = 'true';
     public string $defaultFromEmail = '{{ general.systemEmail }}';
     public string $defaultFromName = '{{ general.systemName }}';
     public Defaults $defaults;
-    public string $useQueueForEmailNotifications = 'false';
-    public string $useQueueForIntegrations = 'false';
-    public string $useQueueForAiFields = 'false';
-    public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
+
+    /** A list preserves the OR of multiple migrated environment variables. */
+    public array|string $useQueue = 'false';
     public string $loggingStyle = 'activity';
 
-    /** Compatibility guards for earlier 5.18 configurations; the CP uses loggingStyle. */
-    public string $technicalFileLogging = 'true';
+    /** Compatibility guard for earlier configurations; the CP uses loggingStyle. */
     public string $activityEnabled = 'true';
     public string $activityMode = 'standard';
     public array $activityEvents = [];
@@ -237,6 +173,7 @@ class Settings extends PluginSettings
 
     public function __construct(array $config = [])
     {
+        $config = self::normalizeLegacySettings($config);
         if (isset($config['allowedUploadVolumes']) && \in_array($config['allowedUploadVolumes'], ['', []], true)) {
             $config['allowedUploadVolumes'] = 'none';
         }
@@ -276,11 +213,17 @@ class Settings extends PluginSettings
 
     public function setAttributes($values, $safeOnly = false): void
     {
+        // A legacy PHP override can arrive after stored settings have been loaded.
+        if (\array_key_exists('alertNotificationRecipients', $values) && !\array_key_exists('errorNotificationRecipients', $values)) {
+            $values['errorNotificationRecipients'] = $this->errorNotificationRecipients;
+        }
+        $values = self::normalizeLegacySettings($values);
         // Project config removes empty arrays, so persist an explicit none value.
         if (isset($values['allowedUploadVolumes']) && \in_array($values['allowedUploadVolumes'], ['', []], true)) {
             $values['allowedUploadVolumes'] = 'none';
         }
         if (\array_key_exists('defaults', $values) && !$values['defaults'] instanceof Defaults) {
+            $values['defaults']['twigAccess'] ??= $this->defaults->twigAccess;
             $values['defaults'] = new Defaults($values['defaults']);
         }
 
@@ -338,7 +281,8 @@ class Settings extends PluginSettings
                 }
             }],
             'activityMode' => ['required', 'in:'.implode(',', ActivityPolicy::MODES)],
-            'loggingStyle' => ['required', 'in:activity,classic,none'],
+            'loggingStyle' => ['required', 'in:activity,none'],
+            'scriptInsertLocation' => ['required', 'in:footer,form,manual'],
             'activityRetentionDays' => ['required', 'integer', 'min:1', 'max:365'],
             'activityMaxRows' => ['required', 'integer', 'min:1000', 'max:1000000'],
             'activityEvents' => ['array', static function (string $attribute, mixed $value, \Closure $fail): void {
@@ -357,9 +301,6 @@ class Settings extends PluginSettings
     {
         if ($this->isActivityLoggingEnabled()) {
             return 'activity';
-        }
-        if ($this->isClassicLoggingEnabled()) {
-            return 'classic';
         }
 
         return 'none';
@@ -380,9 +321,53 @@ class Settings extends PluginSettings
         return 'activity' === $this->loggingStyle && BooleanHelper::normalize($this->activityEnabled);
     }
 
-    public function isClassicLoggingEnabled(): bool
+    /** Normalize stored settings and PHP overrides, including read-only deployments. */
+    public static function normalizeLegacySettings(array $settings, bool $preserveExportFormatting = false): array
     {
-        return 'classic' === $this->loggingStyle && BooleanHelper::normalize($this->technicalFileLogging);
+        if (!$preserveExportFormatting) {
+            $settings = ExportFormatting::removeLegacySettings($settings);
+        }
+        $settings = FormBehaviorUpgrade::settings($settings);
+        $settings = SampleTemplateUpgrade::settings($settings);
+        $settings = UploadRetentionUpgrade::settings($settings);
+        $settings = PayloadContextUpgrade::settings($settings);
+        $settings = TwigAccessUpgrade::settings($settings);
+        $settings = QueueProcessingUpgrade::settings($settings);
+        if (\array_key_exists('alertNotificationRecipients', $settings)) {
+            $settings['errorNotificationRecipients'] = ErrorAlertRecipients::merge($settings['errorNotificationRecipients'] ?? null, $settings['alertNotificationRecipients']);
+            unset($settings['alertNotificationRecipients']);
+        }
+        if ('classic' === ($settings['loggingStyle'] ?? null)) {
+            $settings['loggingStyle'] = 'activity';
+            $settings['activityEnabled'] = 'true';
+        }
+        if ('header' === ($settings['scriptInsertLocation'] ?? null)) {
+            $settings['scriptInsertLocation'] = self::SCRIPT_INSERT_LOCATION_FOOTER;
+        }
+        if ('all' === ($settings['badgeType'] ?? null)) {
+            $settings['badgeType'] = 'errors';
+        } elseif ('notices' === ($settings['badgeType'] ?? null)) {
+            $settings['badgeType'] = '';
+        }
+        unset($settings['footerScripts'], $settings['blockedEmails'], $settings['blockedKeywords'], $settings['blockedKeywordsError'], $settings['blockedEmailsError'], $settings['showErrorsForBlockedEmails'], $settings['showErrorsForBlockedKeywords'], $settings['displayFeed'], $settings['technicalFileLogging'], $settings['loggingLevel'], $settings['scriptInsertType'], $settings['autoScroll'], $settings['rememberPageSubmitOrder']);
+
+        return $settings;
+    }
+
+    public function isQueueEnabled(): bool
+    {
+        foreach ((array) $this->useQueue as $value) {
+            if (BooleanHelper::normalize($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getQueueControlValue(): string
+    {
+        return \is_array($this->useQueue) ? ($this->isQueueEnabled() ? 'true' : 'false') : $this->useQueue;
     }
 
     public function validateActivityEvents(string $attribute): void
@@ -568,48 +553,14 @@ class Settings extends PluginSettings
         return $this->getTemplatesInDirectory($this->getAbsoluteSuccessTemplateDirectory());
     }
 
-    public function getBlockedKeywords(): array
-    {
-        return $this->getArrayFromDelimitedText($this->blockedKeywords);
-    }
-
-    public function getBlockedKeywordsError(): string
-    {
-        return $this->blockedKeywordsError ?? self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
-    }
-
-    public function getBlockedEmails(): array
-    {
-        return $this->getArrayFromDelimitedText($this->blockedEmails);
-    }
-
     public function getBlockedIpAddresses(): array
     {
         return $this->getArrayFromDelimitedText($this->blockedIpAddresses);
     }
 
-    public function getSessionContextTimeToLiveMinutes(): int
-    {
-        return (int) App::parseEnv($this->sessionContextTimeToLiveMinutes);
-    }
-
-    public function getSessionContextCount(): int
-    {
-        return (int) App::parseEnv($this->sessionContextCount);
-    }
-
     public function getSessionContextSecret(): string
     {
         return App::parseEnv($this->sessionContextSecret);
-    }
-
-    public function getSessionContextHumanReadable(): string
-    {
-        return match ($this->sessionContext) {
-            self::CONTEXT_TYPE_SESSION => 'PHP Session',
-            self::CONTEXT_TYPE_DATABASE => 'Database Table',
-            default => 'Encrypted Payload',
-        };
     }
 
     /**

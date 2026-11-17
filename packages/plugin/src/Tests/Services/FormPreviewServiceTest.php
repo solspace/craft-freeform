@@ -98,26 +98,12 @@ class FormPreviewServiceTest extends TestCase
         self::assertSame('Überprüfung', $xpath->query('//p')->item(0)->textContent);
     }
 
-    public function testPreviewAllowsOnlyTheDatepickerAssetsNeededByEnabledInputs(): void
+    public function testBundledDatepickerDoesNotRequireExternalPreviewAssets(): void
     {
-        $html = (new FormPreviewService())->isolate('<html><head></head><body><form data-freeform data-scripts-datepicker>
-            <input data-datepicker data-datepicker-enabled data-datepicker-locale="default">
-            <input data-datepicker data-datepicker-enabled data-datepicker-locale="fr">
-            <input data-datepicker data-datepicker-enabled data-datepicker-locale="fr">
-            <input data-datepicker data-datepicker-enabled data-datepicker-locale="en">
-            <input data-datepicker data-datepicker-enabled="0" data-datepicker-locale="de">
-            <input data-datepicker data-datepicker-enabled="false" data-datepicker-locale="it">
-            <input data-datepicker data-datepicker-enabled data-datepicker-locale="../../other">
-            </form><input data-datepicker data-datepicker-enabled data-datepicker-locale="nl"></body></html>', 'CSRF');
-        $document = new \DOMDocument();
-        @$document->loadHTML($html);
-        $policy = (new \DOMXPath($document))->query('//head/meta')->item(0)->getAttribute('content');
-        $base = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/';
-        self::assertStringContainsString('script-src '.$base.'flatpickr.min.js '.$base.'l10n/fr.js;', $policy);
-        self::assertStringContainsString("style-src 'unsafe-inline' ".$base.'flatpickr.min.css;', $policy);
-        self::assertStringContainsString("connect-src 'none'", $policy);
-        self::assertStringContainsString("form-action 'none'", $policy);
-        self::assertStringNotContainsString("'unsafe-eval'", $policy);
+        $html = (new FormPreviewService())->isolate('<html><head></head><body><form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled data-datepicker-kind="freeform" data-datepicker-language="fr"></form></body></html>', 'CSRF');
+        self::assertStringNotContainsString('cdnjs.cloudflare.com', $html);
+        self::assertStringContainsString("script-src 'none'", $html);
+        self::assertStringContainsString("connect-src 'none'", $html);
     }
 
     #[TestWith(['<form data-freeform><input data-datepicker data-datepicker-enabled></form>'])]
@@ -134,7 +120,8 @@ class FormPreviewServiceTest extends TestCase
 
     public function testPreviewDoesNotRegisterContextOrExposeCsrfAndPayload(): void
     {
-        $form = $this->getMockBuilder(Form::class)->disableOriginalConstructor()->onlyMethods(['getProperties'])->getMock();
+        $form = $this->getMockBuilder(Form::class)->disableOriginalConstructor()->onlyMethods(['getProperties', 'getHandle'])->getMock();
+        $form->method('getHandle')->willReturn('preview');
         $bag = new PropertyBag($form);
         $form->method('getProperties')->willReturn($bag);
         (new \ReflectionProperty(Form::class, 'propertyBag'))->setValue($form, $bag);
@@ -337,8 +324,7 @@ class FormPreviewServiceTest extends TestCase
     #[TestWith(['daisyui-5-dark', false, true])]
     #[TestWith(['bootstrap-5-dark', false, true])]
     #[TestWith(['tailwind-4-dark', false, true])]
-    #[TestWith(['basic-dark', false, true])]
-    #[TestWith(['conversational', false, true])]
+    #[TestWith(['freeform-dark', false, true])]
     #[TestWith(['daisyui-5-light', false, false])]
     #[TestWith(['daisyui-5-dark', true, false])]
     public function testBannerThemeFollowsTheResolvedSampleAndDoesNotGuessFromCustomFilenames(string $name, bool $custom, bool $dark): void

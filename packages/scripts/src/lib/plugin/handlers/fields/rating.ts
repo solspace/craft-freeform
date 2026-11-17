@@ -10,7 +10,7 @@ class Rating implements FreeformHandler {
   }
 
   reload = () => {
-    const ratingFields = this.freeform.form.querySelectorAll<HTMLDivElement>(
+    const ratingFields = this.freeform.form.querySelectorAll<HTMLElement>(
       '[data-field-type="rating"]',
     );
     ratingFields.forEach((field) => {

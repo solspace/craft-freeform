@@ -362,7 +362,7 @@ class FieldGenerator extends AbstractGenerator
             $fieldDefinitions['picker'] = [
                 'name' => 'picker',
                 'type' => Type::string(),
-                'description' => 'Date picker mode: freeform, flatpickr, browser, or none',
+                'description' => 'Date picker mode: freeform, browser, or none',
             ];
 
             $fieldDefinitions['minuteStep'] = [
@@ -498,10 +498,10 @@ class FieldGenerator extends AbstractGenerator
                 'description' => 'Height in pixels',
             ];
 
-            $fieldDefinitions['showClearButton'] = [
-                'name' => 'showClearButton',
+            $fieldDefinitions['allowTypedSignature'] = [
+                'name' => 'allowTypedSignature',
                 'type' => Type::boolean(),
-                'description' => 'Determines if the "clear" button should be displayed',
+                'description' => 'Whether visitors can type their signature instead of drawing it',
             ];
 
             $fieldDefinitions['borderColor'] = [

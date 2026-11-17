@@ -2,11 +2,13 @@
 
     <% if (oneLine) { %><span class="options-one-line"><% } else { %><div><% } %>
 
+        <label class="ff-preview-choice">
         <input type="radio"
                class="radio"
                <% if (option.value === defaultValue) { %>checked="checked"<% } %>
         />
-        <label for=""><%= option.label %></label>
+        <span><%= option.label %></span>
+        </label>
 
     <% if (oneLine) { %></span><% } else { %></div><% } %>
 

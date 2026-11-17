@@ -150,8 +150,8 @@ class DatetimeFieldTest extends TestCase
         (new \ReflectionProperty(DatetimeField::class, 'maxDate'))->setValue($field, 'today');
 
         $input = $this->getInput($field);
-        $this->assertSame('today', $input->getAttribute('data-datepicker-min-date'));
-        $this->assertSame('today', $input->getAttribute('data-datepicker-max-date'));
+        $this->assertSame($field->getPickerMinDate(), $input->getAttribute('data-datepicker-min-value'));
+        $this->assertSame($field->getPickerMaxDate(), $input->getAttribute('data-datepicker-max-value'));
         $this->assertFalse($input->hasAttribute('min'));
         $this->assertFalse($input->hasAttribute('max'));
     }
@@ -220,11 +220,12 @@ class DatetimeFieldTest extends TestCase
     {
         foreach ([
             [true, true, 'browser'], [true, false, 'browser'],
-            [false, true, 'flatpickr'], [false, false, 'none'],
+            [false, true, 'freeform'], [false, false, 'none'],
         ] as [$native, $enabled, $expected]) {
             $this->assertSame($expected, DatetimeField::normalizePickerProperties(['useNativeTypes' => $native, 'useDatepicker' => $enabled])['picker']);
         }
-        $this->assertSame('flatpickr', DatetimeField::normalizePickerProperties([])['picker']);
+        $this->assertSame('freeform', DatetimeField::normalizePickerProperties([])['picker']);
+        $this->assertSame('freeform', DatetimeField::normalizePickerProperties(['picker' => 'flatpickr'])['picker']);
         $this->assertSame('freeform', DatetimeField::normalizePickerProperties(['picker' => 'freeform', 'useNativeTypes' => true])['picker']);
     }
 
@@ -248,8 +249,12 @@ class DatetimeFieldTest extends TestCase
     {
         $class = Date::class;
         $this->assertSame('freeform', (new $class())->picker->getValue());
+        $retired = new $class(['picker' => ['value' => 'flatpickr', 'locked' => true]]);
+        $this->assertSame('freeform', $retired->picker->getValue());
+        $this->assertTrue($retired->picker->isLocked());
+        $this->assertSame(['freeform', 'browser', 'none'], array_keys(DatetimeField::PICKER_OPTIONS));
         $classic = new $class(['datepicker' => ['value' => true, 'locked' => true], 'nativeTypes' => ['value' => false]]);
-        $this->assertSame('flatpickr', $classic->picker->getValue());
+        $this->assertSame('freeform', $classic->picker->getValue());
         $this->assertTrue($classic->picker->isLocked());
         $browser = new $class(['nativeTypes' => ['value' => true]]);
         $this->assertSame('browser', $browser->picker->getValue());
@@ -326,7 +331,7 @@ class DatetimeFieldTest extends TestCase
             'day plus explicit time' => ['minDate', 'today 7am', '2026-10-26 02:00', true],
         ];
         $data = [];
-        foreach (['freeform', 'flatpickr', 'browser', 'none'] as $picker) {
+        foreach (['freeform', 'browser', 'none'] as $picker) {
             foreach ($cases as $name => $case) {
                 $data[$picker.' '.$name] = [$picker, ...$case];
             }

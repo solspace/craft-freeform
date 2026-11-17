@@ -434,10 +434,10 @@ it("requires confirming the selected count and lets Escape return to the preview
   choose("case", "title");
   const original = store.getState();
   await requestConfirmation();
-  const dialog = document.querySelector<HTMLElement & { opened: boolean }>(
+  const dialog = document.querySelector<HTMLElement & { open: boolean }>(
     "craft-dialog",
   )!;
-  expect(dialog.opened).toBe(true);
+  expect(dialog.open).toBe(true);
   expect(dialog.getAttribute("label")).toBe("Update 2 labels?");
   expect(dialog.textContent).toContain("Field handles remain unchanged.");
   expect(store.getState()).toBe(original);

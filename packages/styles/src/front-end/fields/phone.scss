@@ -1,30 +1,20 @@
-// Keep the Basic selector compact and reserve the same space for input text
-// and floating labels. Use em so the larger Conversational input scales too.
+// Keep the Freeform selector compact and reserve the same space for input text
+// and floating labels.
 :is(
-  form[data-freeform-basic-light],
-  form[data-freeform-basic-dark],
-  form[data-freeform-basic-floating-labels],
-  form[data-freeform-conversational],
-  form[data-freeform-multipage]
+  form[data-freeform-light],
+  form[data-freeform-dark],
+  form[data-freeform-floating-labels]
 ) {
   --ff-phone-selector-width: 3em;
   --ff-phone-selector-spacing: 0.375em;
-}
-
-// Conversational inputs use content-box sizing; the selector's text padding
-// must stay inside the field's width rather than widening the whole input.
-form[data-freeform-conversational] input[data-freeform-phone] {
-  box-sizing: border-box;
 }
 
 // The country selector stays inside its form, so its colors can follow the
 // formatting template without adding a stylesheet or changing the phone input.
 :is(
   form[data-freeform-theme="dark"],
-  form[data-freeform-basic-dark]:not([data-freeform-theme="light"]),
-  form[data-freeform-conversational]:not([data-freeform-theme="light"]),
+  form[data-freeform-dark]:not([data-freeform-theme="light"]),
   form[data-freeform-bootstrap-dark]:not([data-freeform-theme="light"]),
-  form[data-freeform-tailwind-dark]:not([data-freeform-theme="light"]),
   form[data-freeform-daisyui][data-theme="dark"]:not([data-freeform-theme="light"])
 ) .freeform-phone-country {
   --ff-phone-background: #292a2d;

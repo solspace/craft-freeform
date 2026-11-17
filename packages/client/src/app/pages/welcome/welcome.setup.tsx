@@ -27,6 +27,7 @@ import {
 } from "./welcome.setup.controls";
 import { useSetupExit } from "./welcome.setup.exit";
 import {
+  activityLoggingValue,
   initialAnswers,
   type Recommendation,
   recommendationsFor,
@@ -222,21 +223,31 @@ export const SetupGuide = ({
     () => (options ? recommendationsFor(answers, options) : []),
     [answers, options],
   );
+  const locked = (key: SetupKey) =>
+    options?.locked.includes(key) ||
+    (key === "activityMode" && options?.locked.includes("loggingStyle"));
   const disabled = (key?: SetupKey) =>
-    saving || !options?.canSave || (!!key && options.locked.includes(key));
+    saving || !options?.canSave || (!!key && locked(key));
   const chosen = (item: Recommendation) =>
-    !options?.locked.includes(item.key) &&
-    (selected[item.key] ?? !item.optional);
+    !locked(item.key) && (selected[item.key] ?? !item.optional);
   const valueFor = (item: Recommendation) => edits[item.key] ?? item.value;
+  const savedValueFor = (key: SetupKey) =>
+    options
+      ? key === "activityMode"
+        ? activityLoggingValue(options.values)
+        : options.values[key]
+      : "";
   const draft = { ...options?.values } as SetupValues;
   for (const item of recommendations) {
-    if (chosen(item)) draft[item.key] = valueFor(item);
+    if (!chosen(item)) continue;
+    const value = valueFor(item);
+    if (item.key === "activityMode") {
+      draft.loggingStyle = value === "off" ? "none" : "activity";
+      // Off never replaces the remembered recording mode with a UI-only value.
+      draft.activityMode =
+        value === "off" ? options!.values.activityMode : value;
+    } else draft[item.key] = value;
   }
-  // These dependent settings are meaningful only for the active logging style.
-  if (draft.loggingStyle !== "activity" && options)
-    draft.activityMode = options.values.activityMode;
-  if (draft.loggingStyle !== "classic" && options)
-    draft.loggingLevel = options.values.loggingLevel;
   if (options && draft.emailTemplateMethod === "form") {
     draft.emailTemplateStorageType = options.values.emailTemplateStorageType;
     draft.emailTemplateDefault = options.values.emailTemplateDefault;
@@ -271,12 +282,16 @@ export const SetupGuide = ({
   };
   const hasResources = !!resources.profile || !!resources.templates;
   const changes = options ? changedSetupValues(options.values, draft) : {};
-  const changedKeys = Object.keys(changes) as SetupKey[];
+  const reviewKeys = [
+    ...new Set(
+      (Object.keys(changes) as SetupKey[]).map((key) =>
+        key === "loggingStyle" ? "activityMode" : key,
+      ),
+    ),
+  ];
   const recipientNeeded = (item: Recommendation) =>
     !!options?.canSave &&
-    ["alertNotificationRecipients", "errorNotificationRecipients"].includes(
-      item.key,
-    ) &&
+    item.key === "errorNotificationRecipients" &&
     chosen(item) &&
     !valueFor(item).trim() &&
     !options?.values[item.key]?.trim();
@@ -420,8 +435,8 @@ export const SetupGuide = ({
       !["defaultFormattingTemplate", "defaultUploadSource"].includes(item.key);
     const effectiveValue = active
       ? valueFor(item)
-      : options?.values[item.key] || "";
-    const savedValue = options?.values[item.key] || "";
+      : savedValueFor(item.key) || "";
+    const savedValue = savedValueFor(item.key) || "";
     const booleanChanged = boolean && effectiveValue !== savedValue;
     const update = (value: string) => {
       setEdits((previous) => ({ ...previous, [item.key]: value }));
@@ -431,7 +446,7 @@ export const SetupGuide = ({
       <div
         className="setup-suggestion"
         key={item.key}
-        data-disabled={options?.locked.includes(item.key)}
+        data-disabled={locked(item.key)}
       >
         <div className="setup-selection">
           <SetupSwitch
@@ -499,7 +514,7 @@ export const SetupGuide = ({
               )}
             </>
           ) : (
-            active &&
+            (active || (item.key === "activityMode" && locked(item.key))) &&
             (item.key === "clientDigestFrequency" ? (
               <DigestSchedule
                 label={translate(item.label)}
@@ -512,7 +527,7 @@ export const SetupGuide = ({
                 label={translate(item.label)}
                 formatting={item.key === "defaultFormattingTemplate"}
                 recommendedValue={showRecommendation ? item.value : undefined}
-                value={valueFor(item)}
+                value={effectiveValue}
                 disabled={disabled(item.key)}
                 options={item.options}
                 onChange={update}
@@ -541,7 +556,6 @@ export const SetupGuide = ({
                 maxLength={500}
                 placeholder={
                   [
-                    "alertNotificationRecipients",
                     "errorNotificationRecipients",
                     "clientDigestRecipients",
                   ].includes(item.key)
@@ -582,10 +596,10 @@ export const SetupGuide = ({
           {!boolean && (
             <small>
               {translate("Currently saved:")}{" "}
-              {display(item.key, options?.values[item.key] || "")}
+              {display(item.key, savedValueFor(item.key) || "")}
             </small>
           )}
-          {options?.locked.includes(item.key) && (
+          {locked(item.key) && (
             <small>
               {translate(
                 "This setting is managed in your project configuration.",
@@ -875,10 +889,6 @@ export const SetupGuide = ({
                   const items = recommendations.filter(
                     (item) =>
                       item.scope === scope &&
-                      (item.key !== "activityMode" ||
-                        draft.loggingStyle === "activity") &&
-                      (item.key !== "loggingLevel" ||
-                        draft.loggingStyle === "classic") &&
                       (item.key !== "emailTemplateStorageType" ||
                         draft.emailTemplateMethod !== "form") &&
                       (item.key !== "emailTemplateDefault" ||
@@ -1077,9 +1087,9 @@ export const SetupGuide = ({
                     )}
                   </p>
                 </div>
-                {changedKeys.length ? (
+                {reviewKeys.length ? (
                   <dl className="setup-review">
-                    {changedKeys.map((key) => (
+                    {reviewKeys.map((key) => (
                       <div key={key}>
                         <dt>
                           {translate(
@@ -1097,7 +1107,7 @@ export const SetupGuide = ({
                           )}
                         </dt>
                         <dd>
-                          <span>{display(key, options.values[key])}</span>
+                          <span>{display(key, savedValueFor(key))}</span>
                           <svg
                             viewBox="0 0 24 24"
                             fill="none"
@@ -1108,7 +1118,14 @@ export const SetupGuide = ({
                           >
                             <path d="M4 12h15m-6-6 6 6-6 6" />
                           </svg>
-                          <strong>{display(key, draft[key])}</strong>
+                          <strong>
+                            {display(
+                              key,
+                              key === "activityMode"
+                                ? activityLoggingValue(draft)
+                                : draft[key],
+                            )}
+                          </strong>
                         </dd>
                       </div>
                     ))}

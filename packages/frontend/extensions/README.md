@@ -23,7 +23,7 @@ import { datetimeExtension } from "@solspace/freeform-extensions";
 />;
 ```
 
-The extension mounts the selected Freeform or Classic picker. Browser mode uses native date inputs.
+The extension uses Freeform’s bundled date and time picker by default. Browser mode uses native date inputs; None leaves a plain text input.
 
 ## Captchas
 
@@ -63,10 +63,8 @@ Extensions read provider settings from `manifest.security.captchas`, including `
 
 ## Date/time picker modes
 
-Date/time manifests declare `frontend.config.picker`: `freeform`, `flatpickr`,
 `browser`, or `none`. The Freeform picker runs without React or a CDN dependency,
 with searchable month/year menus, time intervals, keyboard navigation, and
-light/dark themes. Classic (`flatpickr`) retains the existing Flatpickr extension;
 older manifests without `picker` continue using their original boolean settings.
 
 When using the Freeform picker in a headless application, include its stylesheet:

@@ -29,13 +29,19 @@
         }]) %}
     {% endif %}
 {% endfor %}
+{# Child templates supply parent crumbs; the layout adds the current page once. #}
+{% set currentSettingsUrl = cpUrl('freeform/settings' ~ (segment3 ? '/' ~ segment3 : '') ~ (segment4 ? '/' ~ segment4 : ''))|split('?')|first|split('#')|first %}
 {% set crumbs = (crumbs ?? [
     {label: craft.freeform.name, url: cpUrl('freeform')},
     {label: 'Settings'|t('freeform'), url: cpUrl('freeform/settings')},
-])|merge([{label: title, current: true, menu: {
+])|filter(crumb => crumb.label != title and ((crumb.url ?? '')|split('?')|first|split('#')|first) != currentSettingsUrl)|merge([{label: title, current: true, menu: {
     label: 'Select settings page'|t('freeform'),
     items: settingsCrumbItems,
 }}]) %}
+
+{% if not (showSettingsHeading ?? true) %}
+    {% set bodyClass = bodyClass|push('freeform-settings-no-heading') %}
+{% endif %}
 
 {% block actionButton %}
     {% if not readOnly %}

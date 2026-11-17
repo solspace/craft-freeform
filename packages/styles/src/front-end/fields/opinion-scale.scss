@@ -30,9 +30,11 @@ $rad: 3px;
 
       input {
         position: absolute;
-        top: -9999px;
-        left: -9999px;
-        visibility: hidden;
+        padding: 0;
+        margin: -1px;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
         width: 1px;
         height: 1px;
         overflow: hidden;
@@ -77,4 +79,9 @@ $rad: 3px;
       text-align: right;
     }
   }
+}
+
+.opinion-scale-scales input:focus-visible + label {
+  outline: 2px solid var(--ff-color-border-focus, Highlight);
+  outline-offset: 3px;
 }

@@ -6,12 +6,12 @@ This guide assumes you have a basic understanding of [Google Tag Manager](https:
 
 ### 1. Enable Google Tag Manager inside Freeform
 
-- If you'd like GTM to be enabled for all forms by default, toggle on the **Enabled by default** setting.
+- If you'd like GTM to be enabled for all forms by default, toggle on the **Enable on forms by default** setting.
 - If you wish to have Freeform insert its own scripts, enter your GTM ID (`GTM-XXXXXX`) in the **Container ID** setting and a custom event name (if applicable) in the **Event Name** setting.
 - Click the **Save** button.
 
 ### 2. Configure the Form
-To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enabled by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
+To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enable on forms by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
 
 - Visit the form inside the form builder.
 - Click on the **Integrations** tab.

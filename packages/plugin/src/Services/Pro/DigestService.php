@@ -11,8 +11,6 @@ use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Activity\ActivityPresentation;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
-use Solspace\Freeform\Records\FeedMessageRecord;
-use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\NotificationLogRecord;
 use yii\base\Component;
 
@@ -40,10 +38,6 @@ class DigestService extends Component
 
     public function triggerDigest(Carbon $refDate): void
     {
-        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
-            return;
-        }
-
         // Exit early if digestDate column is missing
         if (!\Craft::$app->db->getTableSchema('{{%freeform_notification_log}}')?->getColumn('digestDate')) {
             return;
@@ -144,7 +138,6 @@ class DigestService extends Component
                 'rangeEnd' => $rangeEnd,
                 'forms' => $this->getFormData($rangeStart, $rangeEnd),
                 'errors' => $isFullDigest ? $this->getErrorData($rangeStart, $rangeEnd) : [],
-                'updates' => $isFullDigest ? $this->getUpdateData() : [],
                 'loggingStyle' => Freeform::getInstance()->getSettings()->getEffectiveLoggingStyle(),
                 'activityRetentionDays' => max(1, min(365, Freeform::getInstance()->getSettings()->activityRetentionDays)),
             ]
@@ -321,41 +314,7 @@ class DigestService extends Component
                 return ['date' => $row['dateCreated'], 'level' => ucfirst($row['level']), 'channel' => Freeform::t(ActivityPolicy::CATEGORY_LABELS[$row['category']]), 'message' => $row['title'], 'url' => UrlHelper::cpUrl('freeform/activity', ['view' => 'events', 'eventId' => $row['id']])];
             }, $plugin->activity->getOperationalEvents($rangeStart, $rangeEnd));
         }
-        if ('classic' !== $style) {
-            return [];
-        }
-        $data = [];
-        foreach (['error-log' => null, 'integrations-log' => 'freeform-integrations.log', 'email-log' => 'freeform-email.log'] as $route => $file) {
-            foreach ($plugin->logger->getLogReader($file) as $line) {
-                if (!$line || !\in_array(strtolower($line->getLevel()), ['error', 'critical', 'alert', 'emergency', 'warning'], true)) {
-                    continue;
-                }
-                $date = $line->getDate();
-                if ($rangeStart->lte($date) && $rangeEnd->gte($date)) {
-                    $data[] = ['date' => $date, 'level' => $line->getLevel(), 'channel' => $line->getChannel(), 'message' => $line->getMessage(), 'url' => UrlHelper::cpUrl('freeform/settings/'.$route)];
-                    usort($data, static fn ($a, $b) => $b['date'] <=> $a['date']);
-                    $data = \array_slice($data, 0, 5);
-                }
-            }
-        }
 
-        return $data;
-    }
-
-    private function getUpdateData(): array
-    {
-        $messages = FeedMessageRecord::find()
-            ->where(['seen' => false])
-            ->andWhere(['!=', 'type', 'new'])
-            ->orderBy(['issueDate' => \SORT_DESC])
-            ->all()
-        ;
-
-        $data = [];
-        foreach ($messages as $message) {
-            $data[] = $message->toArray();
-        }
-
-        return $data;
+        return [];
     }
 }

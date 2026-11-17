@@ -10,10 +10,10 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class Phone extends BaseCategory
 {
-    #[Label('Pattern validation')]
+    #[Label('Pattern Validation')]
     public TextItem $pattern;
 
-    #[Label('Use built-in javascript validation on pattern')]
+    #[Label('Use Built-in JavaScript Validation on Pattern')]
     #[SetDefaultValue(false)]
     public BoolItem $javascript;
 

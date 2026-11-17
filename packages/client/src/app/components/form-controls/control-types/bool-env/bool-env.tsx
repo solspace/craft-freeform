@@ -1,17 +1,12 @@
 import { useRenderContext } from "@components/form-controls/context/render.context";
 import { Control } from "@components/form-controls/control";
+import { EnvironmentBadge } from "@components/form-controls/environment-badge";
 import type { ControlType } from "@components/form-controls/types";
-import { useCodeblockText } from "@ff-client/hooks/use-codeblock-text";
 import { useAutosuggestEnvVariables } from "@ff-client/queries/autosuggest";
 import type { BooleanEnvProperty } from "@ff-client/types/properties";
-import translate from "@ff-client/utils/translations";
 import { createElement, type ReactNode, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useEnvOptions } from "./bool-env.options";
-import { EnvLine } from "./env.line";
-
-const translationString =
-  "This can be set to an environment variable with a boolean value (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).";
 
 const MenuWidth = styled.div<{ $compact: boolean }>`
   width: 100%;
@@ -27,8 +22,6 @@ const BoolEnv = ({
   errors,
   context,
 }: ControlType<BooleanEnvProperty>): ReactNode => {
-  const translated = translate(translationString);
-  const codeblock = useCodeblockText(translated);
   const { size } = useRenderContext();
 
   const { data, isFetching } = useAutosuggestEnvVariables();
@@ -66,7 +59,10 @@ const BoolEnv = ({
 
   return (
     <Control property={property} errors={errors} context={context}>
-      <MenuWidth $compact={size === "small"} className="freeform-boolean-menu">
+      <MenuWidth
+        $compact={size === "small"}
+        className="freeform-boolean-menu freeform-env-control freeform-env-control--boolean"
+      >
         {createElement("craft-combobox", {
           ref: comboboxRef,
           value,
@@ -83,8 +79,8 @@ const BoolEnv = ({
             appearance: selected?.data.indicator.appearance ?? "outline",
           })}
         </span>
+        <EnvironmentBadge boolean />
       </MenuWidth>
-      <EnvLine>{codeblock}</EnvLine>
     </Control>
   );
 };

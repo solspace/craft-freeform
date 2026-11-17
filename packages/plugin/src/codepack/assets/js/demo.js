@@ -28,7 +28,7 @@
         localStorage.setItem(storageKey, header.dataset.demoPreview);
       }
     } catch {
-      // Basic Light remains the initial preview when storage is unavailable.
+      // Freeform Light remains the initial preview when storage is unavailable.
     }
   });
 

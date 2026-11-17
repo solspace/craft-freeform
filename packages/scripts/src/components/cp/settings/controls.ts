@@ -38,17 +38,28 @@ export function initializeSettingsControls(root: ParentNode = document): void {
     );
   }
 
-  for (const input of root.querySelectorAll<HTMLInputElement>(
-    'input[name="purge-toggle"]',
+  for (const region of root.querySelectorAll<HTMLElement>(
+    "[data-freeform-retention-setting]",
   )) {
-    const control = input.closest<HTMLElement>("craft-switch");
-    control?.addEventListener("change", () => {
-      if (!switchIsOn(control)) {
-        const range =
-          root.querySelector<HTMLSelectElement>("select#purge-value");
-        if (range) range.value = "0";
-      }
-    });
+    const control =
+      region.querySelector<HTMLElement & { value: string }>("select") ??
+      region.querySelector<HTMLElement & { value: string }>("craft-select");
+    const details = region.querySelector<HTMLElement>(
+      "[data-freeform-retention-details]",
+    );
+    if (!control || !details) continue;
+    const warning = region.querySelector<HTMLElement>(
+      "[data-freeform-retention-warning]",
+    );
+    const originalValue = String(control.value);
+    const update = (): void => {
+      const active = Number(control.value) > 0;
+      details.hidden = !active;
+      if (warning)
+        warning.hidden = !active || String(control.value) === originalValue;
+    };
+    control.addEventListener("change", () => queueMicrotask(update));
+    update();
   }
 
   const builder = root.querySelector<HTMLElement>("#allow-builder-templates");
@@ -65,7 +76,6 @@ export function initializeSettingsControls(root: ParentNode = document): void {
 
   for (const [name, messageId, values] of [
     ["scriptInsertLocation", "script-insert-warning", ["manual"]],
-    ["loggingLevel", "logging-level-warning", ["info", "debug"]],
   ] as const) {
     const select = root.querySelector<HTMLSelectElement>(
       `select[name="settings[${name}]"]`,

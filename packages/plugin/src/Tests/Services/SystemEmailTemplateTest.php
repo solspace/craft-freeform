@@ -19,6 +19,8 @@ class SystemEmailTemplateTest extends TestCase
         foreach (['digest', 'digest-text'] as $name) {
             $html = $twig->render($name, $variables);
             self::assertStringContainsString('Mail transport rejected email', $html);
+            self::assertStringNotContainsString('Updates and notices', $html);
+            self::assertStringNotContainsString('RETIRED_FEED_ANNOUNCEMENT', $html);
             self::assertStringContainsString('https://craft5.test/admin/freeform/activity?view=events', $html);
             self::assertStringContainsString('kept for 7 days', $html);
             $variables['fullDigest'] = false;
@@ -58,7 +60,7 @@ class SystemEmailTemplateTest extends TestCase
         return [$twig, [
             'craft' => ['freeform' => ['name' => 'Freeform'], 'app' => ['language' => 'en', 'systemName' => 'QA']], 'freeform' => ['name' => 'Freeform'],
             'daily' => true, 'fullDigest' => true, 'rangeStart' => new \DateTimeImmutable('-1 day'), 'rangeEnd' => new \DateTimeImmutable(),
-            'forms' => [], 'updates' => [], 'loggingStyle' => 'activity', 'activityRetentionDays' => 7,
+            'forms' => [], 'updates' => [['message' => 'RETIRED_FEED_ANNOUNCEMENT']], 'loggingStyle' => 'activity', 'activityRetentionDays' => 7,
             'errors' => [['level' => 'Error', 'channel' => 'Email', 'date' => new \DateTimeImmutable(), 'message' => 'Mail transport rejected email', 'url' => 'https://craft5.test/admin/freeform/activity?view=events&eventId=262']],
         ]];
     }

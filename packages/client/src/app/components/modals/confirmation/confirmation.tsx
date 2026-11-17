@@ -14,7 +14,7 @@ import {
 import type { ConfirmationOptions } from "./confirmation.types";
 
 type CraftDialogElement = HTMLElement & {
-  opened: boolean;
+  open: boolean;
   updateComplete: Promise<boolean>;
   dialogElement: HTMLDialogElement | null;
 };
@@ -52,7 +52,7 @@ export const ConfirmationDialog: React.FC<Props> = ({
     void customElements.whenDefined("craft-dialog").then(async () => {
       await element.updateComplete;
       if (disposed) return;
-      element.opened = true;
+      element.open = true;
       await element.updateComplete;
       if (!disposed) cancelRef.current?.focus();
     });
@@ -61,7 +61,7 @@ export const ConfirmationDialog: React.FC<Props> = ({
       disposed = true;
       element.removeEventListener("craft-before-hide", cancel);
       // Close before removing the component so focus returns to its opener.
-      element.opened = false;
+      element.open = false;
       element.dialogElement?.close();
     };
   }, []);

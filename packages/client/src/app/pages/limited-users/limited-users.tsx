@@ -9,11 +9,11 @@ import type React from "react";
 import { Link } from "react-router-dom";
 
 import { SettingsLayout } from "../settings/settings.layout";
-
 import {
   useLimitedUsersDeleteMutation,
   useLimitedUsersQuery,
 } from "./limited-users.queries";
+import { SettingsPage } from "./limited-users.styles";
 
 export const LimitedUsers: React.FC = () => {
   const { data, isFetching, isError, refetch } = useLimitedUsersQuery();
@@ -26,7 +26,7 @@ export const LimitedUsers: React.FC = () => {
   }
 
   return (
-    <div>
+    <SettingsPage>
       <Breadcrumb
         id="settings"
         label={translate("Settings")}
@@ -46,7 +46,7 @@ export const LimitedUsers: React.FC = () => {
             extra={
               canManage && (
                 <Link to="new" className="btn submit add icon">
-                  {translate("New Group")}
+                  {translate("New Profile")}
                 </Link>
               )
             }
@@ -97,9 +97,7 @@ export const LimitedUsers: React.FC = () => {
                             onClick={() => {
                               if (
                                 confirm(
-                                  translate(
-                                    "Are you sure you want to delete this?",
-                                  ),
+                                  translate("Delete this permission profile?"),
                                 )
                               ) {
                                 mutation.mutate(item.id);
@@ -119,9 +117,9 @@ export const LimitedUsers: React.FC = () => {
             {isError && !data && (
               <EmptyState
                 framed={false}
-                title={translate("Unable to load groups")}
+                title={translate("Unable to load profiles")}
                 description={translate(
-                  "Please try again to load your Limited Users groups.",
+                  "Please try again to load your Limited Users profiles.",
                 )}
                 icon={<LimitedUsersIcon />}
               >
@@ -135,17 +133,17 @@ export const LimitedUsers: React.FC = () => {
                 framed={false}
                 title={translate(
                   canManage
-                    ? "Create your first Limited Users group"
-                    : "No Limited Users groups yet",
+                    ? "Create your first Limited Users profile"
+                    : "No Limited Users profiles yet",
                 )}
                 description={translate(
-                  "Simplify the form builder for your team. Choose which fields, settings, and tabs each group can use, then assign the group to users.",
+                  "Simplify the form builder for your team. Choose which fields, settings, and tabs each profile allows, then assign the profile through Craft user permissions.",
                 )}
                 icon={<LimitedUsersIcon />}
               >
                 {canManage && (
                   <Link to="new" className="btn submit">
-                    {translate("Create group")}
+                    {translate("Create profile")}
                   </Link>
                 )}
                 <a
@@ -169,7 +167,7 @@ export const LimitedUsers: React.FC = () => {
           />
         )}
       </SettingsLayout>
-    </div>
+    </SettingsPage>
   );
 };
 

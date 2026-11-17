@@ -2,13 +2,35 @@
 
 ## 6.0.0-beta.7 - Unreleased
 
+### Added
+- Added optional typed signatures in regular, React, and Vue forms. Enable **Allow Typed Signatures** in the field settings to offer typing alongside drawing.
+
 ### Changed
-- Included the features and fixes from Freeform 5.18.4, adapted for Craft 6.
-- Aligned navigation, template and export lists, setup guidance, and status banners with native Craft 6.
+- Updated control panel navigation, settings, lists, instructions, and dialogs to match Craft 6, including compact **.ENV** controls and native dark mode.
+- Improved accessibility with grouped field labels, linked error summaries, multipage focus handling, and unique IDs for repeated form embeds. Includes React and Vue forms.
+- Combined spinner, processing text, and overlay controls into **Processing Display**: Button, Overlay, or Both. Existing forms and defaults migrate automatically.
+- Combined AI, notification, and integration queue settings into **Process Submissions in the Background**, enabled when any former setting was enabled.
+- Combined HTML block Twig and isolation settings into **HTML Block Twig Access**: Form variables only, Craft variables, or Disabled. Existing access is preserved.
+- Combined failed-notification and critical-error recipients into **Error Alert Recipients**, preserving and deduplicating both lists.
+- Moved global export formatting settings into **Quick Export** and individual export profiles. Existing formatting choices are preserved.
+- Combined upload cleanup and retention controls into **Automatically Delete Old Unsubmitted Uploads**, with a Never option. Existing cleanup preferences are preserved.
+- Combined standard and AJAX scrolling under **Automatically Scroll to Form**, preserving the existing errors and multipage setting.
+- Replaced PHP session and database storage for form state with encrypted payloads. Removed the associated session lifetime and per-user limits.
+- Moved the payload secret key and **Allow Dashes in Field Handles** to PHP configuration only, preserving existing values.
+- Renamed Basic templates to **Freeform Light**, **Freeform Dark**, and **Freeform Floating Labels**, and Bootstrap 5 to **Bootstrap 5 Light**, including their folders. Bundled selections and defaults migrate automatically. Custom template files are unchanged.
+
+### Removed
+- Removed **Classic logging**, its settings, log viewer, and legacy Freeform log files. Existing Classic configurations switch to **Activity Logging**.
+- Removed the update and announcement feed, its banners, polling, digest notices, and badge options. Activity alerts remain available.
+- Removed **Script Insert Type** and inline frontend assets. JavaScript and CSS now use asset bundles. Removed **Start of Page** placement. Existing selections use **Page Footer**.
+- Removed the **Classic (Flatpickr)** date picker. Existing fields and defaults use the Freeform picker. Browser and None remain available.
+- Removed Tailwind 3 Light/Dark, Foundation 6, Conversational, and Multipage All Fields samples. Selections migrate from Tailwind 3 to Tailwind 4, Foundation 6 to Flexbox, and both remaining samples to Freeform Light.
+- Removed the settings for disabling submit buttons, focusing validation errors, and showing Signature Clear buttons. These behaviors are now automatic.
+- Removed **Remember the Page Order in Multi-page forms**. Previous still follows visited pages and conditional skips.
 
 ### Fixed
 - Fixed deprecated submission queries, Activity Log loading, and payment transaction handling in Craft 6.
-- Fixed missing action icons and integration settings hover contrast in native dark mode.
+- Fixed missing action icons and low-contrast controls, hover states, confirmation buttons, and builder option controls in native dark mode.
 
 ## 6.0.0-beta.6 - 2026-11-13
 

@@ -91,7 +91,9 @@ final class Craft6BooleanMenu
             'appearance' => $enabled ? 'solid' : 'outline',
         ]), ['class' => 'freeform-boolean-menu-status', 'aria' => ['hidden' => 'true']]);
 
-        return Html::tag('div', $select.$combobox.$indicator, ['class' => 'freeform-boolean-menu']);
+        $input = Html::tag('div', $select.$combobox.$indicator, ['class' => 'freeform-boolean-menu']);
+
+        return ($config['includeEnvVars'] ?? false) ? EnvironmentControl::render($config, $input, 'boolean') : $input;
     }
 
     private static function option(string $value, string $label, bool $enabled, bool $hint = false): array

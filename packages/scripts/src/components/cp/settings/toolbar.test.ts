@@ -64,6 +64,32 @@ describe("toolbar configuration compatibility", () => {
     expect(document.querySelectorAll(".ff-toolbar-editor")).toHaveLength(1);
   });
 
+  it("shows ENV help only inside the raw input", () => {
+    document.body.innerHTML = `<form><div data-toolbar-editor><craft-field class="field"><div slot="input" class="freeform-env-control"><craft-combobox><input role="combobox"><input type="hidden" name="toolbar" value="bold italic"></craft-combobox><button type="button" class="freeform-env-badge" id="env-help">.ENV</button><craft-tooltip for="env-help">Environment help</craft-tooltip></div><div slot="help-text"><p>Configure the toolbar.</p></div></craft-field></div></form>`;
+    const badge = document.querySelector<HTMLElement>(".freeform-env-badge")!;
+    const tooltip = document.querySelector("craft-tooltip")!;
+    initToolbarEditors();
+    const toggle = document.querySelector<HTMLButtonElement>(
+      "[data-toolbar-toggle]",
+    )!;
+    expect(badge.isConnected).toBe(false);
+    expect(tooltip.isConnected).toBe(false);
+    expect(submitted()).toBe("bold italic");
+    toggle.click();
+    expect(
+      badge.parentElement?.classList.contains("freeform-env-control"),
+    ).toBe(true);
+    expect(tooltip.parentElement).toBe(badge.parentElement);
+    expect(document.querySelector<HTMLElement>("craft-combobox")!.hidden).toBe(
+      false,
+    );
+    expect(submitted()).toBe("bold italic");
+    toggle.click();
+    expect(badge.isConnected).toBe(false);
+    expect(tooltip.isConnected).toBe(false);
+    expect(submitted()).toBe("bold italic");
+  });
+
   it("keeps the mode switch in the instructions and leaves no footer in the preview", () => {
     mount("bold italic");
     const toggle = document.querySelector<HTMLButtonElement>(
@@ -177,7 +203,7 @@ describe("toolbar configuration compatibility", () => {
       const menu = document.querySelector<HTMLElement>("[role=menu]")!;
       const add =
         document.querySelector<HTMLButtonElement>("[data-toolbar-add]")!;
-      expect(add.textContent).toBe("Add…");
+      expect(add.textContent).toBe("Add");
       expect(menu.firstElementChild?.getAttribute("aria-label")).toBe(
         "Divider",
       );

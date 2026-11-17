@@ -166,8 +166,9 @@ class StoredObjectPropertiesTest extends TestCase
         \Craft::$container = new Container();
         $provider = $this->createProvider();
         foreach ([
-            [[], 'flatpickr'],
-            [['useDatepicker' => true, 'useNativeTypes' => false], 'flatpickr'],
+            [[], 'freeform'],
+            [['picker' => 'flatpickr'], 'freeform'],
+            [['useDatepicker' => true, 'useNativeTypes' => false], 'freeform'],
             [['useDatepicker' => true, 'useNativeTypes' => true], 'browser'],
             [['useDatepicker' => false, 'useNativeTypes' => true], 'browser'],
             [['useDatepicker' => false, 'useNativeTypes' => false], 'none'],
@@ -177,7 +178,7 @@ class StoredObjectPropertiesTest extends TestCase
             $provider->setStoredObjectProperties($field, $values);
             $this->assertSame($expected, $field->getPicker());
             $this->assertSame('browser' === $expected, $field->isUseNativeTypes());
-            $this->assertSame(\in_array($expected, ['freeform', 'flatpickr'], true), $field->isUseDatepicker());
+            $this->assertSame('freeform' === $expected, $field->isUseDatepicker());
         }
     }
 

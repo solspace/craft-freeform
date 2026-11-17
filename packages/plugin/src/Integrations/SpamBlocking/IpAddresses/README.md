@@ -4,7 +4,7 @@ Block submissions from the visitor IP addresses or network ranges you specify. K
 
 ## Set up the default list
 
-1. Choose whether the integration is **Enabled by default**.
+1. Choose whether the integration is **Enable on forms by default**.
 2. Enter one IP address or CIDR network range per line in **Default Blocked IP Addresses**.
 3. Save the integration.
 

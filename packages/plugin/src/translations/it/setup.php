@@ -25,8 +25,6 @@ return [
     'Keep your existing custom event choices.' => 'Mantieni la selezione personalizzata degli eventi esistente.',
     'Leave the setup guide without saving your changes?' => 'Uscire dalla guida senza salvare le modifiche?',
     'Loading your current settings…' => 'Caricamento delle impostazioni attuali…',
-    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform. Classic Logging writes technical files.' => 'I log aiutano a indagare sui problemi dopo che si verificano. Il registro attività conserva una cronologia ricercabile in Freeform. La registrazione classica scrive file tecnici.',
-    'Turning logging off is not recommended. Use Classic Logging with Errors to retain important failures.' => 'Non è consigliabile disattivare i log. Usa la registrazione classica con Errori per conservare i problemi importanti.',
     'Not set' => 'Non impostato',
     'Previous' => 'Precedente',
     'Record errors and critical failures.' => 'Registra errori e problemi critici.',
@@ -249,4 +247,6 @@ return [
     'Set up an upload volume' => 'Configura un volume di caricamento',
     'Configure an asset volume in Craft, then allow it under Allowed Upload Volumes in Freeform settings.' => 'Configura un volume di risorse in Craft, quindi abilitalo nei volumi di caricamento consentiti nelle impostazioni Freeform.',
     'The Setup Guide requires an administrator and an environment that allows admin changes.' => 'La guida di configurazione richiede un amministratore e un ambiente che consenta modifiche amministrative.',
+    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform.' => 'I log aiutano a esaminare i problemi. Il registro attività conserva una cronologia ricercabile in Freeform.',
+    'Turning logging off is not recommended. Use Activity Logging with the Minimal recording mode to retain important failures.' => 'Non è consigliabile disattivare i log. Usa il registro attività in modalità Minima per conservare gli errori importanti.',
 ];

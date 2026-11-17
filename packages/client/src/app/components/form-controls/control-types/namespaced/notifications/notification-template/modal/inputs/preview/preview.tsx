@@ -1,7 +1,5 @@
 import { ControlBlock } from "@components/form-controls/control.block";
-import { spacings } from "@ff-client/styles/variables";
 import type { APIError } from "@ff-client/types/api";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
@@ -18,6 +16,8 @@ import {
   HeaderRow,
   Input,
   Label,
+  PreviewActions,
+  PreviewButton,
   PreviewContainer,
   Row,
   Value,
@@ -47,24 +47,18 @@ export const TemplatePreview: FC<InputControl> = (props) => {
     <ControlBlock
       {...props}
       extraContent={
-        <div style={{ display: "flex", gap: spacings.sm }}>
-          <button
-            className={classes(
-              "btn",
-              "small",
-              "submit",
-              isFetching && "disabled",
-            )}
+        <PreviewActions>
+          <PreviewButton
             disabled={isFetching}
             type="button"
             onClick={() => refetch()}
           >
             {translate("Refresh")}
-          </button>
+          </PreviewButton>
 
           <Input
-            className="small"
-            type="text"
+            aria-label={translate("Test email recipient")}
+            type="email"
             placeholder={translate("john@doe.com")}
             value={email || ""}
             onChange={(event) => setEmail(event.target.value)}
@@ -76,13 +70,7 @@ export const TemplatePreview: FC<InputControl> = (props) => {
             data-1p-ignore
           />
 
-          <button
-            className={classes(
-              "btn",
-              "small",
-              sendTest.isPending && "disabled",
-              !email && "disabled",
-            )}
+          <PreviewButton
             disabled={sendTest.isPending || !email}
             type="button"
             onClick={() =>
@@ -93,8 +81,8 @@ export const TemplatePreview: FC<InputControl> = (props) => {
             }
           >
             {translate("Send Test Email")}
-          </button>
-        </div>
+          </PreviewButton>
+        </PreviewActions>
       }
     >
       {isFetching && <TemplatePreviewLoader />}

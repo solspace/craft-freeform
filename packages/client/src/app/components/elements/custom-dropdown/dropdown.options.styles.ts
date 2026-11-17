@@ -149,8 +149,8 @@ export const Item = styled.li`
 
   &.selected {
     > ${Label} {
-      background-color: var(--c-color-neutral-fill-loud);
-      color: var(--c-color-neutral-on-loud);
+      background-color: var(--c-color-accent-fill-quiet);
+      color: var(--c-color-accent-on-quiet);
 
       > ${CheckMark} {
         fill: currentColor;

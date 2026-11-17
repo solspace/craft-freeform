@@ -13,7 +13,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class Table extends BaseCategory
 {
-    #[Label('Use built-in javascript for adding and removing rows')]
+    #[Label('Use Built-in JavaScript for Adding and Removing Rows')]
     #[SetDefaultValue(true)]
     public BoolItem $javascript;
 
@@ -28,15 +28,15 @@ class Table extends BaseCategory
     ])]
     public SelectItem $limitRows;
 
-    #[Label('Minimum number of rows')]
+    #[Label('Minimum Number of Rows')]
     #[Unit('rows')]
     public TextItem $minRows;
 
-    #[Label('Maximum number of rows')]
+    #[Label('Maximum Number of Rows')]
     #[Unit('rows')]
     public TextItem $maxRows;
 
-    #[Label('Exact number of rows')]
+    #[Label('Exact Number of Rows')]
     #[Unit('rows')]
     public TextItem $exactRows;
 
@@ -51,7 +51,7 @@ class Table extends BaseCategory
     #[SetDefaultValue('Remove')]
     public TextItem $removeButtonLabel;
 
-    #[Label('Add Button Markup')]
+    #[Label('Remove Button Markup')]
     public TextItem $removeButtonMarkup;
 
     #[Label('Table Attributes')]

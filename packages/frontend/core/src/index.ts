@@ -94,6 +94,7 @@ export * from "./extensions/registry.js";
 export * from "./number/number.js";
 export * from "./signature/signature.js";
 export * from "./signature/signature-pad.js";
+export * from "./signature/typed-signature.js";
 export * from "./state/form-state.js";
 export * from "./summary/summary.js";
 export * from "./table/table.js";
@@ -147,6 +148,11 @@ export {
 } from "./phone/international-phone.js";
 export * from "./select/searchable-select.js";
 export { getCharacterCount } from "./utils/character-count.js";
+export {
+  fieldAccessibility,
+  fieldId,
+  isGroupedField,
+} from "./utils/field-accessibility.js";
 export {
   mountTextareaAutoGrow,
   type TextareaAutoGrowConfig,

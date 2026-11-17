@@ -20,6 +20,39 @@ const settle = async (): Promise<void> => {
 };
 
 describe("builder history", () => {
+  it("restores the rating limit and default together with one Undo", async () => {
+    const store = makeStore();
+    store.dispatch(
+      fieldActions.set([
+        {
+          uid: "rating",
+          typeClass:
+            "Solspace\\Freeform\\Fields\\Implementations\\Pro\\RatingField",
+          properties: { maxValue: 5, defaultValue: "3" },
+        },
+      ]),
+    );
+    store.dispatch(
+      fieldActions.edit({ uid: "rating", handle: "maxValue", value: 2 }),
+    );
+    await settle();
+    expect(store.getState().layout.fields[0].properties).toMatchObject({
+      maxValue: 2,
+      defaultValue: "",
+    });
+    expect(store.getState().history.undoCount).toBe(1);
+    store.dispatch(historyActions.undo());
+    expect(store.getState().layout.fields[0].properties).toMatchObject({
+      maxValue: 5,
+      defaultValue: "3",
+    });
+    store.dispatch(historyActions.redo());
+    expect(store.getState().layout.fields[0].properties).toMatchObject({
+      maxValue: 2,
+      defaultValue: "",
+    });
+  });
+
   it("restores a deleted page, its rows and nested fields as one step", async () => {
     const store = makeStore();
     store.dispatch(layoutActions.set([{ uid: "layout-1" }]));

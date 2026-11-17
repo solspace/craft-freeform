@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Twig\Extensions;
 
 use Solspace\Freeform\Library\Resources\Craft6BooleanMenu;
+use Solspace\Freeform\Library\Resources\EnvironmentControl;
 use Solspace\Freeform\Variables\FreeformVariable;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -12,7 +13,10 @@ class FreeformGlobalsExtension extends AbstractExtension implements GlobalsInter
 {
     public function getFunctions(): array
     {
-        return [new TwigFunction('freeformBooleanMenu', Craft6BooleanMenu::render(...), ['is_safe' => ['html']])];
+        return [
+            new TwigFunction('freeformBooleanMenu', Craft6BooleanMenu::render(...), ['is_safe' => ['html']]),
+            new TwigFunction('freeformEnvControl', EnvironmentControl::render(...), ['is_safe' => ['html']]),
+        ];
     }
 
     public function getGlobals(): array

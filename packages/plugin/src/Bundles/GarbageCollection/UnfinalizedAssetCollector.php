@@ -36,11 +36,6 @@ class UnfinalizedAssetCollector extends FeatureBundle
             return;
         }
 
-        $purgeAssetsEnabled = $this->settings->getSettingsModel()->purgeAssets;
-        if (!$purgeAssetsEnabled) {
-            return;
-        }
-
         $assetAge = $this->settings->getPurgableUnfinalizedAssetAgeInMinutes();
         if ($assetAge > 0) {
             $this->queueHandler->queueSingleJobInstance(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]));

@@ -48,7 +48,7 @@ class ContentTemplatesTest extends TestCase
         $forms = $this->forms();
         $twig = $this->twig($forms);
         $selection = (object) ['id' => 12, 'dateArchived' => null];
-        $properties = ['formattingTemplate' => 'bootstrap-5/index.twig', 'attributes' => ['class' => 'custom-form']];
+        $properties = ['formattingTemplate' => 'bootstrap-5-light/index.twig', 'attributes' => ['class' => 'custom-form']];
 
         $twig->render('freeform-integrations/ckeditor.twig', [
             'entry' => (object) ['uid' => 'first', 'contactForm' => $selection],
@@ -61,7 +61,7 @@ class ContentTemplatesTest extends TestCase
         ]);
 
         foreach ($forms->calls as [, $actualProperties]) {
-            self::assertSame('bootstrap-5/index.twig', $actualProperties['formattingTemplate']);
+            self::assertSame('bootstrap-5-light/index.twig', $actualProperties['formattingTemplate']);
             self::assertSame('custom-form', $actualProperties['attributes']['class']);
             self::assertArrayHasKey('id', $actualProperties['attributes']);
         }

@@ -10,8 +10,8 @@ trait EnabledByDefaultTrait
 {
     #[Flag(IntegrationInterface::FLAG_GLOBAL_PROPERTY)]
     #[Boolean(
-        label: 'Enabled by default',
-        instructions: 'If enabled, this integration will be enabled by default on all forms.',
+        label: 'Enable on forms by default',
+        instructions: 'Automatically enable this integration on forms. You can disable it for individual forms.',
         order: 0,
     )]
     protected bool $enabledByDefault = true;

@@ -180,11 +180,18 @@ export function mountColorPicker(
   let transparency: HTMLInputElement | undefined,
     inheritance: HTMLInputElement | undefined;
   function toggle(label: string, action: (checked: boolean) => void) {
-    const holder = document.createElement("label");
+    const holder = document.createElement("craft-checkbox");
     holder.className = "ff-color-toggle";
     const input = document.createElement("input");
     input.type = "checkbox";
-    holder.append(input, document.createTextNode(t(label)));
+    input.className = "checkbox";
+    input.slot = "input";
+    input.id = `${popup.id}-${label.toLowerCase().replace(/\W+/g, "-")}`;
+    const caption = document.createElement("label");
+    caption.slot = "label";
+    caption.htmlFor = input.id;
+    caption.textContent = t(label);
+    holder.append(input, caption);
     input.addEventListener("change", () => action(input.checked), { signal });
     row.append(holder);
     return input;

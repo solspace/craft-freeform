@@ -18,6 +18,50 @@ afterEach(() => {
 });
 
 describe("AJAX field error template overrides", () => {
+  it("keeps legends and option labels intact and clears the entire choice group's errors", () => {
+    const { form, freeform } = setup(`
+      <form data-freeform>
+        <fieldset data-field-container="choices" data-field-error-id="choices-error">
+          <legend id="choices-legend">Preferences</legend>
+          <p id="choices-help">Choose your preferences</p>
+          <div><label><input type="checkbox" name="choices[]" value="one" aria-describedby="choices-help">First</label></div>
+          <div><label><input type="checkbox" name="choices[]" value="two" aria-describedby="choices-help">Second</label></div>
+        </fieldset>
+        <div data-field-container="other" data-field-error-id="other-error"><input name="other"></div>
+      </form>
+    `);
+    freeform._renderFieldErrors(
+      { choices: ["Required"], other: ["Required"] },
+      `
+      <form><fieldset data-field-container="choices"><legend class="error-label">Preferences</legend>
+      <ul id="choices-error"><li>Required</li></ul></fieldset></form>
+    `,
+    );
+    const inputs = form.querySelectorAll<HTMLInputElement>(
+      'input[name="choices[]"]',
+    );
+    expect(
+      form.querySelector("legend")?.classList.contains("error-label"),
+    ).toBe(true);
+    for (const input of inputs) {
+      expect(input.getAttribute("aria-invalid")).toBe("true");
+      expect(input.getAttribute("aria-describedby")).toBe(
+        "choices-help choices-error",
+      );
+    }
+    inputs[0].checked = true;
+    inputs[0].dispatchEvent(new Event("change"));
+    for (const input of inputs) {
+      expect(input.hasAttribute("aria-invalid")).toBe(false);
+      expect(input.getAttribute("aria-describedby")).toBe("choices-help");
+    }
+    expect(
+      form.querySelector("legend")?.classList.contains("error-label"),
+    ).toBe(false);
+    expect(form.querySelector("#choices-error")).toBeNull();
+    expect(form.querySelector("#other-error")).not.toBeNull();
+    expect(form.querySelectorAll("fieldset label")).toHaveLength(2);
+  });
   it("keeps search-only address fields hidden and puts errors on the visible lookup until the required components are filled", () => {
     const { form, freeform } = setup(
       '<form data-freeform><div data-field-container="location" data-field-error-id="location-error"><div data-freeform-location="{}"><input name="location[search]" data-freeform-location-search><div data-freeform-location-components hidden><input name="location[line1]" data-location-required><input name="location[city]" data-location-required></div></div></div></form>',

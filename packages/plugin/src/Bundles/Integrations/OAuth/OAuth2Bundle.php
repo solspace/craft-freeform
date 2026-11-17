@@ -86,7 +86,7 @@ class OAuth2Bundle extends FeatureBundle
         $callback = (string) ($event->getPayload()['redirect_uri'] ?? '');
         if (!CallbackOrigin::matches($callback, $origin)) {
             // Do not log query strings, authorization codes, or credentials.
-            Freeform::getInstance()->logger->getLogger('oauth', 'freeform-integrations.log')->error(
+            Freeform::getInstance()->logger->getLogger('oauth', 'integrations')->error(
                 'OAuth2 callback URL does not match the control panel origin',
                 ['integrationId' => $integration->getId(), 'expectedOrigin' => $origin, 'callbackHost' => parse_url($callback, \PHP_URL_HOST)]
             );

@@ -46,7 +46,7 @@ class IntegrationsController extends BaseController
 
             $this->getIntegrationsService()->setConnectionEstablished($integration);
         } catch (\Throwable $e) {
-            $this->getLoggerService()->getLogger('oauth', 'freeform-integrations.log')->error(
+            $this->getLoggerService()->getLogger('oauth', 'integrations')->error(
                 'Integration authorization could not start',
                 ['integrationId' => $id, 'exceptionClass' => $e::class]
             );

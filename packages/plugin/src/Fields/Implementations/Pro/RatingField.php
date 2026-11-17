@@ -16,8 +16,8 @@ use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
-use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -28,12 +28,18 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
     iconPath: __DIR__.'/../Icons/rating.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rating.ejs',
 )]
-class RatingField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface, DefaultValueInterface
+class RatingField extends BaseOptionsField implements GroupedFieldInterface, ExtraFieldInterface, OptionsInterface, DefaultValueInterface
 {
-    use DefaultTextValueTrait;
-
-    public const MIN_VALUE = 3;
+    public const MIN_VALUE = 1;
     public const MAX_VALUE = 10;
+    #[Input\Select(
+        label: 'Default value',
+        instructions: 'Choose a star rating to select initially, or None.',
+        order: 10,
+        emptyOption: 'None',
+        options: [1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10'],
+    )]
+    protected ?string $defaultValue = '';
 
     #[Limitation('props.rating', 'max')]
     #[DefaultValue('props.rating.max')]
@@ -78,7 +84,7 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
             [
                 'handle' => 'container',
                 'label' => 'Container',
-                'previewTag' => 'div',
+                'previewTag' => 'fieldset',
             ],
             [
                 'handle' => 'input',
@@ -88,7 +94,7 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
             [
                 'handle' => 'label',
                 'label' => 'Label',
-                'previewTag' => 'label',
+                'previewTag' => 'legend',
             ],
             [
                 'handle' => 'instructions',
@@ -108,6 +114,13 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
         ]
     )]
     protected FieldAttributesCollection $attributes;
+
+    public function getDefaultValue(): string
+    {
+        $value = $this->defaultValue ?? '';
+
+        return ctype_digit($value) && (int) $value >= 1 && (int) $value <= $this->getMaxValue() ? $value : '';
+    }
 
     public function setValue(mixed $value): FieldInterface
     {
@@ -207,7 +220,7 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
         $output = '';
 
         $maxValue = $this->getMaxValue();
-        for ($i = $maxValue; $i >= 1; --$i) {
+        for ($i = 1; $i <= $maxValue; ++$i) {
             $starId = $this->getIdAttribute().'_star_'.$i;
             $isChecked = (int) $this->getValue() === $i;
 
@@ -222,6 +235,8 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
                 ->clone()
                 ->set('id', $starId)
                 ->replace('value', $i)
+                ->setIfEmpty('aria-label', \Craft::t('freeform', '{count} of {total} stars', ['count' => $i, 'total' => $maxValue]))
+                ->set($this->getRequiredAttribute())
                 ->replace('checked', $isChecked)
             ;
 

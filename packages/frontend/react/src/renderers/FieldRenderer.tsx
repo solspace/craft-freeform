@@ -1,6 +1,10 @@
 "use client";
 
-import type { ManifestFieldDefinition } from "@solspace/freeform-core";
+import {
+  fieldAccessibility,
+  fieldId,
+  type ManifestFieldDefinition,
+} from "@solspace/freeform-core";
 import { joinClassNames } from "../theme/mergeClassNames.js";
 import { resolveThemeClassNames } from "../theme/resolveThemeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
@@ -21,12 +25,26 @@ type FieldRendererProps = {
 };
 
 export function FieldRenderer({
-  field,
+  field: definition,
   form,
   theme,
   renderers,
   allowRawHtml,
 }: FieldRendererProps) {
+  const field = {
+    ...definition,
+    attributes: {
+      ...definition.attributes,
+      input: {
+        ...definition.attributes?.input,
+        id: String(
+          form.getFieldProps(definition.handle).id ??
+            definition.attributes?.input?.id ??
+            `freeform-${definition.handle}`,
+        ),
+      },
+    },
+  };
   const strategy = theme.classNameStrategy ?? "merge";
   const errors = form.fieldErrors[field.handle] ?? [];
   const classNames = resolveThemeClassNames(theme, field, errors.length > 0);
@@ -108,6 +126,7 @@ export function FieldRenderer({
   const renderErrors = () =>
     theme.defaults?.renderErrors !== false ? (
       <components.Errors
+        field={field}
         errors={errors}
         className={classNames.errors}
         errorClassName={classNames.error}
@@ -126,7 +145,16 @@ export function FieldRenderer({
           form={form}
           value={value}
           errors={errors}
-          input={form.getFieldProps(field.handle)}
+          input={{
+            ...form.getFieldProps(field.handle),
+            ...fieldAccessibility(
+              field,
+              errors,
+              theme.defaults?.renderInstructions !== false,
+              theme.defaults?.renderErrors !== false,
+              theme.defaults?.renderLabels !== false,
+            ),
+          }}
           classNames={classNames}
           allowRawHtml={allowRawHtml}
           renderLabel={renderLabel}
@@ -195,7 +223,16 @@ export function FieldRenderer({
         form={form}
         value={value}
         errors={errors}
-        input={form.getFieldProps(field.handle)}
+        input={{
+          ...form.getFieldProps(field.handle),
+          ...fieldAccessibility(
+            field,
+            errors,
+            theme.defaults?.renderInstructions !== false,
+            theme.defaults?.renderErrors !== false,
+            theme.defaults?.renderLabels !== false,
+          ),
+        }}
         classNames={classNames}
         allowRawHtml={allowRawHtml}
         renderLabel={renderLabel}
@@ -204,7 +241,7 @@ export function FieldRenderer({
       />
       {uploadRequirements && (
         <div
-          id={`freeform-${field.handle}-upload-requirements`}
+          id={`${fieldId(field)}-upload-requirements`}
           className={joinClassNames(
             "freeform-upload-requirements",
             classNames.instructions,

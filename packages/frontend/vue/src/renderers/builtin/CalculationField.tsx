@@ -1,5 +1,6 @@
 import {
   evaluateCalculation,
+  fieldId,
   getCalculationConfig,
 } from "@solspace/freeform-core";
 import { defineComponent, shallowRef, watch } from "vue";
@@ -91,7 +92,7 @@ export const CalculationFieldRenderer = defineComponent({
           class={props.classNames.input}
           type="text"
           name={props.field.handle}
-          id={`freeform-${props.field.handle}`}
+          id={fieldId(props.field)}
           value={display}
           readonly
           aria-readonly="true"

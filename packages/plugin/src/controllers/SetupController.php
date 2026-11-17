@@ -176,7 +176,7 @@ class SetupController extends BaseController
                 }
             }
         }
-        if (array_intersect_key($changes, array_flip(['alertNotificationRecipients', 'errorNotificationRecipients', 'clientDigestRecipients', 'clientDigestFrequency'])) && !Freeform::getInstance()->edition()->isAtLeast('lite')) {
+        if (array_intersect_key($changes, array_flip(['errorNotificationRecipients', 'clientDigestRecipients', 'clientDigestFrequency'])) && !Freeform::getInstance()->edition()->isAtLeast('lite')) {
             throw new \InvalidArgumentException('Email alerts and digests require Freeform Lite or Pro.');
         }
     }

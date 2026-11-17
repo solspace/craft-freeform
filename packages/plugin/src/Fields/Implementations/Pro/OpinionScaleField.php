@@ -17,6 +17,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
@@ -29,7 +30,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
     iconPath: __DIR__.'/../Icons/opinion-scale.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/opinion-scale.ejs',
 )]
-class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface, DefaultValueInterface
+class OpinionScaleField extends BaseOptionsField implements GroupedFieldInterface, ExtraFieldInterface, OptionsInterface, DefaultValueInterface
 {
     use DefaultTextValueTrait;
 
@@ -78,7 +79,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             [
                 'handle' => 'container',
                 'label' => 'Container',
-                'previewTag' => 'div',
+                'previewTag' => 'fieldset',
             ],
             [
                 'handle' => 'input',
@@ -98,7 +99,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             [
                 'handle' => 'label',
                 'label' => 'Label',
-                'previewTag' => 'label',
+                'previewTag' => 'legend',
             ],
             [
                 'handle' => 'instructions',
@@ -178,7 +179,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
         $collection = new OptionCollection();
         foreach ($this->getScales() as $scale) {
             $value = $scale->getValue();
-            $label = $scale->getLabel();
+            $label = $this->translateOptionLabel($scale);
 
             $collection->add($value, $label);
         }
@@ -220,7 +221,8 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
 
     protected function getInputHtml(): string
     {
-        if (empty($this->scales)) {
+        $scales = $this->getScales();
+        if (!$scales) {
             return '';
         }
 
@@ -236,8 +238,8 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
         $output = '<div class="opinion-scale">';
 
         $output .= '<ul class="opinion-scale-scales">';
-        foreach ($this->getScales() as $index => $scale) {
-            $label = $scale->getLabel();
+        foreach ($scales as $index => $scale) {
+            $label = $this->translateOptionLabel($scale);
             $value = $scale->getValue();
 
             $label = $label ?: $value;

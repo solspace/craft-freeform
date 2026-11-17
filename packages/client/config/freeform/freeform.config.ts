@@ -26,7 +26,6 @@ type Config = {
     toolbar: string;
     method: TemplateMethod;
   };
-  feed: boolean;
   limits: {
     forms?: number;
     fields?: number;

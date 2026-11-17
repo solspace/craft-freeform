@@ -52,7 +52,7 @@ describe("workflow recommendations", () => {
       plan({ needs: ["external"], queue: "ready" })
         .filter((item) => item.key.startsWith("useQueue"))
         .map((item) => item.key),
-    ).toEqual(["useQueueForIntegrations"]);
+    ).toEqual(["useQueue"]);
   });
   it("preserves custom logging and does not infer data deletion or IP collection changes", () => {
     const result = recommendationsFor(context, {
@@ -96,10 +96,7 @@ describe("workflow recommendations", () => {
   });
   it("selects requested error alerts without inventing recipients and keeps digests optional", () => {
     const result = plan({ needs: ["reliability", "review"] });
-    for (const key of [
-      "alertNotificationRecipients",
-      "errorNotificationRecipients",
-    ]) {
+    for (const key of ["errorNotificationRecipients"]) {
       const item = result.find((item) => item.key === key)!;
       expect(item.optional).toBe(false);
       expect(item.value).toBe("");
@@ -118,11 +115,7 @@ describe("workflow recommendations", () => {
     );
     expect(
       result.some((item) =>
-        [
-          "defaultAiIntegration",
-          "clientDigestRecipients",
-          "alertNotificationRecipients",
-        ].includes(item.key),
+        ["defaultAiIntegration", "clientDigestRecipients"].includes(item.key),
       ),
     ).toBe(false);
   });

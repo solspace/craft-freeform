@@ -77,7 +77,6 @@ class SummaryService extends Component
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);
         $totals->errors = match ($settingsModel->getEffectiveLoggingStyle()) {
             'activity' => $freeform->activity->getErrorCount(),
-            'classic' => $freeform->logger->getErrorLogLineCount(),
             default => 0,
         };
 
@@ -124,21 +123,16 @@ class SummaryService extends Component
         $settings->renderHtmlInComposer = $settingsService->isRenderFormHtmlInCpViews();
         $settings->ajaxEnabledByDefault = $settingsService->isAjaxEnabledByDefault();
         $settings->includeDefaultFormattingTemplates = $settingsModel->defaults->includeSampleTemplates;
-        $settings->removeNewlinesOnExport = $settingsService->isRemoveNewlines();
         $settings->populateValuesFromGet = $settingsService->isFillWithGet();
-        $settings->disableSubmit = $settingsService->isFormSubmitDisable();
         $settings->autoScroll = $settingsService->isAutoScrollToErrors();
         $settings->useIdempotencyKey = $settingsService->isUseIdempotencyKey();
         $settings->csrfRefresh = $settingsModel->csrfRefresh;
         $settings->jsInsertLocation = $settingsModel->scriptInsertLocation;
-        $settings->jsInsertType = $settingsModel->scriptInsertType;
-        $settings->sessionContextType = $settingsModel->sessionContext;
         $settings->purgeSubmissions = (bool) $settingsService->getPurgableSubmissionAgeInDays();
         $settings->purgeInterval = $settingsService->getPurgableSubmissionAgeInDays();
-        $settings->purgeAssets = $settingsModel->purgeAssets;
+        $settings->purgeAssets = $settingsModel->purgableUnfinalizedAssetAgeInMinutes > 0;
         $settings->purgeAssetsInterval = $settingsModel->purgableUnfinalizedAssetAgeInMinutes ?? 1;
         $settings->formattingTemplatesPath = (bool) $settingsModel->formTemplateDirectory;
-        $settings->sendAlertsOnFailedNotifications = (bool) $settingsService->getFailedNotificationRecipients();
         $settings->sendErrorNotifications = $settingsService->isErrorNotificationEnabled();
         $settings->notificationTemplatesPath = (bool) $settingsModel->emailTemplateDirectory;
         $settings->successTemplatesPath = (bool) $settingsModel->successTemplateDirectory;
@@ -152,8 +146,6 @@ class SummaryService extends Component
         $spam->spamFolder = $settingsService->isSpamFolderEnabled();
         $spam->purgeSpam = (bool) $settingsService->getPurgableSpamAgeInDays();
         $spam->purgeInterval = $settingsService->getPurgableSpamAgeInDays();
-        $spam->blockEmail = (bool) $settingsModel->blockedEmails;
-        $spam->blockKeywords = (bool) $settingsModel->blockedKeywords;
         $spam->blockIp = (bool) $settingsModel->blockedIpAddresses;
         $spam->submissionThrottling = (bool) $settingsModel->submissionThrottlingCount;
         $spam->minSubmitTime = (bool) $settingsModel->minimumSubmitTime;
@@ -339,13 +331,8 @@ class SummaryService extends Component
                 $formTagAttributes = true;
             }
 
-            if (
-                $behaviorSettings->showProcessingText
-                || $behaviorSettings->showProcessingSpinner
-                || $behaviorSettings->showProcessingOverlay
-            ) {
-                $loadingIndicators = true;
-            }
+            // Built-in processing feedback is always available in v6.
+            $loadingIndicators = true;
 
             foreach ($form->getLayout()->getFields() as $field) {
                 $fieldTypes[] = $field->getType();

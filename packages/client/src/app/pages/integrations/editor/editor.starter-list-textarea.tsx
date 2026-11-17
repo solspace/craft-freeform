@@ -1,6 +1,7 @@
 import { Control } from "@components/form-controls/control";
 import { TextArea } from "@components/form-controls/control-types/textarea/textarea.styles";
 import type { ControlType } from "@components/form-controls/types";
+import { editorButton } from "@ff-client/styles/craft6";
 import { type Property, PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
 import { useState } from "react";
@@ -14,22 +15,13 @@ const Actions = styled.div`
   gap: var(--c-spacing-sm);
   margin: 0;
   > button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--c-spacing-sm);
+    ${editorButton}
     min-height: var(--c-size-control-sm);
     padding: 4px 8px;
-    border: 1px solid var(--c-color-neutral-border-quiet);
-    border-radius: var(--c-radius-sm);
-    background: var(--c-color-neutral-fill-quiet);
-    color: var(--c-color-neutral-on-quiet);
     box-shadow: none;
     font-size: 12px;
     line-height: 18px;
     white-space: nowrap;
-    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-normal); }
-    &:disabled { opacity: .5; }
   }
   svg { display: block; width: 14px; height: 14px; flex: 0 0 14px; }
 `;
@@ -92,7 +84,6 @@ export function StarterListTextarea({
       <Actions>
         <button
           type="button"
-          className="btn small"
           disabled={disabled || !next.added}
           title={translate("Adds missing entries without replacing your list.")}
           onClick={() => {
@@ -117,7 +108,6 @@ export function StarterListTextarea({
         {canUndo && (
           <button
             type="button"
-            className="btn small"
             disabled={disabled}
             onClick={() => {
               updateValue(insertion.before);

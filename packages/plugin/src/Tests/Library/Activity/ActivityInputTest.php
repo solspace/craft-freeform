@@ -13,10 +13,73 @@ class ActivityInputTest extends TestCase
     public function testLoggingStylesAreExplicitAndCannotBeCoerced(): void
     {
         self::assertSame('activity', ActivityInput::loggingStyle('activity'));
-        self::assertSame('classic', ActivityInput::loggingStyle('classic'));
         self::assertSame('none', ActivityInput::loggingStyle('none'));
         $this->expectException(\InvalidArgumentException::class);
-        ActivityInput::loggingStyle(['classic']);
+        ActivityInput::loggingStyle('classic');
+    }
+
+    #[TestWith(['minimal'])]
+    #[TestWith(['standard'])]
+    #[TestWith(['detailed'])]
+    public function testUnifiedChoiceEnablesItsModeRegardlessOfRememberedMode(string $mode): void
+    {
+        self::assertSame(
+            ['loggingStyle' => 'activity', 'activityMode' => $mode],
+            ActivityInput::recordingSettings(['activityLogging' => $mode, 'activityMode' => 'custom'], 'none', 'custom'),
+        );
+    }
+
+    public function testOffRetainsTheLastSelectedModeAndUnsavedCustomChoices(): void
+    {
+        $events = ['error' => '', 'submission' => '1'];
+        self::assertSame(
+            ['loggingStyle' => 'none', 'activityMode' => 'custom', 'activityEvents' => $events],
+            ActivityInput::recordingSettings(['activityLogging' => 'off', 'activityMode' => 'custom', 'activityEvents' => $events], 'activity', 'standard'),
+        );
+    }
+
+    public function testOffWithoutSubmittedPreferencesPreservesSavedModeAndEvents(): void
+    {
+        $settings = ActivityInput::recordingSettings(['activityLogging' => 'off'], 'activity', 'custom');
+        self::assertSame(['loggingStyle' => 'none', 'activityMode' => 'custom'], $settings);
+        self::assertSame(['error' => false], array_replace(['activityEvents' => ['error' => false]], $settings)['activityEvents']);
+    }
+
+    public function testCustomAcceptsExplicitlyDisabledEventChoices(): void
+    {
+        $events = ['error' => '', 'submission' => ''];
+        self::assertSame(
+            ['loggingStyle' => 'activity', 'activityMode' => 'custom', 'activityEvents' => $events],
+            ActivityInput::recordingSettings(['activityLogging' => 'custom', 'activityEvents' => $events], 'none', 'standard'),
+        );
+    }
+
+    public function testLegacyRecordingSubmissionsRemainCompatible(): void
+    {
+        self::assertSame(
+            ['loggingStyle' => 'none', 'activityMode' => 'detailed'],
+            ActivityInput::recordingSettings(['loggingStyle' => 'none', 'activityMode' => 'detailed'], 'activity', 'standard'),
+        );
+        self::assertSame(
+            ['loggingStyle' => 'activity', 'activityMode' => 'minimal'],
+            ActivityInput::recordingSettings(['activityMode' => 'minimal'], 'activity', 'standard'),
+        );
+    }
+
+    #[TestWith([['activityLogging' => ['off']]])]
+    #[TestWith([['activityLogging' => 'unknown']])]
+    #[TestWith([['activityLogging' => null]])]
+    #[TestWith([['activityLogging' => 'off', 'activityMode' => ['custom']]])]
+    #[TestWith([['activityLogging' => 'off', 'activityMode' => 'unknown']])]
+    #[TestWith([['activityLogging' => 'custom']])]
+    #[TestWith([['activityLogging' => 'custom', 'activityEvents' => 'false']])]
+    #[TestWith([['activityLogging' => 'off', 'activityMode' => 'custom', 'activityEvents' => 'false']])]
+    #[TestWith([['loggingStyle' => 'classic', 'activityMode' => 'minimal']])]
+    #[TestWith([['loggingStyle' => 'activity']])]
+    public function testMalformedRecordingSubmissionsAreRejected(array $params): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        ActivityInput::recordingSettings($params, 'activity', 'standard');
     }
 
     public function testAllChoicesNormalizeToAnUnfilteredQuery(): void
@@ -59,28 +122,5 @@ class ActivityInputTest extends TestCase
         self::assertSame(80, mb_strlen($filters['q']));
         self::assertSame(42, $filters['formId']);
         self::assertSame(0, ActivityInput::id(''));
-    }
-
-    #[TestWith(['0', 'error'])]
-    #[TestWith(['1', 'info'])]
-    #[TestWith(['$FREEFORM_TECHNICAL_LOGGING', 'debug'])]
-    public function testTechnicalLoggingPreservesSeparateFileSettings(string $enabled, string $level): void
-    {
-        $settings = ['technicalFileLogging' => $enabled, 'loggingLevel' => $level];
-        self::assertSame(['loggingLevel' => $level], ActivityInput::technicalLogging($settings + ['activityEnabled' => '0', 'pluginName' => 'Unrelated']));
-    }
-
-    public function testOmittedTechnicalSettingsDoNotOverwriteSavedValues(): void
-    {
-        self::assertSame([], ActivityInput::technicalLogging(['activityEnabled' => '1']));
-        self::assertSame(['loggingLevel' => 'error'], ActivityInput::technicalLogging(['loggingLevel' => 'error']));
-    }
-
-    #[TestWith([['loggingLevel' => ['debug']]])]
-    #[TestWith([['loggingLevel' => 'unknown']])]
-    public function testMalformedTechnicalSettingsAreRejected(array $settings): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        ActivityInput::technicalLogging($settings);
     }
 }

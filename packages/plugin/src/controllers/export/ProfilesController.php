@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
+use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -122,6 +123,9 @@ class ProfilesController extends BaseController
 
         if (\array_key_exists('allowedExportTypes', $post) && !\is_array($post['allowedExportTypes'])) {
             $post['allowedExportTypes'] = [];
+        }
+        if (\array_key_exists('formatting', $post) && !\is_array($post['formatting'])) {
+            throw new BadRequestHttpException(Freeform::t('Choose valid export formatting options.'));
         }
         $profile->setAttributes($post);
 

@@ -10,7 +10,6 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
-use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\MailerService;
@@ -40,16 +39,13 @@ class MailerActivityTest extends TestCase
         $activity->method('record')->willReturnCallback(static function ($event, $formId, $submissionId, $metadata) use (&$events) {
             $events[] = [$event, $formId, $submissionId, $metadata];
         });
-        $edition = $this->createStub(EditionHelper::class);
-        $edition->method('isBelow')->willReturn(true);
-        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get', 'edition'])->getMock();
+        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get'])->getMock();
         app()->instance(Freeform::class, $plugin);
         if ('unavailable' === $scenario) {
             $plugin->method('__get')->with('activity')->willThrowException(new \RuntimeException('Diagnostics unavailable'));
         } else {
             $plugin->method('__get')->with('activity')->willReturn($activity);
         }
-        $plugin->method('edition')->willReturn($edition);
         \Yii::$app = (object) ['loadedModules' => [Freeform::class => $plugin]];
         $view = new class {
             public string $mode = 'cp';
@@ -88,9 +84,9 @@ class MailerActivityTest extends TestCase
             $message = $this->createStub(Message::class);
             $message->method('setTo')->willReturnSelf();
             if ('render' === $scenario) {
-                $mailer->method('compileMessage')->willThrowException(new \RuntimeException('Template failed: password=SECRET'));
+                $mailer->expects(self::once())->method('compileMessage')->willThrowException(new \RuntimeException('Template failed: password=SECRET'));
             } else {
-                $mailer->method('compileMessage')->willReturn($message);
+                $mailer->expects(\in_array($scenario, ['missing', 'recipients'], true) ? self::never() : self::once())->method('compileMessage')->willReturn($message);
             }
             foreach (['before' => MailerService::EVENT_BEFORE_SEND, 'after' => MailerService::EVENT_AFTER_SEND] as $stage => $event) {
                 if ($scenario === $stage) {

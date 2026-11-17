@@ -1,5 +1,6 @@
 import {
   evaluateCalculation,
+  fieldId,
   getCalculationConfig,
 } from "@solspace/freeform-core";
 import { useEffect, useRef } from "react";
@@ -79,7 +80,7 @@ export function CalculationFieldRenderer(props: ReactFieldRendererProps) {
       className={classNames.input}
       type="text"
       name={field.handle}
-      id={`freeform-${field.handle}`}
+      id={fieldId(field)}
       value={display}
       readOnly
       aria-readonly="true"

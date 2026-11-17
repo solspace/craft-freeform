@@ -22,6 +22,7 @@ export function MultipleSelectFieldRenderer(props: VueFieldRendererProps) {
       disabled={input.disabled}
       aria-invalid={input["aria-invalid"]}
       aria-describedby={input["aria-describedby"]}
+      aria-labelledby={input["aria-labelledby"]}
       onChange={(event) => {
         const next = Array.from(event.target.selectedOptions).map(
           (option) => option.value,

@@ -10,6 +10,7 @@ use yii\BaseYii;
 class ReservedWord implements PropertyValidatorInterface
 {
     private array $reservedWords = [
+        'freeform-id-prefix',
         'ancestors',
         'assets',
         'archived',

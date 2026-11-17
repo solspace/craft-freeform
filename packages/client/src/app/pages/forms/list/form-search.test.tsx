@@ -79,7 +79,9 @@ vi.mock("./views/grid/card/card.widget", async (importOriginal) => ({
     <li data-widget={widget.uid}>{widget.title}</li>
   ),
 }));
-vi.mock("./notices/notices", () => ({ Notices: (): null => null }));
+vi.mock("./activity-alerts/activity-alerts", () => ({
+  ActivityAlerts: (): null => null,
+}));
 vi.mock("./views/grid/grid.empty", () => ({
   GridEmpty: () => <p>Create your first form</p>,
 }));

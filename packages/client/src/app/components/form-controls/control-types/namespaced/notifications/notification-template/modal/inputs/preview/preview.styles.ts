@@ -1,3 +1,4 @@
+import { editorButton, textControl } from "@ff-client/styles/craft6";
 import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -67,14 +68,25 @@ export const Body = styled.div`
   padding: ${spacings.md} ${spacings.xl};
 `;
 
-export const Input = styled.input`
-  box-sizing: border-box;
-  height: 22px;
-  padding: 0 ${spacings.xs};
-  color: ${colors.text};
-  background: ${colors.inputBackground};
-  border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
-  border-radius: 3px;
+export const PreviewActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--c-spacing-sm);
+  min-width: 0;
+`;
 
-  font-size: 12px;
+export const PreviewButton = styled.button`
+  ${editorButton};
+  flex: none;
+`;
+
+export const Input = styled.input`
+  ${textControl};
+  height: var(--c-size-control-md);
+  width: 16rem;
+  max-width: 100%;
+  min-width: 0;
+  flex: 1 1 12rem;
 `;

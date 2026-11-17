@@ -40,7 +40,6 @@ class FreeformConfig implements \JsonSerializable
                 'method' => $settingsModel->emailTemplateMethod,
                 'allowFileTemplateEdit' => $settingsModel->allowFileTemplateEdit,
             ],
-            'feed' => $settings->isDisplayFeed(),
             'limits' => [
                 'forms' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FORMS,
                 'fields' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FIELDS,
@@ -60,7 +59,7 @@ class FreeformConfig implements \JsonSerializable
                     'canDelete' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_DELETE),
                     'canManageHtmlEmbeds' => PermissionHelper::isAdmin(),
                     'canUseSetupGuide' => $settings->canUseSetupGuide(),
-                    'canViewActivity' => ActivityHealthService::canAccess($settingsModel->getEffectiveLoggingStyle()),
+                    'canViewActivity' => ActivityHealthService::canAccess(),
                 ],
                 'tinymce' => [
                     'stylesPath' => \Craft::$app->assetManager->getPublishedUrl('@freeform/Resources/css/cp/tinymce/style.css', true),

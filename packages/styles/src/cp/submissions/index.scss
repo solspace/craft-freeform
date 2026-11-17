@@ -755,7 +755,6 @@ craft-button:has(+ div > [data-freeform-native-index]) {
   .btn { display: inline-flex; align-items: center; gap: var(--c-spacing-md); }
   .btn svg { display: block; inline-size: 16px; block-size: 16px; flex: none; }
 }
-.ff-native-export-dialog,
 .ff-native-notification-dialog {
   box-sizing: border-box;
   inline-size: min(32rem, calc(100vw - 32px));
@@ -767,21 +766,60 @@ craft-button:has(+ div > [data-freeform-native-index]) {
   color: var(--c-text-default);
   box-shadow: var(--c-modal-shadow);
   &::backdrop { background: var(--c-modal-backdrop-fill, #0008); }
+
+}
+
+.ff-quick-export-slideout {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  container-type: inline-size;
+
   #export-csv-modal {
-    .header, .footer { padding: var(--c-spacing-lg); }
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-block-size: 0;
+    block-size: 100%;
+    inline-size: 100%;
+    color: var(--c-text-default);
+    background: var(--c-surface-default);
+
+    .header, .footer { flex: none; padding: var(--c-spacing-lg); }
+    .header { display: flex; align-items: center; justify-content: space-between; gap: var(--c-spacing-md); border-block-end: 1px solid var(--c-color-neutral-border-quiet); }
     h1 { margin: 0; font-size: var(--c-text-lg); }
-    .body { box-sizing: border-box; inline-size: 100%; block-size: auto; max-block-size: 60dvh; padding: var(--c-spacing-lg); overflow: auto; }
-    .header { border-block-end: 1px solid var(--c-color-neutral-border-quiet); }
+    .body { flex: 1; min-block-size: 0; overflow: auto; padding: var(--c-spacing-lg); }
     .footer { border-block-start: 1px solid var(--c-color-neutral-border-quiet); }
     .buttons { display: flex; justify-content: end; align-items: center; gap: var(--c-spacing-md); }
     .field { margin-block: 0 var(--c-spacing-lg); }
-    .checkbox-list-item { margin-block: var(--c-spacing-md); }
-    .checkbox-list-item .move { display: flex; align-items: center; gap: var(--c-spacing-md); }
-    .checkbox-list-item input[type=checkbox] { appearance: auto; inline-size: 16px; block-size: 16px; margin: 0; accent-color: var(--c-color-accent-fill-loud); }
-    .checkbox-list-item label { padding: 0; &::before, &::after { display: none; } }
-    [hidden] { display: none !important; }
-    craft-select { inline-size: 100%; }
-    .heading { margin-block-end: var(--c-spacing-sm); }
+    craft-select, .input, .select, select { inline-size: 100%; min-inline-size: 0; max-inline-size: 100%; }
+    [hidden], .hidden { display: none !important; }
+    .ff-export-source-fields { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--c-spacing-lg); }
+    .ff-export-source-fields > .field, .ff-export-source-fields > craft-field { margin: 0; min-inline-size: 0; }
+    .form-field-list { margin-block-start: var(--c-spacing-xl, 32px); }
+    .ff-export-fields-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--c-spacing-sm); }
+    .ff-export-fields-heading h2 { margin: 0; font-size: var(--c-text-base, 1rem); }
+    .ff-export-selection-actions { display: flex; align-items: center; gap: var(--c-spacing-sm); }
+    .ff-export-field-count { margin-block: var(--c-spacing-xs, 4px) var(--c-spacing-md); font-size: var(--c-text-sm); }
+    .checkbox-select { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--c-spacing-sm) var(--c-spacing-lg); }
+    .checkbox-list-item { display: flex; align-items: center; gap: var(--c-spacing-sm); min-block-size: 2rem; min-inline-size: 0; }
+    .checkbox-list-item input[type=checkbox] { appearance: auto; flex: none; inline-size: 16px; block-size: 16px; margin: 0; accent-color: var(--c-color-accent-fill-loud); }
+    .checkbox-list-item label { margin: 0; padding: 0; overflow-wrap: anywhere; &::before, &::after { display: none; } }
+    .ff-export-formatting-options { margin-block-start: var(--c-spacing-lg); padding-block-start: var(--c-spacing-lg); border-block-start: 1px solid var(--c-color-neutral-border-quiet); }
+    .ff-export-formatting-options > h2 { margin: 0; font-size: var(--c-text-base, 1rem); font-weight: 600; }
+    .ff-export-formatting { margin-block: var(--c-spacing-lg); }
+    .ff-export-formatting-options > .field:last-child { margin-block-end: 0; }
+  }
+
+  @container (max-width: 32rem) {
+    #export-csv-modal .ff-export-source-fields,
+    #export-csv-modal .ff-export-formatting-fields { grid-template-columns: 1fr; }
+  }
+  @container (max-width: 22rem) {
+    #export-csv-modal .checkbox-select { grid-template-columns: 1fr; }
+  }
+  @media (pointer: coarse) {
+    #export-csv-modal .checkbox-list-item { min-block-size: 44px; }
   }
 }
 
@@ -804,8 +842,18 @@ craft-button:has(+ div > [data-freeform-native-index]) {
     .field { margin-block: 0 var(--c-spacing-lg); }
     craft-select { inline-size: 100%; }
     .notification-mode-option { align-items: start; }
-    .recipient-option { padding: 12px 14px; }
-    .recipient-option label { padding: 0; inline-size: 100%; }
+    .recipient-option {
+      padding: 12px 14px;
+      background: var(--c-surface-default);
+      &:hover, &:has(input:checked) { background: var(--c-color-neutral-fill-quiet); }
+    }
+    .recipient-option label,
+    .recipient-option label:hover,
+    .recipient-option input:checked + label {
+      padding: 0;
+      inline-size: 100%;
+      background: transparent;
+    }
     input[type=radio] { accent-color: var(--c-color-accent-fill-loud); }
     .checkbox label::before, .checkbox label::after { display: none; }
     .checkbox label { padding-inline-start: 0; }

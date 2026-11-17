@@ -1,6 +1,8 @@
 import type { ReactFieldRendererProps } from "../../types.js";
+import { inputProps } from "./inputProps.js";
 
 export function CardsFieldRenderer(props: ReactFieldRendererProps) {
+  const input = inputProps(props);
   const cards =
     ((props.field.frontend?.config?.cards as Array<{
       label: string;
@@ -57,6 +59,9 @@ export function CardsFieldRenderer(props: ReactFieldRendererProps) {
               name={`${props.field.handle}${singleSelect ? "" : "[]"}`}
               value={card.value}
               checked={checked}
+              aria-invalid={input["aria-invalid"]}
+              aria-describedby={input["aria-describedby"]}
+              required={singleSelect && props.field.required}
               disabled={!props.form.isFieldEnabled(props.field.handle)}
               onChange={(event) => {
                 if (singleSelect) {

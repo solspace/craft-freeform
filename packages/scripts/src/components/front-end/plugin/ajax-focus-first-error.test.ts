@@ -43,9 +43,25 @@ afterEach(() => {
 });
 
 describe("AJAX focus first error", () => {
+  it("focuses a real option inside the first invalid fieldset", async () => {
+    const { form, freeform } = setup(`
+      <form data-freeform data-ajax>
+        <fieldset data-field-container="choices" data-field-error-id="choices-error">
+          <legend>Preferences</legend>
+          <label><input type="radio" name="choices" value="one">First</label>
+          <label><input type="radio" name="choices" value="two">Second</label>
+        </fieldset>
+      </form>
+    `);
+    await submitWithErrors(freeform, { choices: ["Required"] });
+    expect(document.activeElement).toBe(
+      form.querySelector('input[value="one"]'),
+    );
+    expect(form.querySelector("legend")?.textContent).toBe("Preferences");
+  });
   it("focuses the first visible invalid field in form order and skips scrolling to the top", async () => {
     const { form, freeform } = setup(`
-      <form data-freeform data-ajax data-focus-first-error data-auto-scroll>
+      <form data-freeform data-ajax data-auto-scroll>
         <div data-field-container="hidden"><input name="hidden" hidden></div>
         <div data-field-container="concealed" style="display:none"><input name="concealed"></div>
         <div data-field-container="disabled"><input name="disabled" disabled></div>
@@ -72,7 +88,7 @@ describe("AJAX focus first error", () => {
 
   it("focuses an invalid field when another field is named hidden", async () => {
     const { form, freeform } = setup(`
-      <form data-freeform data-ajax data-focus-first-error data-auto-scroll>
+      <form data-freeform data-ajax data-auto-scroll>
         <div data-field-container="hidden"><input id="form-input-hidden" name="hidden" type="hidden"></div>
         <div data-field-container="confirm"><input name="confirm"></div>
       </form>
@@ -92,7 +108,7 @@ describe("AJAX focus first error", () => {
 
   it("focuses a form-level error banner when there are no field errors", async () => {
     const { form, freeform } = setup(
-      '<form data-freeform data-ajax data-focus-first-error data-error-message="Try again"><input name="email"></form>',
+      '<form data-freeform data-ajax data-error-message="Try again"><input name="email"></form>',
     );
 
     await submitWithErrors(freeform, {}, ["Form could not be submitted"]);
@@ -108,7 +124,7 @@ describe("AJAX focus first error", () => {
 
   it("focuses the drag-and-drop upload control when it has a field error", async () => {
     const { form, freeform } = setup(
-      '<form data-freeform data-ajax data-focus-first-error><div data-field-container="files"><button type="button" data-freeform-file-upload="files">Upload files</button></div></form>',
+      '<form data-freeform data-ajax><div data-field-container="files"><button type="button" data-freeform-file-upload="files">Upload files</button></div></form>',
     );
 
     await submitWithErrors(freeform, { files: ["Upload a file"] });
@@ -122,7 +138,7 @@ describe("AJAX focus first error", () => {
 
   it("uses rendered field errors when custom markup differs from the response keys", async () => {
     const { form, freeform } = setup(
-      '<form data-freeform data-ajax data-focus-first-error data-auto-scroll><div data-field-container="confirm"><input name="confirm"></div><div data-field-container="message"><textarea name="message"></textarea></div></form>',
+      '<form data-freeform data-ajax data-auto-scroll><div data-field-container="confirm"><input name="confirm"></div><div data-field-container="message"><textarea name="message"></textarea></div></form>',
     );
     const scroll = vi.spyOn(freeform, "_scrollToForm");
     form.addEventListener("freeform-render-field-errors", (event) => {
@@ -147,7 +163,7 @@ describe("AJAX focus first error", () => {
   it("focuses a server-rendered field error after a full-page submission", () => {
     vi.useFakeTimers();
     document.body.innerHTML =
-      '<form data-freeform data-focus-first-error data-scroll-to-anchor><div data-freeform-error-banner>Try again</div><div data-field-container="name"><input name="name"></div><div data-field-container="confirm"><input name="confirm" aria-invalid="true"></div></form>';
+      '<form data-freeform data-scroll-to-anchor><div data-freeform-error-banner>Try again</div><div data-field-container="name"><input name="name"></div><div data-field-container="confirm"><input name="confirm" aria-invalid="true"></div></form>';
     const form = document.querySelector<HTMLFormElement>("form")!;
     const freeform = new Freeform(form);
     freeform._handlers = [];
@@ -161,7 +177,7 @@ describe("AJAX focus first error", () => {
 
   it("focuses the server-rendered banner when only the form has errors", () => {
     const { form } = setup(
-      '<form data-freeform data-focus-first-error><div data-freeform-error-banner>Try again</div><input name="name"></form>',
+      '<form data-freeform><div data-freeform-error-banner>Try again</div><input name="name"></form>',
     );
 
     expect(document.activeElement).toBe(
@@ -169,7 +185,7 @@ describe("AJAX focus first error", () => {
     );
   });
 
-  it("preserves the existing scroll behavior when the setting is off", async () => {
+  it("focuses errors automatically even without scrolling enabled", async () => {
     const { form, freeform } = setup(
       '<form data-freeform data-ajax data-auto-scroll><div data-field-container="name"><input name="name"></div></form>',
     );
@@ -177,7 +193,7 @@ describe("AJAX focus first error", () => {
 
     await submitWithErrors(freeform, { name: ["Required"] });
 
-    expect(scroll).toHaveBeenCalledOnce();
-    expect(document.activeElement).not.toBe(form.querySelector("input"));
+    expect(scroll).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(form.querySelector("input"));
   });
 });

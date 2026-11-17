@@ -250,7 +250,7 @@ function createPicker(
       explicit === "dark" ||
       (explicit !== "light" &&
         !!input.closest(
-          '[data-freeform-basic-dark],[data-freeform-conversational],[data-freeform-bootstrap-dark],[data-freeform-tailwind-dark],[data-theme="dark"],[data-bs-theme="dark"]',
+          '[data-freeform-dark],[data-freeform-bootstrap-dark],[data-theme="dark"],[data-bs-theme="dark"]',
         ));
     popup.dataset.theme = dark ? "dark" : "light";
     popup.style.fontFamily = win.getComputedStyle(input).fontFamily;

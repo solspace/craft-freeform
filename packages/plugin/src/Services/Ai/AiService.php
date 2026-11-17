@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services\Ai;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
@@ -43,16 +44,28 @@ class AiService extends BaseService
 
         $form->valuesFromArray($postedData);
 
+        if ($submission) {
+            $this->processAiFields($form, $submission);
+        }
+    }
+
+    public function processAiFields(Form $form, Submission $submission): void
+    {
         $fields = $form->getLayout()->getFields()->getList(AiField::class);
         foreach ($fields as $field) {
             $integration = $field->getIntegration();
+            if (!$integration || !$integration->isEnabled()) {
+                continue;
+            }
             $result = $this->processAiField($form, $integration, $field, 6);
 
             if (null !== $result && '' !== $result) {
                 $submission->setFormFieldValues([$field->getHandle() => $result], false);
                 $form->setFieldValues([$field->getHandle() => $result]);
 
-                \Craft::$app->elements->saveElement($submission, false, false, false);
+                if ($submission->id && !\Craft::$app->elements->saveElement($submission, false, false, false)) {
+                    throw new \RuntimeException('Unable to save AI field results before submission processing.');
+                }
             }
         }
     }
@@ -77,7 +90,7 @@ class AiService extends BaseService
                 ]
             );
 
-            return null;
+            throw $e;
         }
     }
 

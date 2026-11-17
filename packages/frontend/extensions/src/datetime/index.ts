@@ -3,12 +3,11 @@ import type {
   FreeformExtension,
   ManifestFieldDefinition,
 } from "@solspace/freeform-core";
-import { mountDateTimePicker, parseDateTime } from "@solspace/freeform-core";
-import { loadScriptOnce } from "../captchas/shared.js";
+import { mountDateTimePicker } from "@solspace/freeform-core";
 import { PACKAGE_VERSION } from "../version.js";
 
 type DatetimeConfig = {
-  picker?: "freeform" | "flatpickr" | "browser" | "none";
+  picker?: "freeform" | "browser" | "none";
   minuteStep?: number;
   labels?: NonNullable<Parameters<typeof mountDateTimePicker>[1]>["labels"];
   dateTimeType?: string;
@@ -16,7 +15,6 @@ type DatetimeConfig = {
   useDatepicker?: boolean;
   locale?: string | null;
   format?: string;
-  datepickerFormat?: string;
   nativeInputType?: string;
   clock24h?: boolean;
   pickerMinDate?: string | null;
@@ -31,22 +29,6 @@ type DatetimeConfig = {
   enableDate?: boolean;
 };
 
-type FlatpickrInstance = {
-  destroy: () => void;
-  setDate: (date: string | Date, triggerChange?: boolean) => void;
-};
-
-type FlatpickrFn = (
-  element: HTMLElement,
-  options: Record<string, unknown>,
-) => FlatpickrInstance;
-
-declare global {
-  interface Window {
-    flatpickr?: FlatpickrFn;
-  }
-}
-
 function getConfig(field: ManifestFieldDefinition): DatetimeConfig {
   return (field.frontend?.config ?? {}) as DatetimeConfig;
 }
@@ -59,35 +41,6 @@ function supportsDatetime(field: ManifestFieldDefinition): boolean {
   );
 }
 
-async function ensureFlatpickr(locale?: string | null): Promise<FlatpickrFn> {
-  if (!document.getElementById("ff-flatpickr-css")) {
-    const link = document.createElement("link");
-    link.id = "ff-flatpickr-css";
-    link.rel = "stylesheet";
-    link.href =
-      "https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css";
-    document.head.appendChild(link);
-  }
-
-  await loadScriptOnce(
-    "https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js",
-    "ff-flatpickr-script",
-  );
-
-  if (locale && locale !== "default" && locale !== "en") {
-    await loadScriptOnce(
-      `https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`,
-      `ff-flatpickr-locale-${locale}`,
-    ).catch(() => undefined);
-  }
-
-  if (!window.flatpickr) {
-    throw new Error("Flatpickr failed to initialize.");
-  }
-
-  return window.flatpickr;
-}
-
 export function createDatetimeExtension(): FreeformExtension {
   return {
     name: "datetime",
@@ -96,7 +49,7 @@ export function createDatetimeExtension(): FreeformExtension {
     supports: supportsDatetime,
 
     async mount(context: FieldMountContext) {
-      const { field, element, setValue, value } = context;
+      const { field, element, setValue } = context;
       if (!supportsDatetime(field)) {
         return;
       }
@@ -121,7 +74,14 @@ export function createDatetimeExtension(): FreeformExtension {
         return;
       }
 
-      if (config.picker === "freeform") {
+      if (
+        config.picker === "none" ||
+        (!config.picker && config.useDatepicker === false)
+      ) {
+        return;
+      }
+
+      {
         const controller = mountDateTimePicker(
           input,
           {
@@ -145,47 +105,6 @@ export function createDatetimeExtension(): FreeformExtension {
         );
         return () => controller.destroy();
       }
-      if (
-        config.picker === "none" ||
-        (!config.picker && !config.useDatepicker)
-      ) {
-        return;
-      }
-
-      const flatpickr = await ensureFlatpickr(config.locale);
-      const locale =
-        config.locale && config.locale !== "default" && config.locale !== "en"
-          ? config.locale
-          : undefined;
-      const instance = flatpickr(input, {
-        allowInput: true,
-        disableMobile: true,
-        dateFormat: config.datepickerFormat || config.format || "Y-m-d H:i",
-        enableTime:
-          config.enableTime !== false && config.dateTimeType !== "date",
-        noCalendar:
-          config.enableDate === false || config.dateTimeType === "time",
-        time_24hr: Boolean(config.clock24h),
-        minDate: config.minDate
-          ? parseDateTime(config.minDate, "Y-m-d\\TH:i:s") ||
-            parseDateTime(config.minDate, "Y-m-d") ||
-            config.minDate
-          : undefined,
-        maxDate: config.maxDate
-          ? parseDateTime(config.maxDate, "Y-m-d\\TH:i:s") ||
-            parseDateTime(config.maxDate, "Y-m-d") ||
-            config.maxDate
-          : undefined,
-        ...(locale ? { locale } : {}),
-        defaultDate: typeof value === "string" && value ? value : undefined,
-        onChange: (_selected: Date[], dateStr: string) => {
-          setValue(dateStr);
-        },
-      });
-
-      return () => {
-        instance.destroy();
-      };
     },
   };
 }

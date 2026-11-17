@@ -2,6 +2,14 @@ import { dropdownControl } from "@ff-client/styles/craft6";
 import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
+export const SettingsPage = styled.div`
+  // Craft's content surface already provides the settings page inset.
+  body.cp-legacy-screen #freeform-client-app & .freeform-settings-layout > #header-container,
+  body.cp-legacy-screen #freeform-client-app & .freeform-settings-layout #content {
+    padding-inline: 0;
+  }
+`;
+
 export const GroupWrapper = styled.div`
   max-width: 1100px;
   padding-inline: var(--c-spacing-lg);

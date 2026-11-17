@@ -51,26 +51,45 @@ class ActivityInput
         return \in_array($value, [true, 1, '1', 'true'], true) ? '1' : '0';
     }
 
-    public static function technicalLogging(array $params): array
-    {
-        $settings = [];
-        if (\array_key_exists('loggingLevel', $params)) {
-            if (!\in_array($params['loggingLevel'], ['error', 'info', 'debug'], true)) {
-                throw new \InvalidArgumentException('Invalid technical file logging level.');
-            }
-            $settings['loggingLevel'] = $params['loggingLevel'];
-        }
-
-        return $settings;
-    }
-
     public static function loggingStyle(mixed $value): string
     {
-        if (!\in_array($value, ['activity', 'classic', 'none'], true)) {
+        if (!\in_array($value, ['activity', 'none'], true)) {
             throw new \InvalidArgumentException('Invalid logging style.');
         }
 
         return $value;
+    }
+
+    public static function recordingSettings(array $params, string $savedStyle, string $savedMode): array
+    {
+        if (\array_key_exists('activityLogging', $params)) {
+            $choice = $params['activityLogging'];
+            if (!\in_array($choice, ['off', ...ActivityPolicy::MODES], true)) {
+                throw new \InvalidArgumentException('Invalid activity logging setting.');
+            }
+            $style = 'off' === $choice ? 'none' : 'activity';
+            $mode = 'off' === $choice ? ($params['activityMode'] ?? $savedMode) : $choice;
+        } else {
+            $style = self::loggingStyle($params['loggingStyle'] ?? $savedStyle);
+            $mode = $params['activityMode'] ?? null;
+        }
+        if (!\in_array($mode, ActivityPolicy::MODES, true)) {
+            throw new \InvalidArgumentException('Invalid activity mode.');
+        }
+
+        $settings = ['loggingStyle' => $style, 'activityMode' => $mode];
+        if ('custom' === $mode) {
+            if (\array_key_exists('activityEvents', $params)) {
+                if (!\is_array($params['activityEvents'])) {
+                    throw new \InvalidArgumentException('Invalid activity event settings.');
+                }
+                $settings['activityEvents'] = $params['activityEvents'];
+            } elseif ('none' !== $style) {
+                throw new \InvalidArgumentException('Invalid activity event settings.');
+            }
+        }
+
+        return $settings;
     }
 
     private static function text(mixed $value): string

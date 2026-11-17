@@ -20,6 +20,8 @@ import {
   LocationRequiredComponents,
 } from "./location-integration";
 
+import { RatingDefaultValue } from "./rating-default-value";
+
 type Props = {
   control?: React.ComponentProps<typeof FormComponent>["control"];
   property: Property;
@@ -90,16 +92,18 @@ export const FieldComponent: React.FC<Props> = ({
     <FormComponent
       control={
         control ||
-        (type?.type === "datetime" && property.handle === "clock24h"
-          ? ClockFormatControl
-          : type?.type === "datetime" && property.handle === "dateOrder"
-            ? DateOrderControl
-            : type?.type === "location" && property.handle === "integration"
-              ? LocationIntegration
-              : type?.type === "location" &&
-                  property.handle === "requiredComponents"
-                ? LocationRequiredComponents
-                : undefined)
+        (type?.type === "rating" && property.handle === "defaultValue"
+          ? RatingDefaultValue
+          : type?.type === "datetime" && property.handle === "clock24h"
+            ? ClockFormatControl
+            : type?.type === "datetime" && property.handle === "dateOrder"
+              ? DateOrderControl
+              : type?.type === "location" && property.handle === "integration"
+                ? LocationIntegration
+                : type?.type === "location" &&
+                    property.handle === "requiredComponents"
+                  ? LocationRequiredComponents
+                  : undefined)
       }
       autoFocus={autoFocus}
       value={canUseTranslationValue(property) ? translationEnabledValue : value}

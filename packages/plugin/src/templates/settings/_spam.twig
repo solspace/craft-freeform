@@ -21,8 +21,6 @@
         {{ redirectInput('freeform/settings/spam') }}
         {{ csrfInput() }}
 
-        <h2 class="first">{{ "Spam Behavior"|t('freeform') }}</h2>
-
         {% set spamBehaviors = {
             simulate_success: {label:'Simulate Success', description:'Show the usual success response without revealing that spam was detected.', path:'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM8 12l3 3 5-6'},
             display_errors: {label:'Display Errors', description:'Show spam errors to help troubleshoot protection settings. Use temporarily.', path:'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM10 6v5M10 14h.01'},
@@ -45,8 +43,8 @@
 
         {{ booleanMenu.field({
             includeEnvVars: true,
-            label: "Bypass All Spam Checks for Logged in Users"|t('freeform'),
-            instructions: "When enabled, Freeform will not run any spam protection measures for logged in users."|t('freeform'),
+            label: "Skip Spam Checks for Logged-in Users"|t('freeform'),
+            instructions: "Skip spam checks when the visitor is logged in to Craft."|t('freeform'),
             name: "settings[bypassSpamCheckOnLoggedInUsers]",
             value: settings.bypassSpamCheckOnLoggedInUsers,
             errors: settings.errors().get("bypassSpamCheckOnLoggedInUsers"),
@@ -60,7 +58,7 @@
         {{ booleanMenu.field({
             includeEnvVars: true,
             label: "Use Spam Folder"|t('freeform'),
-            instructions: "When enabled, all submissions caught by the honeypot or blocked email addresses, keywords and IP addresses will be flagged as spam and stored in the database, but available to manage in a separate menu inside Freeform."|t('freeform'),
+            instructions: "Keep flagged submissions in the Spam folder for review. Forms must be configured to store submission data."|t('freeform'),
             name: "settings[spamFolderEnabled]",
             value: settings.spamFolderEnabled,
             toggle: "spam-features",
@@ -69,28 +67,17 @@
         }) }}
 
         <div id="spam-features" class="field {{ not settings.spamFolderEnabled ? 'hidden' }}">
-            {{ forms.lightswitchField({
-                label: "Automatically Purge Spam Submissions"|t('freeform'),
-                instructions: "If you wish to have Freeform automatically purge submissions flagged as spam after a specified number of days, enable this setting and specify the number of days after submission date it should purge spammy submissions."|t('freeform'),
-                warning: "Enabling this and saving this settings page will result in the purging of submissions flagged as spam feature beginning, and cannot be undone (it may not happen immediately, and may take a couple hours before the next process runs)."|t('freeform'),
-                name: "purge-toggle",
-                on: settings.purgableSpamAgeInDays,
-                toggle: "purge",
-                errors: settings.errors().get("purgableSpamAgeInDays"),
-                disabled: readOnly,
-            }) }}
-
-            <div id="purge" class="field {{ not settings.purgableSpamAgeInDays ? 'hidden' }}">
+            <div data-freeform-retention-setting>
                 {{ forms.selectField({
-                    label: "Days After Submission Date to Purge"|t('freeform'),
-                    instructions: "Select the number of days after spammy submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
+                    label: "Automatically Delete Old Spam"|t('freeform'),
+                    instructions: "Keep spam submissions for this many days. Cleanup is checked hourly when Freeform is accessed on the website or in the control panel."|t('freeform'),
                     name: "settings[purgableSpamAgeInDays]",
                     value: settings.purgableSpamAgeInDays,
                     errors: settings.errors().get("purgableSpamAgeInDays"),
                     disabled: readOnly,
                     id: "purge-value",
                     options: {
-                        0: "Please select"|t("freeform"),
+                        0: "Never"|t("freeform"),
                         1: "1 day"|t("freeform"),
                         2: "2 days"|t("freeform"),
                         3: "3 days"|t("freeform"),
@@ -103,12 +90,17 @@
                         60: "60 days"|t("freeform"),
                     }
                 }) }}
+                <div data-freeform-retention-details {{ not settings.purgableSpamAgeInDays ? 'hidden' }}>
+                    <div data-freeform-retention-warning role="status" hidden>
+                        {{ ui('callout', {variant: 'warning', content: "Saving this setting enables automatic deletion. Deleted spam submissions and their uploaded files cannot be recovered."|t('freeform')}) }}
+                    </div>
+                </div>
             </div>
         </div>
 
         <hr>
 
-        <h2>{{ "Form Throttling"|t('freeform') }}</h2>
+        <h2>{{ "Submission Limits"|t('freeform') }}</h2>
 
         {% set input %}
             <div class="freeform-throttling-inputs">
@@ -136,16 +128,20 @@
 
         {{ forms.field({
             id: "throttling-count",
-            label: "Form Submission Throttling"|t("freeform"),
-            instructions: "Globally (affecting all users) prevent spam or attacks by limiting the number of times all forms can be submitted within a given timeframe."|t("freeform"),
+            label: "Submission Limit per Form"|t("freeform"),
+            instructions: "Limit submissions to each form within the selected timeframe. The count is based on saved submissions and is shared across all users of that form. Leave empty or set to 0 for unlimited."|t("freeform"),
             errors: settings.errors().get("submissionThrottlingCount"),
             disabled: readOnly,
-            warning: "This feature is intended for extreme conditions, such as preventing your site from going down if attacked by a spammer. It should NOT be used as a 'fine-tuning' spam measure, as it applies to ALL users. For example, if you set it to '1 per minute', once one user submits any form, any other user will not be able to submit a form within that timeframe. A more realistic value for smaller websites is something like 50 per minute. Use extreme caution for larger and more active sites."|t('freeform'),
+            warning: "Low limits can block legitimate submissions. The limit is shared by everyone submitting the same form."|t('freeform'),
         }, input) }}
 
+        <hr>
+        <h2>{{ "Submission Timing"|t('freeform') }}</h2>
+
         {{ measurement.field({
-            label: "Minimum Submit Time"|t('freeform'),
-            instructions: "The minimum amount of time that has to go by since loading the form for the user to be able to submit the form successfully. Otherwise the submission will be flagged as spam and the Spam Protection Behavior setting will take effect."|t('freeform'),
+            label: "Minimum Submission Time"|t('freeform'),
+            fieldClass: "freeform-submission-timing",
+            instructions: "Require this many seconds between loading and submitting a form. Earlier submissions use your Spam Protection Behavior. Set to 0 to disable this check."|t('freeform'),
             name: "settings[minimumSubmitTime]",
             unit: "seconds"|t('freeform'),
             value: settings.minimumSubmitTime,
@@ -154,8 +150,9 @@
         }) }}
 
         {{ measurement.field({
-            label: "Form Submit Expiration"|t('freeform'),
-            instructions: "The maximum amount of time a user has to submit the form before the form expires and the Spam Protection Behavior setting will take effect. This still has to be less than the Craft CSRF token expiry and PHP Session limit set for your server."|t('freeform'),
+            label: "Maximum Submission Time"|t('freeform'),
+            fieldClass: "freeform-submission-timing",
+            instructions: "Allow this many minutes to submit a form after it loads. Later submissions use your Spam Protection Behavior. Set to 0 to disable this check."|t('freeform'),
             name: "settings[formSubmitExpiration]",
             unit: "minutes"|t('freeform'),
             value: settings.formSubmitExpiration,

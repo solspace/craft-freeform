@@ -24,8 +24,7 @@
       </div>
       <div class="text-sm/6">
         <label for="{{ field.idAttribute }}-{{ index }}" class="{{ field.attributes.optionLabel.get("class") }}{{ field.hasErrors ? ' text-red-600' }}">
-          {{ field.translateOptionLabel(option) }} {# Use this for form builder translations #}
-          {# {{ option.label|t('freeform')|raw }} #} {# Use this instead if using static translations #}
+          {{ field.translateOptionLabel(option) }}
         </label>
       </div>
     </div>

@@ -47,3 +47,69 @@ form[data-freeform-disabled] {
 
   transition: opacity 0.3s ease-in-out;
 }
+
+/* Related controls share one accessible name without browser fieldset decoration. */
+@layer base {
+:where(fieldset[data-field-container]) {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+:where(fieldset[data-field-container]) > legend {
+  float: none;
+  width: 100%;
+  max-inline-size: 100%;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+}
+[data-freeform-processing-status] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.freeform-page-heading {
+  margin-block: 1em .5em;
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.freeform-page-position {
+  display: block;
+  font-size: .75em;
+  font-weight: normal;
+}
+
+.freeform-signature-type {
+  display: grid;
+  gap: .375em;
+  margin-block-start: .75em;
+  max-width: var(--ff-signature-max-width, 400px);
+
+  > label { order: -1; }
+}
+
+@layer base {
+  :where(.freeform-signature-type) {
+  label:not([class]) { font: inherit; font-size: .875em; }
+  input:not([class]) {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.75em;
+    padding: .5em .75em;
+    border: 1px solid color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: .25em;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+  input:not([class]):focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+}
+}

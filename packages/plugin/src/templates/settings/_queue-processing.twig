@@ -8,10 +8,9 @@
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
     { label: "Settings"|t("freeform"), url: url("freeform/settings") },
-    { label: "Queue Processing"|t("freeform"), url: url("freeform/settings" ~ "/" ~ segment3) },
 ] %}
 
-{% set title = "Queue Processing"|t("freeform") %}
+{% set title = "Form Processing"|t("freeform") %}
 
 {% set pingUrl = siteUrl('freeform/queue/ping', settings.queuePingToken ? { token: settings.queuePingToken } : {}) %}
 
@@ -19,40 +18,30 @@
 
     {{ parent() }}
 
-    <h2 class="first">{{ "Queue Processing"|t('freeform') }}</h2>
-    <p>{{ "The following settings enable Freeform to use Craft's queue to process submissions in the background. This improves performance for users when submitting forms. Enable the free Queue Pinging service to ensure tasks continue running automatically."|t('freeform') }}</p>
+    <p>{{ "Process AI tasks, email notifications, and integrations in the background so visitors don’t have to wait for them to finish."|t('freeform') }}</p>
 
+    {% set queueUsesMultipleEnvVars = settings.useQueue is iterable %}
     {{ booleanMenu.field({
         includeEnvVars: true,
-        label: "Use Queue for AI Processing"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger AI processing."|t('freeform'),
-        name: "settings[useQueueForAiFields]",
-        value: settings.useQueueForAiFields,
-        errors: settings.errors().get("useQueueForAiFields"),
-        disabled: readOnly,
-        warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        label: "Process Submissions in the Background"|t('freeform'),
+        instructions: "Use Craft’s queue for AI processing, email notifications, and integrations. AI processing finishes before notifications and integrations are dispatched."|t('freeform'),
+        name: "settings[useQueue]",
+        value: settings.queueControlValue,
+        errors: settings.errors().get("useQueue"),
+        disabled: readOnly or queueUsesMultipleEnvVars,
+        tip: queueUsesMultipleEnvVars
+            ? "This setting preserves multiple environment variables from your previous queue settings. Set useQueue to a single boolean or environment variable in your configuration to edit it here."|t('freeform')
+            : "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Use Queue for Email Notifications"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger emails."|t('freeform'),
-        name: "settings[useQueueForEmailNotifications]",
-        value: settings.useQueueForEmailNotifications,
-        errors: settings.errors().get("useQueueForEmailNotifications"),
+    {{ forms.textField({
+        label: "Queue Job Priority"|t('freeform'),
+        instructions: "Controls the priority of Freeform’s background jobs. Lower numbers run first. Leave blank to use Craft’s default."|t('freeform'),
+        name: "settings[queuePriority]",
+        value: settings.queuePriority,
+        errors: settings.errors().get("queuePriority"),
         disabled: readOnly,
-        warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
-    }) }}
-
-    {{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Use Queue for Integrations"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing)."|t('freeform'),
-        name: "settings[useQueueForIntegrations]",
-        value: settings.useQueueForIntegrations,
-        errors: settings.errors().get("useQueueForIntegrations"),
-        disabled: readOnly,
-        warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
     }) }}
 
     <hr>
@@ -116,10 +105,10 @@
         <h3>{{ "Manage Queue Pinging Service"|t('freeform') }}</h3>
         <div class="buttons">
             <button type="button" class="btn {{ disabled }}" id="disable-pinger-btn" {{ disabled }}>
-                {{ "Temporarily Disable Service"|t('freeform') }}
+                {{ "Pause Queue Pinging"|t('freeform') }}
             </button>
             <button type="button" class="btn error {{ disabled }}" id="delete-pinger-btn" {{ disabled }}>
-                {{ "Cancel Service"|t('freeform') }}
+                {{ "Remove Queue Pinging"|t('freeform') }}
             </button>
         </div>
     {% endif %}
@@ -134,7 +123,7 @@
         csrfData["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
 
         $("#disable-pinger-btn").on("click", function() {
-            if (!confirm('{{ "Are you sure you want to disable the pinging service?"|t('freeform') }}')) {
+            if (!confirm('{{ "Pause queue pinging for this site?"|t('freeform') }}')) {
                 return;
             }
             
@@ -145,17 +134,17 @@
                 data: csrfData,
                 success: function(response) {
                     if (response.success) {
-                        Craft.cp.displayNotice('{{ "Pinging service has been disabled successfully."|t('freeform') }}');
+                        Craft.cp.displayNotice('{{ "Queue pinging paused."|t('freeform') }}');
                         window.location.reload();
                     } else {
-                        Craft.cp.displayError(response.error || '{{ "Unable to disable the pinging service."|t('freeform') }}');
+                        Craft.cp.displayError(response.error || '{{ "Unable to pause queue pinging."|t('freeform') }}');
                     }
                 }
             });
         });
 
         $("#delete-pinger-btn").on("click", function() {
-            if (!confirm('{{ "Are you sure you want to cancel the pinging service?"|t('freeform') }}')) {
+            if (!confirm('{{ "Remove queue pinging for this site?"|t('freeform') }}')) {
                 return;
             }
             
@@ -166,10 +155,10 @@
                 data: csrfData,
                 success: function(response) {
                     if (response.success) {
-                        Craft.cp.displayNotice('{{ "Pinging service has been cancelled successfully."|t('freeform') }}');
+                        Craft.cp.displayNotice('{{ "Queue pinging removed."|t('freeform') }}');
                         window.location.reload();
                     } else {
-                        Craft.cp.displayError(response.error || '{{ "Unable to cancel the pinging service."|t('freeform') }}');
+                        Craft.cp.displayError(response.error || '{{ "Unable to remove queue pinging."|t('freeform') }}');
                     }
                 }
             });

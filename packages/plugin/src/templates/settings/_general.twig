@@ -19,14 +19,12 @@
 	{{ redirectInput('freeform/settings/general') }}
 	{{ csrfInput() }}
 
-	<h2 class="first">{{ "Control Panel"|t('freeform') }}</h2>
-
 	{% if craft.freeform.pro %}
 
 		{{ forms.textField({
             class: "code",
-            label: "Custom Plugin Name"|t('freeform'),
-            instructions: "Override the plugin name by specifying your own here."|t('freeform'),
+            label: "Plugin Name"|t('freeform'),
+            instructions: "The name shown for Freeform in the control panel."|t('freeform'),
             placeholder: craft.freeform.name,
             id: "pluginName",
             name: "settings[pluginName]",
@@ -62,59 +60,14 @@
         errors: settings.errors().get("defaultView"),
     }, defaultViewInput) }}
 
-	{{ forms.checkboxSelectField({
-        label: "Form Creation Options"|t('freeform'),
-        instructions: "Choose the options available under Add new form. When only one option is selected, it opens directly without showing the chooser. Select at least one option."|t('freeform'),
-        name: "settings[formCreationOptions]",
-        values: settings.formCreationOptions,
-        options: [
-            {value: 'wizard', label: "Guided setup"|t('freeform')},
-            {value: 'ai', label: "Create with AI (Pro only)"|t('freeform')},
-            {value: 'blank', label: "Quick setup"|t('freeform')},
-        ],
-        errors: settings.errors().get("formCreationOptions"),
-        disabled: readOnly,
-    }) }}
-    {% if craft.freeform.pro %}
-        {% set aiOptions = [{value: '', label: "No default — choose when creating a form"|t('freeform')}] %}
-        {% set defaultAiAvailable = false %}
-        {% for integration in aiIntegrations %}
-            {% set aiOptions = aiOptions|merge([{
-                value: integration.uid,
-                label: integration.name ~ (integration.model ? ' — ' ~ integration.model : ''),
-            }]) %}
-            {% if integration.uid == settings.defaultAiIntegration %}
-                {% set defaultAiAvailable = true %}
-            {% endif %}
-        {% endfor %}
-        {% if settings.defaultAiIntegration and not defaultAiAvailable %}
-            {% set aiOptions = aiOptions|merge([{
-                value: settings.defaultAiIntegration,
-                label: "Unavailable integration — choose another default"|t('freeform'),
-            }]) %}
-        {% endif %}
-        {{ forms.selectField({
-            label: "Default AI Integration for Form Creation"|t('freeform'),
-            instructions: "Preselect an AI integration for Create with AI. This applies only to form generation; spam protection and other AI features keep their own integration settings. If no default is set or it becomes unavailable, users must choose an integration when creating a form."|t('freeform'),
-            id: "defaultAiIntegration",
-            name: "settings[defaultAiIntegration]",
-            value: settings.defaultAiIntegration,
-            options: aiOptions,
-            errors: settings.errors().get("defaultAiIntegration"),
-            disabled: readOnly,
-        }) }}
-    {% endif %}
-
     {% set badgeOptions = {
-        all: {label: 'Notices & Errors', description: 'Shows unread update notices and recorded errors that need attention.', path: 'M4 4h16v12H4ZM8 20h8M9 8h6M9 12h3'},
-        notices: {label: 'Update Notices', description: 'Shows unread notices about Freeform updates and important changes.', path: 'M4 5h16v14H4ZM8 9h8M8 13h5'},
         errors: {label: 'Logged Errors', description: 'Shows recorded errors to help you spot and troubleshoot problems.', path: 'M12 3 2 21h20ZM12 9v5M12 17h.01'},
         submissions: {label: 'Submissions', description: 'Shows the total number of saved submissions, excluding spam.', path: 'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
         spam: {label: 'Spam Folder', description: 'Shows the number of submissions held in the Spam folder.', path: 'M12 3 20 6v6c0 5-8 9-8 9s-8-4-8-9V6ZM9 9l6 6m0-6-6 6'},
         '': {label: 'None', description: 'Hides the badge beside Freeform in the control panel.', path: 'M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM6 6l12 12'},
     } %}
     {% set badgeInput %}
-        <div class="ff-choice-cards" data-columns="3">
+        <div class="ff-badge-choices"><div class="ff-choice-cards" data-columns="4">
             {% for value, option in badgeOptions %}
                 {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
                 {{ cards.compactChoice({
@@ -122,14 +75,14 @@
                     name: 'settings[badgeType]',
                     value: value,
                     selected: settings.badgeType == value,
-                    recommended: value == 'all',
+                    recommended: value == 'errors',
                     disabled: readOnly,
                     label: option.label|t('freeform'),
                     description: option.description|t('freeform'),
                     icon: icon,
                 }) }}
             {% endfor %}
-        </div>
+        </div></div>
     {% endset %}
     {{ forms.field({
         id: 'plugin-badge',
@@ -144,7 +97,7 @@
 		{{ booleanMenu.field({
             includeEnvVars: true,
             label: "Site-Aware Forms"|t('freeform'),
-            instructions: "When enabled, forms become aware of the currently active Site when loaded on the front end. In the control panel, you can filter form lists by Site and prevent other admins from accessing forms that belong to Sites they don't have access to. By default, any new forms created will be visible for the Site they were created on (with the ability to enable additional sites)."|t('freeform'),
+            instructions: "Make forms aware of the active Craft site and respect users’ site permissions in the control panel. New forms are available only on the site where they’re created; additional sites can be enabled for each form."|t('freeform'),
             name: "settings[sitesEnabled]",
             value: settings.sitesEnabled,
             errors: settings.errors().get("sitesEnabled"),
@@ -164,132 +117,7 @@
 
 	{% endif %}
 
-	{{ forms.textField({
-        label: "Queue Job Priority"|t('freeform'),
-        instructions: "Set the queue job priority for background Freeform tasks to determine if they should run with a different priority compared to other jobs. Jobs with a lower priority are executed first."|t('freeform'),
-        name: "settings[queuePriority]",
-        value: settings.queuePriority,
-        errors: settings.errors().get("queuePriority"),
-        disabled: readOnly,
-        placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
-    }) }}
 
-
-	<hr>
-
-    <h2>{{ "File Uploads"|t('freeform') }}</h2>
-
-    {% set uploadVolumeOptions = [] %}
-    {% set uploadVolumeHandles = [] %}
-    {% for volume in craft.app.volumes.allVolumes %}
-        {% set uploadVolumeOptions = uploadVolumeOptions|merge([{value: volume.handle, label: volume.name}]) %}
-        {% set uploadVolumeHandles = uploadVolumeHandles|merge([volume.handle]) %}
-    {% endfor %}
-    {% if settings.allowedUploadVolumes is iterable %}
-        {% for handle in settings.allowedUploadVolumes %}
-            {% if handle not in uploadVolumeHandles %}
-                {% set uploadVolumeOptions = uploadVolumeOptions|merge([{value: handle, label: "Unavailable volume: {handle}"|t('freeform', {handle: handle})}]) %}
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-    {{ forms.checkboxSelectField({
-        label: "Allowed Upload Volumes"|t('freeform'),
-        instructions: "Choose which volumes can be selected as upload destinations in the form builder, including File Upload columns in Table fields. Users must also have permission to view the volume. Select All to allow current and future volumes, or clear every option to allow none. Existing forms keep their saved destinations; saving a form requires an allowed destination."|t('freeform'),
-        id: 'allowedUploadVolumes',
-        name: 'settings[allowedUploadVolumes]',
-        values: settings.allowedUploadVolumes == 'none' ? [] : settings.allowedUploadVolumes,
-        options: uploadVolumeOptions,
-        showAllOption: true,
-        errors: settings.errors().get('allowedUploadVolumes'),
-        disabled: readOnly,
-    }) }}
-
-    <hr>
-
-	<h2>{{ "Element Field Type"|t('freeform') }}</h2>
-
-	{{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Restrict Form options in Form Field Type to User permissions"|t('freeform'),
-        instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Element Field Type (relating forms in Entries, etc)."|t('freeform'),
-        name: "settings[formFieldShowOnlyAllowedForms]",
-        value: settings.formFieldShowOnlyAllowedForms,
-        errors: settings.errors().get("formFieldShowOnlyAllowedForms"),
-        disabled: readOnly,
-    }) }}
-
-	<hr>
-
-	<h2>{{ "Exporting"|t('freeform') }}</h2>
-
-	{{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
-        instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
-        name: "settings[removeNewlines]",
-        value: settings.removeNewlines,
-        errors: settings.errors().get("removeNewlines"),
-        disabled: readOnly,
-    }) }}
-
-	{{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Use Option Labels when Exporting"|t('freeform'),
-        instructions: "Enable this to have fields with options use the submission's option labels instead of values when exporting."|t('freeform'),
-        name: "settings[exportLabels]",
-        value: settings.exportLabels,
-        errors: settings.errors().get("exportLabels"),
-        disabled: readOnly,
-    }) }}
-
-	{{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Use Field Handles for Headings when Exporting"|t('freeform'),
-        instructions: "Enable this to use field handles as headings instead of field labels when exporting submissions."|t('freeform'),
-        name: "settings[exportHandlesAsNames]",
-        value: settings.exportHandlesAsNames,
-        errors: settings.errors().get("exportHandlesAsNames"),
-        disabled: readOnly,
-    }) }}
-
-	{% if craft.freeform.pro %}
-
-		{{ booleanMenu.field({
-            includeEnvVars: true,
-            label: "Include Tracked URL Parameters when Exporting"|t('freeform'),
-            instructions: "Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data."|t('freeform'),
-            name: "settings[exportTrackedUrlParameters]",
-            value: settings.exportTrackedUrlParameters,
-            errors: settings.errors().get("exportTrackedUrlParameters"),
-            disabled: readOnly,
-        }) }}
-
-	{% endif %}
-
-	<hr>
-
-	<h2>{{ "Fields"|t('freeform') }}</h2>
-
-	{{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Fill Form Values from the GET Query String"|t('freeform'),
-        instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
-        name: "settings[fillWithGet]",
-        value: settings.fillWithGet,
-        errors: settings.errors().get("fillWithGet"),
-        disabled: readOnly,
-    }) }}
-
-	{{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Allow Dashes in Field Handles"|t('freeform'),
-        instructions: "Enable this to be able to allow users to include dashes in field handle names in the form builder."|t('freeform'),
-        warning: "Dashes in field handle names are not allowed by default. Enabling this could negatively affect other parts of Craft, especially GraphQL functionality. Use with caution and only if necessary."|t('freeform'),
-        name: "settings[allowDashesInFieldHandles]",
-        value: settings.allowDashesInFieldHandles,
-        errors: settings.errors().get("allowDashesInFieldHandles"),
-        disabled: readOnly,
-    }) }}
 
 	<hr>
 
@@ -297,8 +125,8 @@
 
 	{{ booleanMenu.field({
         includeEnvVars: true,
-        label: "Enable Search Index Updating on New Submissions"|t('freeform'),
-        instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
+        label: "Update Submission Search Indexes"|t('freeform'),
+        instructions: "Update Craft’s search index when submissions are saved."|t('freeform'),
         name: "settings[updateSearchIndexes]",
         value: settings.updateSearchIndexes,
         errors: settings.errors().get("updateSearchIndexes"),
@@ -307,28 +135,17 @@
 
 	{% if craft.freeform.pro %}
 
-		{{ forms.lightswitchField({
-            label: "Automatically Purge Submission Data"|t('freeform'),
-            instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
-            warning: "Enabling this and saving this settings page will result in purging feature beginning, and cannot be undone (it may not happen immediately, and may take a couple hours before the next process runs)."|t('freeform'),
-            name: "purge-toggle",
-            on: settings.purgableSubmissionAgeInDays,
-            toggle: "purge",
-            errors: settings.errors().get("purgableSubmissionAgeInDays"),
-            disabled: readOnly,
-        }) }}
-
-		<div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
+        <div data-freeform-retention-setting>
 			{{ forms.selectField({
-                label: "Days After Submission Date to Purge"|t('freeform'),
-                instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
+                label: "Automatically Delete Old Submissions"|t('freeform'),
+                instructions: "Keep submissions for this many days. Cleanup is checked hourly when Freeform is accessed on the website or in the control panel."|t('freeform'),
                 name: "settings[purgableSubmissionAgeInDays]",
                 value: settings.purgableSubmissionAgeInDays,
                 errors: settings.errors().get("purgableSubmissionAgeInDays"),
                 disabled: readOnly,
                 id: "purge-value",
                 options: {
-                    0: "Please select"|t("freeform"),
+                    0: "Never"|t("freeform"),
                     1: "1 day"|t("freeform"),
                     2: "2 days"|t("freeform"),
                     3: "3 days"|t("freeform"),
@@ -346,40 +163,36 @@
                 }
             }) }}
 
+            <div data-freeform-retention-details {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}>
+                <div data-freeform-retention-warning role="status" hidden>
+                    {{ ui('callout', {variant: 'warning', content: "Saving this setting enables automatic deletion. Deleted submissions and their uploaded files cannot be recovered."|t('freeform')}) }}
+                </div>
+
 			{{ forms.checkboxSelectField({
                 id: "purge-forms",
                 label: "Apply to Forms"|t('freeform'),
-                instructions: "Choose which forms the automatic submission purge should apply to."|t('freeform'),
+                instructions: "Choose which forms automatic submission deletion applies to."|t('freeform'),
                 name: "settings[purgableFormIds]",
                 values: settings.purgableFormIds is null ? '*' : settings.purgableFormIds,
                 showAllOption: true,
                 options: forms|sort,
                 errors: settings.errors().get("purgableFormIds"),
             }) }}
+            </div>
 		</div>
 
 	{% endif %}
 
-	{{ forms.lightswitchField({
-        label: "Automatically Purge Unfinalized Assets"|t('freeform'),
-        instructions: "Enable this to have Freeform automatically purge unfinalized asset files after a specified period of time."|t('freeform'),
-        name: "settings[purgeAssets]",
-        on: settings.purgeAssets,
-        toggle: "purge-assets",
-        errors: settings.errors().get("purgeAssets"),
-        disabled: readOnly,
-    }) }}
-
-	<div id="purge-assets" class="field {{ not settings.purgeAssets ? 'hidden' }}">
 		{{ forms.selectField({
-            label: "Time to Wait Before Purging Assets"|t('freeform'),
-            instructions: "Select how long Freeform should keep unfinalized asset files before purging."|t('freeform'),
+            label: "Automatically Delete Old Unsubmitted Uploads"|t('freeform'),
+            instructions: "Choose how long to keep unsubmitted uploads before deleting them."|t('freeform'),
             name: "settings[purgableUnfinalizedAssetAgeInMinutes]",
             value: settings.purgableUnfinalizedAssetAgeInMinutes,
             errors: settings.getErrors("purgableUnfinalizedAssetAgeInMinutes"),
             disabled: readOnly,
             id: "purgableUnfinalizedAssetAgeInMinutes",
             options: {
+                0: "Never"|t("freeform"),
                 60: "1 hour"|t("freeform"),
                 120: "2 hours"|t("freeform"),
                 180: "3 hours (recommended)"|t("freeform"),
@@ -393,7 +206,5 @@
                 20160: "2 weeks"|t("freeform"),
             }
         }) }}
-	</div>
-
 
 {% endblock %}

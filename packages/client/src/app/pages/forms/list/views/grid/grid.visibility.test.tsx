@@ -61,17 +61,15 @@ vi.mock("@ff-client/utils/notifications", () => ({
   notifications: { success: vi.fn(), error: vi.fn() },
 }));
 vi.mock("axios", () => ({ default: { post: fixture.post, get: fixture.get } }));
-vi.mock("../../notices/notices.queries", () => ({
-  useNoticesQuery: () => ({
+vi.mock("../../activity-alerts/activity-alerts.queries", () => ({
+  useActivityAlertsQuery: () => ({
     data: {
-      notices: [] as never[],
       errors: fixture.errors,
       errorLog: "activity",
       warningLogs: [] as never[],
       activityRetentionDays: 30,
     },
   }),
-  useNoticeDeleteMutation: () => ({ mutate: vi.fn() }),
 }));
 vi.mock("@components/modals/modal.context", () => ({
   useModal: () => ({ openSlideout: vi.fn() }),

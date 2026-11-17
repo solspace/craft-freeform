@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Freeform\Models\Settings;
 
 /**
  * m190610_074840_MigrateScriptInsertLocation migration.
@@ -24,18 +23,15 @@ class m190610_074840_MigrateScriptInsertLocation extends Migration
             return true;
         }
 
-        /** @var Settings $settings */
-        $settings = $plugin->getSettings();
+        $settings = \Craft::$app->projectConfig->get('plugins.freeform.settings') ?? [];
 
         try {
             $scriptInsertLocation = 'form';
-            if ($settings->footerScripts) {
+            if ($settings['footerScripts'] ?? false) {
                 $scriptInsertLocation = 'footer';
             }
 
-            $settings->scriptInsertLocation = $scriptInsertLocation;
-
-            $pluginService->savePluginSettings($plugin, []);
+            \Craft::$app->projectConfig->set('plugins.freeform.settings.scriptInsertLocation', $scriptInsertLocation);
         } catch (\Exception $e) {
         }
 

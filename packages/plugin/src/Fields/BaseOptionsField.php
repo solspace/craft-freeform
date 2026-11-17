@@ -66,6 +66,8 @@ abstract class BaseOptionsField extends AbstractField implements OptionsInterfac
 
     public function translateOptionLabel(mixed $option): string
     {
-        return (string) $option;
+        return $option instanceof Option || $option instanceof OptionCollection
+            ? (string) $option->getLabel()
+            : (string) $option;
     }
 }

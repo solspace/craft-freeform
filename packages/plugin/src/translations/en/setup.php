@@ -25,8 +25,6 @@ return [
     'Keep your existing custom event choices.' => 'Keep your existing custom event choices.',
     'Leave the setup guide without saving your changes?' => 'Leave the setup guide without saving your changes?',
     'Loading your current settings…' => 'Loading your current settings…',
-    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform. Classic Logging writes technical files.' => 'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform. Classic Logging writes technical files.',
-    'Turning logging off is not recommended. Use Classic Logging with Errors to retain important failures.' => 'Turning logging off is not recommended. Use Classic Logging with Errors to retain important failures.',
     'Not set' => 'Not set',
     'Previous' => 'Previous',
     'Record errors and critical failures.' => 'Record errors and critical failures.',
@@ -249,4 +247,6 @@ return [
     'Set up an upload volume' => 'Set up an upload volume',
     'Configure an asset volume in Craft, then allow it under Allowed Upload Volumes in Freeform settings.' => 'Configure an asset volume in Craft, then allow it under Allowed Upload Volumes in Freeform settings.',
     'The Setup Guide requires an administrator and an environment that allows admin changes.' => 'The Setup Guide requires an administrator and an environment that allows admin changes.',
+    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform.' => 'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform.',
+    'Turning logging off is not recommended. Use Activity Logging with the Minimal recording mode to retain important failures.' => 'Turning logging off is not recommended. Use Activity Logging with the Minimal recording mode to retain important failures.',
 ];

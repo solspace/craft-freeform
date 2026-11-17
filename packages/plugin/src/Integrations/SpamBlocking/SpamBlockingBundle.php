@@ -82,7 +82,7 @@ class SpamBlockingBundle extends FeatureBundle
     {
         $form = $event->getForm();
         $settings = $this->plugin()->settings;
-        $isQueueEnabled = $settings->isAiFieldQueueEnabled();
+        $isQueueEnabled = $settings->isQueueEnabled();
 
         if (!$this->integrationsProvider->hasAsyncSpamBlocking($form)) {
             return;

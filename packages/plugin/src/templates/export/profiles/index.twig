@@ -93,7 +93,7 @@
                     <td class="ff-export-download-cell" data-title="{{ 'Actions'|t('app') }}">
                         <div class="file-download-list" role="group" aria-label="{{ profile.name }}">
                             {% for type, exporter in craft.freeformServices.exportProfiles.getAllowedExporterTypes(profile) %}
-                                <craft-button type="button" data-type="{{ type }}" variant="outline" size="small">{% include 'freeform/export/_file-type-icon' with {type: type, slot: 'prefix'} only %}{{ exporter }}</craft-button>
+                                <craft-button type="button" data-type="{{ type }}" variant="fill" size="medium">{% include 'freeform/export/_file-type-icon' with {type: type, slot: 'prefix'} only %}{{ exporter }}</craft-button>
                             {% endfor %}
                         </div>
                         <form method="post" style="position: absolute; left:-9999px; top: -9999px;">

@@ -27,7 +27,7 @@ trait OptionCollectionTrait
                 $output .= Html::tag(
                     'optgroup',
                     $this->renderCollection($option, $attributes),
-                    ['label' => $option->getLabel()]
+                    ['label' => $this->translateOptionLabel($option)]
                 );
 
                 continue;
@@ -47,7 +47,7 @@ trait OptionCollectionTrait
 
             $output .= Html::tag(
                 $optionAttributes->getTag('option'),
-                $option->getLabel(),
+                $this->translateOptionLabel($option),
                 $optionAttributes->toHtmlTagArray([
                     'i' => $index,
                     'index' => $index,

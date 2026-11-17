@@ -50,6 +50,8 @@
         },
         "@signature": {
             attributes: {
+        typedInput: { class: "freeform-input" },
+        typedLabel: { class: "freeform-label" },
                 input: { "-class": "freeform-input" },
             },
         }
@@ -74,12 +76,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% include "freeform/_templates/formatting/_error-summary.twig" %}
         </div>
     {% endif %}
 {% endif %}
 
 {# Render page tabs if multi-page #}
 {% if form.pages|length > 1 %}
+    {% include "freeform/_templates/formatting/_page-heading.twig" %}
     <ul class="freeform-pages">
         {% for page in form.pages %}
             <li {% if form.currentPage.index == page.index %}class="active" aria-current="step"{% endif %}>

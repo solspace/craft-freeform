@@ -67,7 +67,7 @@ class CodepackFormBrowserTest extends TestCase
             'browserArea' => 'forms',
             'browserTitle' => 'Forms',
             'browserDescription' => 'Choose a form.',
-            'browserBaseUrl' => '/demo/forms/basic-light',
+            'browserBaseUrl' => '/demo/forms/freeform-light',
             'browserAction' => 'Try form',
             'browserSubmissionsUrl' => '/demo/submissions',
         ]);
@@ -75,7 +75,7 @@ class CodepackFormBrowserTest extends TestCase
         self::assertSame($expectedIcons, substr_count($html, 'data-selected-icon="true"'));
         self::assertSame(4 - $expectedIcons, substr_count($html, 'stroke-width="1.5"><rect x="5"'));
         self::assertStringContainsString('Contact &lt;team&gt;', $html);
-        self::assertStringContainsString('href="/demo/forms/basic-light/contact-0"', $html);
+        self::assertStringContainsString('href="/demo/forms/freeform-light/contact-0"', $html);
         self::assertStringNotContainsString('&lt;svg', $html);
         self::assertStringContainsString('href="/demo/submissions/contact-0"', $html);
         self::assertStringContainsString('href="/demo/submissions/contact-0/spam"', $html);

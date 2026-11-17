@@ -18,6 +18,7 @@ export function inputProps(props: ReactFieldRendererProps) {
     autoComplete?: string;
     "aria-invalid"?: boolean;
     "aria-describedby"?: string;
+    "aria-labelledby"?: string;
     maxLength?: number;
   };
 

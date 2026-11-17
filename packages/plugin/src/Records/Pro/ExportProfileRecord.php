@@ -9,6 +9,7 @@ use yii\db\ActiveQuery;
 /**
  * Class ExportProfileRecord.
  *
+ * @property ?array $formatting
  * @property int    $id
  * @property int    $formId
  * @property string $name

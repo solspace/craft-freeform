@@ -11,7 +11,8 @@
     { label: "Reliability"|t("freeform"), url: url("freeform/settings" ~ "/" ~ segment3) },
 ] %}
 
-{% set title = "Notices & Alerts"|t("freeform") %}
+{% set title = "Alerts & Digests"|t("freeform") %}
+{% set showSettingsHeading = false %}
 
 {% block content %}
 
@@ -21,39 +22,14 @@
     {{ redirectInput('freeform/settings/notices-and-alerts') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Control Panel Notices"|t('freeform') }}</h2>
-
-    {{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Display Update Warnings & Notices"|t('freeform'),
-        instructions: "Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes to bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com."|t('freeform'),
-        name: "settings[displayFeed]",
-        value: settings.displayFeed,
-        errors: settings.getErrors("displayFeed"),
-        disabled: readOnly,
-    }) }}
-
     {% if freeform.edition.isAtLeast('lite') %}
 
-        <hr />
-
-        <h2>{{ "Email Alerts"|t('freeform') }}</h2>
+        <h2 class="first">{{ "Email Alerts"|t('freeform') }}</h2>
 
         {{ forms.textField({
             class: "code",
-            label: "Send Email Alerts for Failed Notifications"|t('freeform'),
-            instructions: "Send an email notification alerting the email address(es) below when an email notification cannot be delivered."|t('freeform'),
-            placeholder: "e.g john@smith.com, bethany@corporation.com",
-            name: "settings[alertNotificationRecipients]",
-            value: settings.alertNotificationRecipients,
-            errors: settings.getErrors("alertNotificationRecipients"),
-            disabled: readOnly,
-        }) }}
-
-        {{ forms.textField({
-            class: "code",
-            label: "Critical System Error Report Recipients"|t('freeform'),
-            instructions: "Provide one or more comma-separated email addresses that should receive critical error reports."|t('freeform'),
+            label: "Error Alert Recipients"|t('freeform'),
+            instructions: "Send alerts for failed email notifications, integration failures, and other Freeform errors to these comma-separated email addresses. Repeated errors are limited to one alert per hour."|t('freeform'),
             placeholder: "e.g john@smith.com, bethany@corporation.com",
             name: "settings[errorNotificationRecipients]",
             value: settings.errorNotificationRecipients,
@@ -63,38 +39,56 @@
 
         <hr>
 
-        <h2>{{ "Digest Email Notifications"|t('freeform') }}</h2>
+        <h2>{{ "Digests"|t('freeform') }}</h2>
 
-        {{ forms.textField({
-            class: "code",
-            label: "Developer Digest Email"|t('freeform'),
-            instructions: "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices."|t('freeform'),
-            placeholder: "e.g john@smith.com, bethany@corporation.com",
-            name: "settings[digestRecipients]",
-            value: settings.digestRecipients,
-            errors: settings.getErrors("digestRecipients"),
-            disabled: readOnly,
-        }) }}
+        <p>{{ "Digests cover the preceding day or week. Sending depends on site activity and Craft’s queue."|t('freeform') }}</p>
 
-        {% include 'freeform/_components/digest-frequency' with {id:'developer-digest-frequency', label:'Developer Digest Email Frequency'|t('freeform'), name:'settings[digestFrequency]', value:settings.digestFrequency, errors:settings.errors().get('digestFrequency'), readOnly:readOnly} only %}
-
-        {{ forms.textField({
-            class: "code",
-            label: "Stats Digest Email"|t('freeform'),
-            instructions: "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This is the same as the Developer one above, but only includes a snapshot of the previous period's performance."|t('freeform'),
-            placeholder: "e.g john@smith.com, bethany@corporation.com",
-            name: "settings[clientDigestRecipients]",
-            value: settings.clientDigestRecipients,
-            errors: settings.getErrors("clientDigestRecipients"),
-            disabled: readOnly,
-        }) }}
-
-        {% include 'freeform/_components/digest-frequency' with {id:'stats-digest-frequency', label:'Stats Digest Email Frequency'|t('freeform'), name:'settings[clientDigestFrequency]', value:settings.clientDigestFrequency, errors:settings.errors().get('clientDigestFrequency'), readOnly:readOnly} only %}
+        {% set digestGroups = [
+            {
+                id:'developer-digest', label:'Developer Digest'|t('freeform'),
+                recipientsName:'digestRecipients', recipientsValue:settings.digestRecipients,
+                recipientsDescription:'Comma-separated email addresses for performance summaries and recorded errors and warnings.'|t('freeform'),
+                recipientsLabel:'Developer Digest Recipients'|t('freeform'),
+                frequencyName:'digestFrequency', frequencyValue:settings.digestFrequency,
+                scheduleLabel:'Developer Digest Schedule'|t('freeform'),
+            },
+            {
+                id:'stats-digest', label:'Stats Digest'|t('freeform'),
+                recipientsName:'clientDigestRecipients', recipientsValue:settings.clientDigestRecipients,
+                recipientsDescription:'Comma-separated email addresses for performance summaries.'|t('freeform'),
+                recipientsLabel:'Stats Digest Recipients'|t('freeform'),
+                frequencyName:'clientDigestFrequency', frequencyValue:settings.clientDigestFrequency,
+                scheduleLabel:'Stats Digest Schedule'|t('freeform'),
+            },
+        ] %}
+        {% for digest in digestGroups %}
+            <section class="ff-digest-settings-group" role="group" aria-labelledby="{{ digest.id }}-heading">
+                <h3 class="cp-h3" id="{{ digest.id }}-heading">{{ digest.label }}</h3>
+                {{ forms.textField({
+                    id:digest.id ~ '-recipients',
+                    class:'code',
+                    label:'Recipients'|t('freeform'),
+                    inputAttributes:{aria:{label:digest.recipientsLabel}},
+                    instructions:digest.recipientsDescription,
+                    placeholder:'e.g john@smith.com, bethany@corporation.com',
+                    name:'settings[' ~ digest.recipientsName ~ ']',
+                    value:digest.recipientsValue,
+                    errors:settings.getErrors(digest.recipientsName),
+                    disabled:readOnly,
+                }) }}
+                {% include 'freeform/_components/digest-frequency' with {
+                    id:digest.id ~ '-frequency', label:'Schedule'|t('freeform'),
+                    accessibleLabel:digest.scheduleLabel, contextLabel:digest.label,
+                    name:'settings[' ~ digest.frequencyName ~ ']', value:digest.frequencyValue,
+                    errors:settings.errors().get(digest.frequencyName), readOnly:readOnly, instructions:'',
+                } only %}
+            </section>
+        {% endfor %}
 
         {{ booleanMenu.field({
             includeEnvVars: true,
-            label: "Send Notifications on Live Environment only"|t('freeform'),
-            instructions: "If this setting is enabled, Freeform will only send out Digest emails when the Craft environment is set to production."|t('freeform'),
+            label: "Send Digests Only in Production"|t('freeform'),
+            instructions: "When enabled, digest emails are sent only when Craft’s environment is set to `production`."|t('freeform'),
             name: "settings[digestOnlyOnProduction]",
             value: settings.digestOnlyOnProduction,
             errors: settings.getErrors("digestOnlyOnProduction"),

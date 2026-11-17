@@ -348,7 +348,7 @@ class SettingsController extends BaseController
                 'formattingTemplateList' => $formattingTemplateList,
                 'successTemplateSamples' => MessageTemplateSamples::options('success'),
                 'emailTemplateSamples' => MessageTemplateSamples::options('email'),
-                'aiIntegrations' => 'general' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
+                'aiIntegrations' => 'form-builder' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
                 'readOnly' => $readOnly,
                 'externalIntegrations' => 'content-integrations' === $section ? (new ExternalIntegrations())->getCatalog() : [],
                 'contentFieldContainers' => 'content-integrations' === $section ? (new ExternalIntegrations())->getFieldContainers() : [],

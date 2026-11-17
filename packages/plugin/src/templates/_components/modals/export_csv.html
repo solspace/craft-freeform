@@ -1,146 +1,63 @@
 {% import "_includes/forms" as formFields %}
-
-<style>
-    #export-csv-modal .radio-list label {
-        margin-right: 5px;
-    }
-
-    #export-csv-modal .body {
-        overflow-y: auto;
-        height: 380px;
-        width: 400px;
-    }
-
-    #export-csv-modal .footer {
-        line-height: normal !important;
-    }
-
-    #export-csv-modal .radio-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-column-gap: 10px;
-        grid-row-gap: 10px;
-    }
-
-    #export-csv-modal .checkbox-list-item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-items: flex-start;
-        width: fit-content;
-    }
-
-    #export-csv-modal .checkbox-list-item .icon {
-        margin: 0;
-        padding: 0;
-    }
-
-    #export-csv-modal .checkbox-list-item .icon:before {
-        margin: 0;
-        padding: 0;
-        line-height: unset !important;
-        vertical-align: middle !important;
-    }
-</style>
-
 <form id="export-csv-modal" method="post">
     {{ csrfInput() }}
     <input type="hidden" name="action" value="freeform/export/quick-export" />
     <input type="hidden" name="spam" value="{{ isSpam ? '1' }}" />
 
-    <div class="header">
-        <h1>{{ 'Export data'|t('freeform') }}</h1>
-    </div>
+    <header class="header">
+        <h1>{{ 'Quick Export'|t('freeform') }}</h1>
+        <craft-button type="button" variant="plain" data-export-close aria-label="{{ 'Close'|t('app') }}"><craft-icon name="xmark"></craft-icon></craft-button>
+    </header>
     <div class="body">
-        <div class="field">
-            <div class="heading">
-                <label for="quick-export-type">{{ 'Export as'|t('freeform') }}</label>
-            </div>
-            {{ formFields.select({id: 'quick-export-type', name: 'export_type', options: exporters}) }}
-        </div>
-
-        <div class="field">
-            <div class="heading">
-                <label for="quick-export-form">{{ 'Form'|t('freeform') }}</label>
-            </div>
+        <div class="ff-export-source-fields">
             {% set formOptions = [] %}
             {% for form in forms %}
                 {% set formOptions = formOptions|merge([{value: form.id, label: form.name}]) %}
             {% endfor %}
-            {{ formFields.select({id: 'quick-export-form', name: 'form_id', options: formOptions, value: selectedFormId}) }}
+            {{ formFields.selectField({id: 'quick-export-form', name: 'form_id', label: 'Form'|t('freeform'), options: formOptions, value: selectedFormId}) }}
+            {{ formFields.selectField({id: 'quick-export-type', name: 'export_type', label: 'File Format'|t('freeform'), options: exporters}) }}
         </div>
 
         {% for settingItem in setting %}
             {% set form = settingItem.form %}
-            {% set fields = settingItem.fields %}
-
-            <div class="form-field-list field" data-id="{{ form.id }}">
-                <div class="heading">
-                    <label>{{ ('Fields for'|t('freeform')) ~ " " ~ form.name }}</label>
+            <section class="form-field-list" data-id="{{ form.id }}" aria-labelledby="export-fields-heading-{{ form.id }}" {{ form.id != selectedFormId ? 'hidden' }}>
+                <div class="ff-export-fields-heading">
+                    <h2 id="export-fields-heading-{{ form.id }}">{{ 'Fields to Export'|t('freeform') }}</h2>
+                    <div class="ff-export-selection-actions">
+                        <craft-button type="button" variant="plain" size="small" data-export-field-selection="all">{{ 'Select all'|t('freeform') }}</craft-button>
+                        <craft-button type="button" variant="plain" size="small" data-export-field-selection="none">{{ 'Clear'|t('freeform') }}</craft-button>
+                    </div>
                 </div>
+                <p class="light ff-export-field-count" data-export-field-count data-count-label="{{ '{count} of {total} fields selected'|t('freeform') }}" role="status" aria-live="polite"></p>
                 <div class="checkbox-select">
-                    {% for fieldId, fieldSetting in fields %}
-                        {% set label     = fieldSetting.label|t('freeform') %}
-                        {% set label     = label|t('app') %}
-                        {% set isChecked = fieldSetting.checked %}
-
+                    {% for fieldId, fieldSetting in settingItem.fields %}
+                        {% set label = fieldSetting.label|t('freeform')|t('app') %}
                         <div class="checkbox-list-item">
-                            <div class="icon move">
-                                <input
-                                    type="hidden"
-                                    name="export_fields[{{ form.id }}][{{ fieldId }}][label]"
-                                    value="{{ label }}"
-                                />
-                                <input type="hidden"
-                                    name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
-                                    value="0"
-                                />
-                                <input type="checkbox"
-                                    class="checkbox"
-                                    name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
-                                    value="1"
-                                    {{ isChecked ? 'checked' }}
-                                    id="{{ form.id ~ '-' ~ fieldId }}"
-                                />
-                                <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label|t('freeform') }}</label>
-                            </div>
+                            <input type="hidden" name="export_fields[{{ form.id }}][{{ fieldId }}][label]" value="{{ label }}" />
+                            <input type="hidden" name="export_fields[{{ form.id }}][{{ fieldId }}][checked]" value="0" />
+                            <input type="checkbox" class="checkbox" name="export_fields[{{ form.id }}][{{ fieldId }}][checked]" value="1" {{ fieldSetting.checked ? 'checked' }} id="export-field-{{ form.id }}-{{ fieldId }}" />
+                            <label for="export-field-{{ form.id }}-{{ fieldId }}">{{ label }}</label>
                         </div>
                     {% endfor %}
                 </div>
-            </div>
+            </section>
         {% endfor %}
 
-    </div>
-    <div class="footer">
-        <div class="buttons right last">
-            <input type="button" class="btn cancel" value="{{ 'Cancel'|t('freeform') }}"/>
-            <input type="submit" class="btn submit" value="{{ 'Export'|t('freeform') }}"/>
-
-            <div class="spinner" style="display: none;"></div>
+        <div class="ff-export-formatting-options">
+            <h2>{{ 'Formatting Options'|t('freeform') }}</h2>
+            {% include 'freeform/export/_formatting' with {formatting: formatting, idPrefix: 'quick-export', compact: true} only %}
+            {{ formFields.checkboxField({
+                id: 'quick-export-remember',
+                name: 'rememberFormatting',
+                label: 'Remember formatting choices'|t('freeform'),
+                checked: true,
+            }) }}
         </div>
     </div>
+    <footer class="footer">
+        <div class="buttons">
+            <input type="button" class="btn cancel" value="{{ 'Cancel'|t('freeform') }}" />
+            <input type="submit" class="btn submit" value="{{ 'Export'|t('freeform') }}" />
+        </div>
+    </footer>
 </form>
-
-<script>
-  (function() {
-    var form = document.getElementById('export-csv-modal');
-    form.addEventListener('submit', function (event) {
-      var hiddenFormInputs = form.querySelectorAll('.form-field-list.hidden');
-      for (var i = 0; i < hiddenFormInputs.length; i++) {
-        hiddenFormInputs[i].remove();
-      }
-
-      return true;
-    });
-    setTimeout(function() {
-        var formFieldLists = form.querySelectorAll('.form-field-list');
-        for (var i in formFieldLists) {
-            if (formFieldLists.hasOwnProperty(i)) {
-                if (formFieldLists[i].getAttribute('data-id') !== '{{ selectedFormId }}') {
-                    formFieldLists[i].classList.add('hidden');
-                }
-            }
-        }
-    }, 1000);
-  })();
-</script>

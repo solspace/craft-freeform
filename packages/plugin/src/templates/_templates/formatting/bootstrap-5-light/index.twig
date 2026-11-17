@@ -1,0 +1,123 @@
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\Bootstrap5LightBundle') %}
+
+{% import "freeform/_templates/formatting/bootstrap-5-light/_row.twig" as rowMacro %}
+
+{# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
+{# Render the opening form tag #}
+{{ form.renderTag({
+    attributes: {
+        form: { class: "freeform-form", "data-freeform-bootstrap": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "bootstrap-5-light", "data-freeform-signature-max-scale": 1.25 },
+        row: { class: "row" },
+        success: { class: "alert alert-success", role: "status" },
+        errors: { class: "alert alert-danger", role: "alert" },
+        novalidate: true,
+    },
+    buttons: {
+        attributes: {
+            submit: { class: "btn btn-primary" },
+            back: { class: "btn btn-secondary" },
+            save: { class: "btn btn-primary" },
+        },
+    },
+    fields: {
+        "@global": {
+            attributes: {
+                container: { class: "mb-3 col-12" },
+                input: {
+                    class: "form-control",
+                },
+                label: { class: "mb-1" },
+                instructions: { class: "form-text text-muted mt-n1 mb-1" },
+                error: { class: "list-unstyled m-0 fst-italic text-danger" },
+            },
+        },
+        ":required": {
+            attributes: {
+                label: { "+class": "required" },
+            },
+        },
+        ":errors": {
+            attributes: {
+                input: { "+class": "is-invalid" },
+            },
+        },
+        "@group": {
+            attributes: {
+                label: { "+class": "group-label" },
+            },
+        },
+        "@checkbox" : {
+            attributes: {
+                input: { "=class": "form-check-input checkbox" },
+                label: { "+class": "form-check-label" },
+            },
+        },
+        "@dropdown" : {
+            attributes: {
+                input: { "+class": "form-select" },
+            },
+        },
+        "@file" : {
+            attributes: {
+                input: { "+class": "form-control-file" }
+            },
+        },
+        "@signature": {
+            attributes: {
+        typedInput: { class: "form-control" },
+        typedLabel: { class: "mb-1" },
+                input: { "-class": "form-control", "+class": "btn btn-outline-secondary freeform-signature-clear" },
+            },
+        },
+        "@stripe": {
+            attributes: {
+                input: {
+                    "-class": "form-control",
+                },
+            },
+        },
+    },
+}) }}
+
+{# Success and error message handling for non-AJAX forms #}
+{% if not form.settings.ajax %}
+    {% if form.submittedSuccessfully %}
+        <div{{ form.attributes.success|raw }}>
+            <p>{{ form.successMessage | t('freeform') }}</p>
+        </div>
+    {% endif %}
+    {% if form.hasErrors %}
+        <div{{ form.attributes.errors|raw }}>
+            <p>{{ form.errorMessage | t('freeform') }}</p>
+
+            {% if form.errors|length %}
+                <ul class="mb-0">
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% include "freeform/_templates/formatting/_error-summary.twig" %}
+        </div>
+    {% endif %}
+{% endif %}
+
+{# Render page tabs if multi-page #}
+{% if form.pages|length > 1 %}
+    {% include "freeform/_templates/formatting/_page-heading.twig" %}
+    <ul class="nav nav-tabs mb-4">
+        {% for page in form.pages %}
+            <li class="nav-item"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
+                <span class="nav-link{{ form.currentPage.index == page.index ? ' fw-bold active' : ' disabled' }}">
+                    {{ page.label }}
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{# Display form field rows and columns #}
+{{ rowMacro.render(form.rows, form) }}
+
+{# Render the closing form tag #}
+{{ form.renderClosingTag }}

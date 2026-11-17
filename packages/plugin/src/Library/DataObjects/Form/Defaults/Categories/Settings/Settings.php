@@ -19,7 +19,7 @@ class Settings extends BaseCategory
 
     public function getLabel(): string
     {
-        return 'Settings Defaults';
+        return 'Default Form Settings';
     }
 
     public function isDelimited(): bool

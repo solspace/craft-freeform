@@ -30,14 +30,13 @@ class SetupSettingsTest extends TestCase
         self::assertSame('true', $values['spamFolderEnabled']);
         self::assertSame('none', $values['loggingStyle']);
         self::assertSame(['loggingStyle' => 'activity', 'activityEnabled' => 'true'], SetupSettings::changes(['loggingStyle' => 'activity'], $values, $values, []));
-        self::assertSame(['loggingStyle' => 'classic', 'technicalFileLogging' => 'true'], SetupSettings::changes(['loggingStyle' => 'classic'], $values, $values, []));
     }
 
     public function testEnvironmentAndPhpConfigurationRemainLocked(): void
     {
         $settings = $this->settings();
         $settings->spamFolderEnabled = '$SPAM_FOLDER';
-        self::assertSame(['emailTemplateMethod', 'spamFolderEnabled', 'loggingStyle'], SetupSettings::locked($settings, ['emailTemplateMethod' => 'global', 'technicalFileLogging' => false]));
+        self::assertSame(['emailTemplateMethod', 'spamFolderEnabled', 'loggingStyle'], SetupSettings::locked($settings, ['emailTemplateMethod' => 'global', 'activityEnabled' => false]));
         $values = SetupSettings::values($settings);
         $this->expectException(\DomainException::class);
         SetupSettings::changes(['emailTemplateMethod' => 'all'], $values, $values, ['emailTemplateMethod']);
@@ -63,6 +62,8 @@ class SetupSettingsTest extends TestCase
     #[TestWith([['queuePingToken' => 'new-token']])]
     #[TestWith([['defaults' => []]])]
     #[TestWith([['loggingStyle' => 'invalid']])]
+    #[TestWith([['loggingStyle' => 'classic']])]
+    #[TestWith([['loggingLevel' => 'debug']])]
     #[TestWith([['spamFolderEnabled' => []]])]
     #[TestWith([['defaultFromEmail' => "admin@example.com\nBcc: other@example.com"]])]
     #[TestWith([['defaultFromEmail' => 'invalid-address']])]
@@ -106,7 +107,7 @@ class SetupSettingsTest extends TestCase
     #[TestWith([['defaultUploadCount' => '0']])]
     #[TestWith([['defaultUploadSize' => '-5']])]
     #[TestWith([['defaultUploadKinds' => 'executable']])]
-    #[TestWith([['alertNotificationRecipients' => 'not-an-email']])]
+    #[TestWith([['errorNotificationRecipients' => 'not-an-email']])]
     public function testNewSettingValidationRejectsUnsupportedValues(array $changes): void
     {
         $values = SetupSettings::values($this->settings());

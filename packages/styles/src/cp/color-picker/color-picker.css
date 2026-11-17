@@ -105,19 +105,9 @@
   opacity: 0.5;
 }
 .ff-color-toggle {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  height: 32px;
   margin: 0;
   font-size: 12px;
   white-space: nowrap;
-}
-.ff-color-toggle input {
-  flex: 0 0 14px;
-  width: 14px;
-  height: 14px;
-  margin: 0;
 }
 .ff-color-popover {
   position: fixed;

@@ -2,10 +2,14 @@
   --ff-status-error-fg: var(--c-color-danger-on-quiet);
   --ff-status-error-bg: color-mix(
     in srgb,
-    var(--c-color-danger-on-quiet) 8%,
+    var(--c-color-danger-fill-quiet) 35%,
     var(--c-surface-default)
   );
-  --ff-status-error-border: var(--c-color-danger-border-quiet);
+  --ff-status-error-border: color-mix(
+    in srgb,
+    var(--c-color-danger-border-quiet) 65%,
+    var(--c-color-neutral-border-quiet)
+  );
   --ff-status-error-mark: var(--c-color-danger-on-quiet);
   --ff-status-warning-fg: var(--c-color-warning-on-quiet);
   --ff-status-warning-bg: color-mix(
@@ -85,6 +89,11 @@
 .ff-log-alert {
   width: 100%;
   min-height: 54px;
+}
+.ff-status-surface:is([data-status="error"], [data-level="error"]):not(
+  [data-empty="true"]
+) {
+  border-inline-start: 3px solid var(--c-color-danger-border-normal);
 }
 .ff-log-alert__content {
   display: flex;

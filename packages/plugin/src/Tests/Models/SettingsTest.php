@@ -24,36 +24,69 @@ class SettingsTest extends TestCase
         app()->instance(ValidationFactory::class, new Factory(new Translator(new ArrayLoader(), 'en'), app()));
     }
 
-    public function testLoggingStylesPreservePreferencesWhileEnablingOnlyTheSelectedSystem(): void
+    public function testClassicSettingsUpgradeToActivityAndDiscardRetiredOptions(): void
     {
-        $settings = $this->normalize(['activityEnabled' => 'true', 'technicalFileLogging' => 'true', 'loggingLevel' => 'debug', 'activityMode' => 'custom']);
-        self::assertTrue($settings->isActivityLoggingEnabled());
-        self::assertFalse($settings->isClassicLoggingEnabled());
-        $settings->loggingStyle = 'classic';
-        self::assertFalse($settings->isActivityLoggingEnabled());
-        self::assertTrue($settings->isClassicLoggingEnabled());
-        $settings->loggingStyle = 'activity';
-        self::assertTrue($settings->isActivityLoggingEnabled());
-        self::assertSame('debug', $settings->loggingLevel);
-        self::assertSame('custom', $settings->activityMode);
-        self::assertSame('1', $settings->technicalFileLogging);
-        $settings->loggingStyle = 'none';
-        self::assertTrue($settings->validate(['loggingStyle']));
-        self::assertFalse($settings->isActivityLoggingEnabled());
-        self::assertFalse($settings->isClassicLoggingEnabled());
+        foreach (['true', 'false', '$FREEFORM_FILE_LOGGING'] as $guard) {
+            $values = ['loggingStyle' => 'classic', 'activityEnabled' => 'false', 'technicalFileLogging' => $guard, 'loggingLevel' => 'debug', 'activityMode' => 'custom', 'activityEvents' => ['submission' => false], 'activityRetentionDays' => 7];
+            $settings = $this->normalize([]);
+            $settings->setAttributes($values, false);
+            self::assertSame('activity', $settings->loggingStyle);
+            self::assertSame('activity', $settings->getEffectiveLoggingStyle());
+            self::assertTrue($settings->isActivityLoggingEnabled());
+            self::assertTrue($settings->validate(['loggingStyle']));
+            self::assertSame('custom', $settings->activityMode);
+            self::assertSame(['submission' => false], $settings->activityEvents);
+            self::assertSame(7, $settings->activityRetentionDays);
+            self::assertArrayNotHasKey('loggingLevel', $settings->toArray());
+            self::assertArrayNotHasKey('technicalFileLogging', $settings->toArray());
+        }
+    }
+
+    public function testDisabledLoggingStaysOffUntilActivityIsChosen(): void
+    {
+        $settings = $this->normalize(['activityEnabled' => 'false']);
         self::assertSame('none', $settings->getEffectiveLoggingStyle());
-        self::assertSame('debug', $settings->loggingLevel);
-        self::assertSame('custom', $settings->activityMode);
+        $settings->setAttributes(['loggingStyle' => 'none', 'technicalFileLogging' => 'true', 'loggingLevel' => 'debug'], false);
+        self::assertSame('none', $settings->getEffectiveLoggingStyle());
+        $settings->setAttributes(['loggingStyle' => 'activity', 'activityEnabled' => '1'], false);
+        self::assertSame('activity', $settings->getEffectiveLoggingStyle());
         $settings->loggingStyle = 'unknown';
         self::assertFalse($settings->validate(['loggingStyle']));
     }
 
-    public function testPreviouslyDisabledLoggingShowsNoneUntilAStyleIsChosen(): void
+    public function testRetiredSettingsDoNotDiscardExistingPayloadKeys(): void
     {
-        $settings = $this->normalize(['activityEnabled' => 'false']);
-        self::assertSame('none', $settings->getEffectiveLoggingStyle());
-        $settings->setAttributes(['loggingStyle' => 'classic', 'activityEnabled' => '1', 'technicalFileLogging' => '1'], false);
-        self::assertSame('classic', $settings->getEffectiveLoggingStyle());
+        $settings = new Settings(['sessionContextSecret' => 'existing-payload-key', 'loggingStyle' => 'classic', 'scriptInsertType' => 'inline', 'scriptInsertLocation' => 'header']);
+        self::assertSame('activity', $settings->getEffectiveLoggingStyle());
+        self::assertSame('footer', $settings->scriptInsertLocation);
+        self::assertSame('existing-payload-key', $settings->sessionContextSecret);
+        $settings->setAttributes(['scriptInsertLocation' => 'form'], false);
+        self::assertSame('existing-payload-key', $settings->sessionContextSecret);
+        self::assertSame('existing-payload-key', $settings->toArray()['sessionContextSecret']);
+    }
+
+    public function testRetainedScrollSettingWinsOverTheRemovedAjaxPreference(): void
+    {
+        foreach (['true', 'false', '$FREEFORM_SCROLL'] as $retained) {
+            foreach (['true', 'false'] as $retired) {
+                $settings = new Settings(['autoScrollToErrors' => $retained, 'autoScroll' => $retired]);
+                self::assertSame($retained === 'true' ? '1' : ($retained === 'false' ? '0' : $retained), $settings->autoScrollToErrors);
+                self::assertArrayNotHasKey('autoScroll', $settings->toArray());
+            }
+        }
+    }
+
+    public function testRetiredScriptSettingsNormalizeWithoutOverridingSupportedLocations(): void
+    {
+        foreach (['header' => 'footer', 'footer' => 'footer', 'form' => 'form', 'manual' => 'manual'] as $legacy => $expected) {
+            $settings = $this->normalize([]);
+            $settings->setAttributes(['scriptInsertType' => 'inline', 'scriptInsertLocation' => $legacy], false);
+            self::assertSame($expected, $settings->scriptInsertLocation);
+            self::assertTrue($settings->validate(['scriptInsertLocation']));
+            self::assertArrayNotHasKey('scriptInsertType', $settings->toArray());
+        }
+        $settings->scriptInsertLocation = 'unknown';
+        self::assertFalse($settings->validate(['scriptInsertLocation']));
     }
 
     public function testUploadVolumeSettingAcceptsAllNoneOrHandlesAndNormalizesClearedCheckboxes(): void
@@ -99,9 +132,7 @@ class SettingsTest extends TestCase
 
         $this->assertSame('0', $settings->sitesEnabled);
         $this->assertSame('0', $settings->allowDashesInFieldHandles);
-        $this->assertSame('0', $settings->exportTrackedUrlParameters);
         $this->assertSame('1', $settings->abTests);
-        $this->assertSame('1', $settings->formSubmitDisable);
     }
 
     public function testStoredBooleanStringsAreNormalized(): void
@@ -121,14 +152,12 @@ class SettingsTest extends TestCase
     {
         $settings = $this->normalize([
             'sitesEnabled' => '$FREEFORM_SITES_ENABLED',
-            'useQueueForEmailNotifications' => '1',
-            'removeNewlines' => '',
+            'useQueue' => '1',
             'pluginName' => 'false',
         ]);
 
         $this->assertSame('$FREEFORM_SITES_ENABLED', $settings->sitesEnabled);
-        $this->assertSame('1', $settings->useQueueForEmailNotifications);
-        $this->assertSame('', $settings->removeNewlines);
+        $this->assertSame('1', $settings->useQueue);
         $this->assertSame('false', $settings->pluginName);
     }
 

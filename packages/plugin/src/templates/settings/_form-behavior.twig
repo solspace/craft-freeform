@@ -20,22 +20,21 @@
     {{ redirectInput('freeform/settings/form-behavior') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Submit Behavior"|t('freeform') }}</h2>
 
     {{ booleanMenu.field({
         includeEnvVars: true,
-        label: "Disable Submit Button on Form Submit"|t('freeform'),
-        instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
-        name: "settings[formSubmitDisable]",
-        value: settings.formSubmitDisable,
-        errors: settings.errors().get("formSubmitDisable"),
+        label: "Allow URL Prefilling"|t('freeform'),
+        instructions: "Allow form fields to be prefilled using matching URL parameters, such as `?topic=support`."|t('freeform'),
+        name: "settings[fillWithGet]",
+        value: settings.fillWithGet,
+        errors: settings.errors().get("fillWithGet"),
         disabled: readOnly,
     }) }}
 
     {{ booleanMenu.field({
         includeEnvVars: true,
-        label: "Automatically Scroll to Form on Errors and Multipage forms"|t('freeform'),
-        instructions: "Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms."|t('freeform'),
+        label: "Automatically Scroll to Form"|t('freeform'),
+        instructions: "Automatically scroll to the form after submission to show errors, the next page, or a success message. Applies to standard and AJAX submissions."|t('freeform'),
         name: "settings[autoScrollToErrors]",
         value: settings.autoScrollToErrors,
         errors: settings.errors().get("autoScrollToErrors"),
@@ -44,28 +43,8 @@
 
     {{ booleanMenu.field({
         includeEnvVars: true,
-        label: "Automatically Scroll to top of the Form on AJAX submit"|t('freeform'),
-        instructions: "Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight."|t('freeform'),
-        name: "settings[autoScroll]",
-        value: settings.autoScroll,
-        errors: settings.errors().get("autoScroll"),
-        disabled: readOnly,
-    }) }}
-
-    {{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Remember the Page Order in Multi-page forms"|t('freeform'),
-        instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
-        name: "settings[rememberPageSubmitOrder]",
-        value: settings.rememberPageSubmitOrder,
-        errors: settings.errors().get("rememberPageSubmitOrder"),
-        disabled: readOnly,
-    }) }}
-
-    {{ booleanMenu.field({
-        includeEnvVars: true,
-        label: "Prevent Duplicate Submissions (Idempotency Keys)"|t('freeform'),
-        instructions: "When enabled, Freeform generates a unique token for each form instance to prevent duplicate submissions and actions. If the same data is submitted multiple times in quick succession, only the first submission is processed. This helps avoid duplicate actions, especially for payment or AI-powered forms."|t('freeform'),
+        label: "Prevent Duplicate Submissions"|t('freeform'),
+        instructions: "Use unique submission tokens to reject repeat submissions of the same form instance within one minute."|t('freeform'),
         name: "settings[useIdempotencyKey]",
         value: settings.useIdempotencyKey,
         errors: settings.errors().get("useIdempotencyKey"),
@@ -74,27 +53,23 @@
 
     {% if (craft.app.config.general.asyncCsrfInputs) %}
         {{ forms.selectField({
-            label: "CSRF Token Refresh Method"|t('freeform'),
-            instructions: "You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching."|t('freeform'),
+            label: "CSRF Token Refresh"|t('freeform'),
+            instructions: "Choose whether Freeform refreshes CSRF tokens once per page view, before every request, or never. Once per page view is recommended when using page caching."|t('freeform'),
             name: "settings[csrfRefresh]",
             value: settings.csrfRefresh,
             errors: settings.errors().get("csrfRefresh"),
             disabled: readOnly,
             options: {
                 "once": "Once Per Page View (recommended)"|t('freeform'),
-                "always": "Always on Each Request"|t('freeform'),
+                "always": "Every Request"|t('freeform'),
                 "none": "Never"|t('freeform'),
             },
         }) }}
     {% endif %}
 
-    <hr>
-
-    <h2>{{ "Freeform Scripts"|t('freeform') }}</h2>
 
     {% set scriptLocations = {
         footer: {label: 'Page Footer', description: 'Inserts scripts at the end of the page body.', path: 'M4 15h16M8 18h8'},
-        header: {label: 'Start of Page', description: 'Inserts scripts at the beginning of the page body, before the page content.', path: 'M4 9h16M8 6h8'},
         form: {label: 'Inside Form', description: 'Outputs scripts with the form markup instead of registering them with the page.', path: 'M8 8h8M8 12h8M8 16h5'},
         manual: {label: 'None (add manually)', description: 'Disables automatic insertion. Load Freeform’s scripts and styles in your templates.', path: 'm9 9-3 3 3 3m6-6 3 3-3 3'},
     } %}
@@ -122,112 +97,10 @@
     {{ forms.field({
         id: 'script-insert-location',
         fieldset: true,
-        label: "Script Insert Location"|t('freeform'),
+        label: "Script Placement"|t('freeform'),
         instructions: "Choose where Freeform inserts the scripts used by forms and fields."|t('freeform'),
         errors: settings.errors().get("scriptInsertLocation"),
     }, scriptLocationInput) }}
-
-    {% set scriptTypes = {
-        files: {label: 'Asset Bundles', description: 'Loads JavaScript and CSS as separate files, so browsers can cache them.', path: 'M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9ZM14 3v6h6M8 13h8M8 17h5'},
-        inline: {label: 'Inline', description: 'Embeds JavaScript and CSS directly in the page HTML.', path: 'm8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14'},
-    } %}
-    {% set scriptTypeInput %}
-        <div class="ff-choice-cards">
-            {% for type, option in scriptTypes %}
-                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
-                {{ cards.compactChoice({
-                    id: 'script-type-' ~ type,
-                    name: 'settings[scriptInsertType]',
-                    value: type,
-                    selected: settings.scriptInsertType == type,
-                    recommended: type == 'files',
-                    disabled: readOnly,
-                    label: option.label|t('freeform'),
-                    description: option.description|t('freeform'),
-                    icon: icon,
-                }) }}
-            {% endfor %}
-        </div>
-    {% endset %}
-    {{ forms.field({
-        id: 'script-insert-type',
-        fieldset: true,
-        label: "Script Insert Type"|t('freeform'),
-        instructions: "Choose how Freeform’s JavaScript and CSS are included in the page."|t('freeform'),
-        errors: settings.errors().get("scriptInsertType"),
-    }, scriptTypeInput) }}
-
-    <hr>
-
-    <h2>{{ "Form Sessions"|t('freeform') }}</h2>
-
-    {% if settings.sessionContext != "payload" %}
-
-        {{ forms.selectField({
-            label: "Freeform Session Context"|t('freeform'),
-            instructions: "Choose the way form context is passed between form submits."|t('freeform'),
-            id: 'session-context',
-            name: "settings[sessionContext]",
-            value: settings.sessionContext,
-            errors: settings.errors().get("sessionContext"),
-            disabled: readOnly,
-            options: {
-                "payload": "As an encrypted payload (recommended)"|t('freeform'),
-                "session": "Using PHP's sessions"|t('freeform'),
-                "database": "Using a database table"|t('freeform'),
-            },
-        }) }}
-
-    {% else %}
-
-        {{ forms.hidden({
-            id: 'session-context',
-            name: "settings[sessionContext]",
-            value: settings.sessionContext,
-        }) }}
-
-    {% endif %}
-
-    <div id="session-time" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
-        {{ measurement.field({
-            class: "code",
-            label: "Session Length"|t('freeform'),
-            instructions: "Specify when the sessions should expire. Set to 0 for unlimited."|t('freeform'),
-            name: "settings[sessionContextTimeToLiveMinutes]",
-            unit: "minutes"|t('freeform'),
-            value: settings.sessionContextTimeToLiveMinutes,
-            errors: settings.getErrors("sessionContextTimeToLiveMinutes"),
-            disabled: readOnly,
-            suggestEnvVars: true,
-        }) }}
-    </div>
-
-    <div id="session-count" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
-        {{ measurement.field({
-            class: "code",
-            label: "Amount of active forms per user"|t('freeform'),
-            name: "settings[sessionContextCount]",
-            unit: "forms"|t('freeform'),
-            value: settings.sessionContextCount,
-            errors: settings.getErrors("sessionContextCount"),
-            disabled: readOnly,
-            suggestEnvVars: true,
-        }) }}
-    </div>
-
-    <div id="session-secret"  class="field {{ settings.sessionContext not in ["payload"] ? "hidden" }}">
-        {{ forms.autosuggestField({
-            class: "code",
-            label: "Secret key"|t('freeform'),
-            instructions: "Specify a secret key to encrypt the form payload with. Will use server key if left empty."|t('freeform'),
-            name: "settings[sessionContextSecret]",
-            value: settings.sessionContextSecret,
-            errors: settings.getErrors("sessionContextSecret"),
-            disabled: readOnly,
-            suggestEnvVars: true,
-        }) }}
-    </div>
-
 
     {% if craft.freeform.pro %}
 
@@ -236,8 +109,8 @@
         <h2>{{ "Save & Continue Later"|t('freeform') }}</h2>
 
         {{ forms.selectField({
-            label: "Number of Days to Keep Saved Form Data"|t('freeform'),
-            instructions: "The number of days to store saved form progress in the database before clearing."|t('freeform'),
+            label: "Keep Saved Progress For"|t('freeform'),
+            instructions: "How long to keep saved progress after it was last updated."|t('freeform'),
             name: "settings[saveFormTtl]",
             value: settings.saveFormTtl,
             errors: settings.errors().get("saveFormTtl"),
@@ -262,14 +135,15 @@
         }) }}
 
         {{ measurement.field({
-            label: "Maximum Number of Saved Forms Per Session"|t('freeform'),
-            instructions: "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number. Once the maximum has been reached, Freeform will begin overwriting existing older entries to create new ones."|t('freeform'),
+            label: "Maximum Saved Forms per Session"|t('freeform'),
+            instructions: "The maximum number of saved forms to keep in each session. When exceeded, the least recently updated saves are removed. Set to 0 for unlimited."|t('freeform'),
+            id: "save-form-session-limit",
             name: "settings[saveFormSessionLimit]",
             unit: "forms"|t('freeform'),
             value: settings.saveFormSessionLimit,
             errors: settings.errors().get("saveFormSessionLimit"),
             disabled: readOnly,
-            placeholder: "Leave empty or 0 for unlimited amount."|t('freeform'),
+            placeholder: "0 for unlimited"|t('freeform'),
         }) }}
 
     {% endif %}

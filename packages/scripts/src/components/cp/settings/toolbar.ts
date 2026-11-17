@@ -157,7 +157,7 @@ export function initToolbarEditors(root: ParentNode = document): void {
       items.addEventListener("pointerleave", resumePreview);
       items.addEventListener("focusin", resumePreview);
       const menuWrapper = element("div", "ff-toolbar-add-menu");
-      const add = button(tr("Add…"), "btn small menubtn");
+      const add = button(tr("Add"), "btn small menubtn");
       add.setAttribute("aria-label", tr("Add toolbar button"));
       add.setAttribute("aria-haspopup", "menu");
       add.setAttribute("aria-expanded", "false");
@@ -198,6 +198,11 @@ export function initToolbarEditors(root: ParentNode = document): void {
       if (!combobox) panel.append(raw);
       const modeSwitch = element("span", "ff-toolbar-mode-switch");
       modeSwitch.append(toggle);
+      const envBadge = holder.querySelector<HTMLElement>(".freeform-env-badge");
+      const envControl = envBadge?.closest<HTMLElement>(
+        ".freeform-env-control",
+      );
+      const envTooltip = holder.querySelector<HTMLElement>("craft-tooltip");
       const instructions = holder.querySelector<HTMLElement>(
         '.field > .instructions, craft-field > [slot="help-text"]',
       );
@@ -266,6 +271,15 @@ export function initToolbarEditors(root: ParentNode = document): void {
         toggle.disabled = tokens === null;
         toggle.setAttribute("aria-expanded", String(rawMode));
         panel.classList.toggle("is-raw", rawMode);
+        if (envBadge && envControl) {
+          if (rawMode) {
+            envControl.append(envBadge);
+            if (envTooltip) envControl.append(envTooltip);
+          } else {
+            envBadge.remove();
+            envTooltip?.remove();
+          }
+        }
         if (combobox) panel.hidden = rawMode;
         if (environmentTip) {
           environmentTip.hidden = !rawMode;

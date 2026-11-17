@@ -73,7 +73,7 @@
 
     {% if fullDigest %}
         <h2 class="digest-text" style="margin: 28px 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Errors and warnings'|t('freeform') }}</h2>
-        {% if loggingStyle|default('classic') == 'activity' %}
+        {% if loggingStyle|default('activity') == 'activity' %}
             <p class="digest-muted" style="margin: 0 0 12px; color: #526175; font-size: 13px; line-height: 20px;">{{ 'Activity Log records are kept for {days} days. Older events may be unavailable.'|t('freeform', {days: activityRetentionDays}) }}</p>
         {% endif %}
         {% for data in errors %}
@@ -90,27 +90,9 @@
                 <tr aria-hidden="true"><td height="8" style="height: 8px; font-size: 0; line-height: 8px;">&nbsp;</td></tr>
             </table>
         {% else %}
-            <p class="digest-muted" style="margin: 0; color: #526175;">{{ (loggingStyle|default('classic') == 'none' ? 'Logging is turned off.' : 'No errors to report for this period.')|t('freeform') }}</p>
+            <p class="digest-muted" style="margin: 0; color: #526175;">{{ (loggingStyle|default('activity') == 'none' ? 'Logging is turned off.' : 'No errors to report for this period.')|t('freeform') }}</p>
         {% endfor %}
 
-        <h2 class="digest-text" style="margin: 24px 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Updates and notices'|t('freeform') }}</h2>
-        {% for data in updates %}
-            {% set type = data.type|lower %}
-            {% set severity = type in criticalLevels ? 'critical' : (type == 'warning' ? 'warning' : 'info') %}
-            {% set colors = noticeColors[severity] %}
-            <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-                <tr>
-                    <td class="digest-soft digest-alert-{{ severity }}" bgcolor="#f0f4fa" style="padding: 10px 12px; background-color: #f0f4fa; border-left: 3px solid {{ colors.accent }}; overflow-wrap: anywhere; word-break: break-word;">
-                        <p style="margin: 0 0 4px; font-size: 14px; line-height: 20px;"><span class="digest-label-{{ severity }}" style="color: {{ colors.text }}; font-weight: bold;">{{ data.type|capitalize }}</span><span class="digest-muted" style="color: #526175;"> &middot; {{ data.issueDate|date }}</span></p>
-                        {# Feed messages intentionally contain formatted HTML, as in the other system emails. #}
-                        <div class="digest-rich digest-text" style="color: #1f2937; font-size: 16px; line-height: 24px;">{{ data.message|raw }}</div>
-                    </td>
-                </tr>
-                <tr aria-hidden="true"><td height="8" style="height: 8px; font-size: 0; line-height: 8px;">&nbsp;</td></tr>
-            </table>
-        {% else %}
-            <p class="digest-muted" style="margin: 0; color: #526175;">{{ 'There are currently no important updates or notices for your site.'|t('freeform') }}</p>
-        {% endfor %}
     {% endif %}
 
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin-top: 28px;">
@@ -141,7 +123,7 @@
 {% endfor %}
 {% if fullDigest %}
 {{ 'Errors and warnings'|t('freeform') }}
-{% if loggingStyle|default('classic') == 'activity' %}
+{% if loggingStyle|default('activity') == 'activity' %}
 {{ 'Activity Log records are kept for {days} days. Older events may be unavailable.'|t('freeform', {days: activityRetentionDays}) }}
 {% endif %}
 {% for data in errors %}
@@ -150,17 +132,9 @@
 {% if data.url|default(null) %}{{ data.url }}{% endif %}
 
 {% else %}
-{{ (loggingStyle|default('classic') == 'none' ? 'Logging is turned off.' : 'No errors to report for this period.')|t('freeform') }}
+{{ (loggingStyle|default('activity') == 'none' ? 'Logging is turned off.' : 'No errors to report for this period.')|t('freeform') }}
 {% endfor %}
 
-{{ 'Updates and notices'|t('freeform') }}
-{% for data in updates %}
-{{ data.type|capitalize }} — {{ data.issueDate|date }}
-{{ data.message|striptags }}
-
-{% else %}
-{{ 'There are currently no important updates or notices for your site.'|t('freeform') }}
-{% endfor %}
 {% endif %}
 
 {{ 'Open {name}'|t('freeform', {name: craft.freeform.name}) }}: {{ cpUrl('freeform') }}

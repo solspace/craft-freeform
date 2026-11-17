@@ -46,7 +46,5 @@ interface FormHandlerInterface
 
     public function isAutoscrollToErrorsEnabled(): bool;
 
-    public function isFormSubmitDisable(): bool;
-
     public function getDefaultFormattingTemplate(): string;
 }

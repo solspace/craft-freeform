@@ -2,7 +2,7 @@
   {
     "urlParts": ["forms\\/", ["*","[^\\\\\\/]+"]],
     "urlPattern": "forms/{template}",
-    "template": "/forms"
+    "template": "/forms/index"
   },
   {
     "urlParts": ["forms\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
@@ -17,12 +17,12 @@
   {
     "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"]],
     "urlPattern": "submissions/{form}",
-    "template": "/submissions"
+    "template": "/submissions/index"
   },
   {
     "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"], "\\/spam\\/"],
     "urlPattern": "submissions/{form}/spam",
-    "template": "/submissions"
+    "template": "/submissions/index"
   },
   {
     "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
@@ -42,7 +42,7 @@
   {
     "urlParts": ["custom\\/"],
     "urlPattern": "custom",
-    "template": "/custom"
+    "template": "/custom/index"
   },
   {
     "urlParts": ["custom\\/", ["*","[^\\\\\\/]+"]],

@@ -1,0 +1,5 @@
+{% macro autosuggestField(config) %}
+    {% import '_includes/forms' as forms %}
+    {% set config = config|merge({id: config.id ?? 'freeform-env-' ~ random()}) %}
+    {{ forms.field(config, freeformEnvControl(config, forms.autosuggest(config))) }}
+{% endmacro %}

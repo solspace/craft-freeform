@@ -14,7 +14,7 @@ const markup = (
   name: string,
   value: string,
   disabled = false,
-) => `<div data-digest-schedule data-summary-daily="Every morning" data-summary-weekly="Every {day} morning">
+) => `<div data-digest-schedule data-summary-daily="Daily" data-summary-weekly="Every {day}">
   <div data-digest-controls hidden><button type="button" data-digest-mode="daily">Daily</button><button type="button" data-digest-mode="weekly">Weekly</button>
   <div data-digest-weekly>${days.map((day, index) => `<button type="button" data-digest-day="${index}" data-day-name="${day}">${day}</button>`).join("")}</div><p data-digest-summary></p></div>
   <div data-digest-legacy><select name="${name}" ${disabled ? "disabled" : ""}>${["-1", "0", "1", "2", "3", "4", "5", "6"].map((day) => `<option value="${day}" ${day === value ? "selected" : ""}>${day}</option>`).join("")}</select></div></div>`;
@@ -40,9 +40,7 @@ describe("legacy digest schedule values", () => {
         document.querySelector<HTMLElement>("[data-digest-weekly]")!.hidden,
       ).toBe(value === "-1");
       expect(document.querySelector("[data-digest-summary]")!.textContent).toBe(
-        value === "-1"
-          ? "Every morning"
-          : `Every ${days[Number(value)]} morning`,
+        value === "-1" ? "Daily" : `Every ${days[Number(value)]}`,
       );
     },
   );

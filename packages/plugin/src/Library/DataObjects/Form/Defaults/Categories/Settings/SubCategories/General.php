@@ -19,7 +19,7 @@ class General extends BaseCategory
     public TextItem $submissionTitle;
 
     #[OptionsGenerator(FormattingTemplateOptions::class)]
-    #[SetDefaultValue('basic-light/index.twig')]
+    #[SetDefaultValue('freeform-light/index.twig')]
     public SelectItem $formattingTemplate;
 
     public function getLabel(): string

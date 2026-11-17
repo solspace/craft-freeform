@@ -41,7 +41,7 @@
                 input: { "+class": "is-invalid" },
             },
         },
-        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @dropdown, @multiple-select, @number, @password": {
+        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @dropdown, @number, @password": {
             attributes: {
                 container: { "+class": "form-floating" },
             },
@@ -69,6 +69,9 @@
         },
         "@signature": {
             attributes: {
+        typedContainer: { class: "form-floating" },
+        typedInput: { placeholder: " ", class: "form-control" },
+        typedLabel: { class: "mb-1" },
                 input: { "-class": "form-control", "+class": "btn btn-outline-secondary freeform-signature-clear" },
             },
         },
@@ -100,12 +103,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% include "freeform/_templates/formatting/_error-summary.twig" %}
         </div>
     {% endif %}
 {% endif %}
 
 {# Render page tabs if multi-page #}
 {% if form.pages|length > 1 %}
+    {% include "freeform/_templates/formatting/_page-heading.twig" %}
     <ul class="nav nav-tabs mb-4">
         {% for page in form.pages %}
             <li class="nav-item"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>

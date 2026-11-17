@@ -175,25 +175,63 @@ export const FieldCellWrapper = styled.div`
     }
   }
 
-  &[data-field-type='checkbox'] {
-    input.checkbox + label > p {
-      margin-block: 0;
+  .ff-preview-choice {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-height: 24px;
+    margin: 0;
+    color: var(--c-text-default);
+    line-height: 24px;
 
-      &:last-child { display: inline; }
+    > input[type='checkbox'], > input[type='radio'] {
+      appearance: none;
+      position: static;
+      flex: 0 0 16px;
+      width: 16px;
+      height: 16px;
+      margin: 4px 0 0;
+      border: 1px solid ${colors.inputBorder};
+      border-radius: 3px;
+      background: var(--c-surface-default);
+      box-shadow: none;
+      opacity: 1;
+
+      &:checked {
+        border-color: var(--c-color-accent-fill-loud);
+        background: var(--c-color-accent-fill-loud);
+      }
     }
-
-    input.checkbox + label.required::after {
-      content: '*';
+    > input[type='radio'] {
+      border-radius: 50%;
+      &:checked { box-shadow: inset 0 0 0 4px var(--c-surface-default); }
+    }
+    > input[type='checkbox']:checked {
       position: relative;
-      top: -2px;
-      margin-inline-start: 3px;
-      font-family: inherit;
-      font-size: 11px;
-      font-weight: 600;
-      line-height: 1;
-      color: ${colors.error};
-      vertical-align: baseline;
+      color: var(--c-color-accent-on-loud);
+      &::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 7px;
+        height: 4px;
+        border: solid currentColor;
+        border-width: 0 0 2px 2px;
+        transform: rotate(-45deg);
+      }
     }
+    &::before, &::after { display: none; }
+    > span > p { margin: 0; }
+    &.required > span::after {
+      content: '*';
+      margin-inline-start: 3px;
+      color: ${colors.error};
+    }
+  }
+  .options-one-line {
+    display: inline-block;
+    margin-inline-end: 16px;
   }
 
   input:not([type='checkbox']):not([type='radio']),

@@ -126,22 +126,11 @@ class DigestLogSourceTest extends TestCase
         self::assertStringContainsString('/admin/freeform/activity?view=events&eventId=1', $rows[1]['url']);
     }
 
-    public function testClassicDigestFiltersPeriodBeforeLimitingAndIncludesWarningsFromTheirFiles(): void
+    public function testDisabledLoggingDoesNotReportStaleFiles(): void
     {
-        $this->settings->loggingStyle = 'classic';
-        $line = static fn ($date, $level, $message) => '['.$date."] qa.{$level}: {$message} [] []\n";
-        $now = Carbon::now();
-        file_put_contents($this->logPath.'/freeform.log', $line($now->copy()->subHours(3)->toIso8601String(), 'ERROR', 'Inside period').str_repeat($line($now->copy()->addDays(2)->toIso8601String(), 'ERROR', 'Outside period'), 7));
-        file_put_contents($this->logPath.'/freeform-integrations.log', $line($now->copy()->subHour()->toIso8601String(), 'WARNING', 'Integration warning'));
-        file_put_contents($this->logPath.'/freeform-email.log', $line($now->copy()->subMinutes(30)->toIso8601String(), 'INFO', 'Email information'));
-        $rows = $this->data($now->copy()->subDay(), $now);
-        self::assertStringStartsWith('Integration warning', $rows[0]['message']);
-        self::assertStringStartsWith('Inside period', $rows[1]['message']);
-        self::assertCount(2, $rows);
-        self::assertStringEndsWith('/admin/freeform/settings/integrations-log', $rows[0]['url']);
-        self::assertStringEndsWith('/admin/freeform/settings/error-log', $rows[1]['url']);
         $this->settings->loggingStyle = 'none';
-        self::assertSame([], $this->data($now->copy()->subDay(), $now));
+        file_put_contents($this->logPath.'/freeform.log', 'Old Classic errors');
+        self::assertSame([], $this->data(Carbon::now()->subDay(), Carbon::now()));
     }
 
     private function data(Carbon $start, Carbon $end): array

@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
+
 class ExportSettings
 {
     public function __construct(
@@ -11,6 +13,19 @@ class ExportSettings
         private bool $handlesAsNames = false,
         private bool $exportTrackedUrlParameters = false,
     ) {}
+
+    public static function fromFormatting(array $formatting, ?string $timezone = null): self
+    {
+        $formatting = ExportFormatting::normalize($formatting);
+
+        return new self(
+            removeNewlines: 'singleLine' === $formatting['multiline'],
+            exportLabels: 'labels' === $formatting['options'],
+            timezone: $timezone,
+            handlesAsNames: 'handles' === $formatting['headings'],
+            exportTrackedUrlParameters: 'include' === $formatting['tracking'],
+        );
+    }
 
     public function isRemoveNewlines(): bool
     {

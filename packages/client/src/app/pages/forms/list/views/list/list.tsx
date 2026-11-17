@@ -3,10 +3,9 @@ import { useQueryFormsWithStats } from "@ff-client/queries/forms";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useEffect } from "react";
-
+import { ActivityAlerts } from "../../activity-alerts/activity-alerts";
 import type { FormSearchProps } from "../../form-search";
 import { createFormSearch } from "../../form-search.utils";
-import { Notices } from "../../notices/notices";
 import { Archived } from "../grid/archived/archived";
 import { ArchivedAndGroupWrapper, ContentContainer } from "../grid/grid.styles";
 
@@ -33,7 +32,7 @@ export const FormList: React.FC<FormSearchProps> = ({ search = "" }) => {
   return (
     <ContentContainer>
       <div id="content" className="content-pane">
-        <Notices />
+        <ActivityAlerts />
 
         <Wrapper>
           <ListTable

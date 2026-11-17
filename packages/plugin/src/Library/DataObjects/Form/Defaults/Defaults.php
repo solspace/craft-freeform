@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects\Form\Defaults;
 
+use Solspace\Freeform\Library\Configuration\TwigAccessUpgrade;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\CategoryInterface;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\FieldProperties;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Notifications\Notifications;
@@ -13,8 +14,7 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
     public const DEFAULT_TOOLBAR_CONFIGURATION = 'blocks bold italic underline forecolor backcolor | align numlist bullist | link image table | removeformat code';
 
     public bool $previewHtml = false;
-    public bool $twigInHtml = false;
-    public bool $twigIsolation = true;
+    public string $twigAccess = 'form';
     public string $richTextFieldToolbarConfiguration;
     public bool $includeSampleTemplates = true;
 
@@ -25,14 +25,20 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
     public function __construct(array $config = [])
     {
         $this->previewHtml = (bool) ($config['previewHtml'] ?? true);
-        $this->twigInHtml = (bool) ($config['twigInHtml'] ?? true);
-        $this->twigIsolation = (bool) ($config['twigIsolation'] ?? true);
+        $config = TwigAccessUpgrade::defaults($config);
+        $twigAccess = $config['twigAccess'] ?? 'form';
+        $this->twigAccess = \in_array($twigAccess, TwigAccessUpgrade::MODES, true) ? $twigAccess : 'form';
         $this->includeSampleTemplates = (bool) ($config['includeSampleTemplates'] ?? true);
         $this->richTextFieldToolbarConfiguration = $config['richTextFieldToolbarConfiguration'] ?? self::DEFAULT_TOOLBAR_CONFIGURATION;
 
         $this->notifications = new Notifications($config['notifications'] ?? []);
         $this->settings = new Settings($config['settings'] ?? []);
         $this->props = new FieldProperties($config['props'] ?? []);
+    }
+
+    public function isTwigEnabled(): bool
+    {
+        return 'disabled' !== $this->twigAccess;
     }
 
     public function getIterator(): \ArrayIterator
@@ -65,8 +71,7 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
     {
         return [
             'previewHtml' => $this->previewHtml,
-            'twigInHtml' => $this->twigInHtml,
-            'twigIsolation' => $this->twigIsolation,
+            'twigAccess' => $this->twigAccess,
             'richTextFieldToolbarConfiguration' => $this->richTextFieldToolbarConfiguration,
             'includeSampleTemplates' => $this->includeSampleTemplates,
             'notifications' => $this->notifications->jsonSerialize(),

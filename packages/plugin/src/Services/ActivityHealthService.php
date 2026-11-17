@@ -17,16 +17,16 @@ class ActivityHealthService extends BaseService
 {
     private const RECENT_LIMIT = 20;
 
-    public static function canAccess(string $style = 'activity'): bool
+    public static function canAccess(): bool
     {
-        return PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) || ('classic' !== $style && PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS));
+        return PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS);
     }
 
     public function navigation(int $days): array
     {
         $settings = $this->getSettingsService()->getSettingsModel();
         $style = $settings->getEffectiveLoggingStyle();
-        if (!self::canAccess($style)) {
+        if (!self::canAccess()) {
             throw new ForbiddenHttpException('Log access is required.');
         }
         $days = max(1, min(365, $days));
@@ -36,10 +36,6 @@ class ActivityHealthService extends BaseService
         $links = [];
         if ('activity' === $style) {
             $links[] = ['label' => Freeform::t('Open Activity Log'), 'url' => UrlHelper::cpUrl('freeform/activity', ['view' => 'events', 'days' => $days])];
-        } elseif ('classic' === $style) {
-            foreach (['error-log' => 'Error Log', 'integrations-log' => 'Integrations Log', 'email-log' => 'Email Log'] as $route => $label) {
-                $links[] = ['label' => Freeform::t($label), 'url' => UrlHelper::cpUrl('freeform/settings/'.$route)];
-            }
         }
 
         return ['days' => $days, 'period' => 1 === $days ? Freeform::t('Past 24 hours') : Freeform::t('Past {days} days', ['days' => $days]), 'scope' => Freeform::t('All forms'), 'links' => $links];
@@ -52,9 +48,6 @@ class ActivityHealthService extends BaseService
         }
         $settings = $this->getSettingsService()->getSettingsModel();
         $style = $settings->getEffectiveLoggingStyle();
-        if (!self::canAccess($style)) {
-            throw new ForbiddenHttpException('Settings access is required for Classic logs.');
-        }
         $days = max(1, min(365, $days));
         $retention = max(1, min(365, $settings->activityRetentionDays));
         $effectiveDays = 'activity' === $style ? min($days, $retention) : $days;
@@ -97,23 +90,6 @@ class ActivityHealthService extends BaseService
                     foreach ((clone $issues)->orderBy(['dateCreated' => \SORT_DESC, 'id' => \SORT_DESC])->limit(self::RECENT_LIMIT)->all() as $row) {
                         $row = ActivityPresentation::present($row);
                         $result['recent'][] = ['title' => $row['title'], 'level' => $row['level'], 'date' => $row['dateCreated'], 'url' => UrlHelper::cpUrl('freeform/activity', ['view' => 'events', 'eventId' => $row['id']])];
-                    }
-                }
-            } elseif ('classic' === $style) {
-                foreach (['error-log' => [null, 'Error Log'], 'integrations-log' => ['freeform-integrations.log', 'Integrations Log'], 'email-log' => ['freeform-email.log', 'Email Log']] as $route => [$file, $label]) {
-                    $url = UrlHelper::cpUrl('freeform/settings/'.$route);
-                    $result['links'][] = ['label' => $label, 'url' => $url];
-                    foreach (Freeform::getInstance()->logger->getLogReader($file) as $line) {
-                        if (!$line || $line->getDate() < $since || $line->getDate() > $until || !\in_array(strtolower($line->getLevel()), ['error', 'critical', 'alert', 'emergency', 'warning'], true)) {
-                            continue;
-                        }
-                        $level = 'warning' === strtolower($line->getLevel()) ? 'warning' : 'error';
-                        ++$result['warning' === $level ? 'warnings' : 'errors'];
-                        if ($showRecent) {
-                            $result['recent'][] = ['title' => mb_substr($line->getMessage(), 0, 100), 'level' => $level, 'date' => $line->getDate(), 'url' => $url];
-                            usort($result['recent'], static fn ($a, $b) => $b['date'] <=> $a['date']);
-                            $result['recent'] = \array_slice($result['recent'], 0, self::RECENT_LIMIT);
-                        }
                     }
                 }
             }

@@ -1,6 +1,5 @@
 import bootstrap from "@ff-client/assets/icons/formatting-templates/bootstrap.svg";
 import daisyui from "@ff-client/assets/icons/formatting-templates/daisyui.svg";
-import foundation from "@ff-client/assets/icons/formatting-templates/foundation.svg";
 import freeform from "@ff-client/assets/icons/formatting-templates/freeform.svg";
 import tailwind from "@ff-client/assets/icons/formatting-templates/tailwind.svg";
 import type { OptionCollection } from "@ff-client/types/properties";
@@ -48,21 +47,16 @@ const grid = (
   </svg>
 );
 const sampleIcons: Record<string, ReactNode> = {
-  "basic-dark/index.twig": logo(freeform),
-  "basic-light/index.twig": logo(freeform),
-  "basic-floating-labels/index.twig": logo(freeform),
-  "conversational/index.twig": logo(freeform),
-  "multipage-all-fields/index.twig": logo(freeform),
-  "bootstrap-5/index.twig": logo(bootstrap),
+  "freeform-dark/index.twig": logo(freeform),
+  "freeform-light/index.twig": logo(freeform),
+  "freeform-floating-labels/index.twig": logo(freeform),
+  "bootstrap-5-light/index.twig": logo(bootstrap),
   "bootstrap-5-dark/index.twig": logo(bootstrap),
   "bootstrap-5-floating-labels/index.twig": logo(bootstrap),
-  "tailwind-3/index.twig": logo(tailwind),
-  "tailwind-3-dark/index.twig": logo(tailwind),
   "tailwind-4-light/index.twig": logo(tailwind),
   "tailwind-4-dark/index.twig": logo(tailwind),
   "daisyui-5-light/index.twig": logo(daisyui),
   "daisyui-5-dark/index.twig": logo(daisyui),
-  "foundation-6/index.twig": logo(foundation),
   "flexbox/index.twig": flexbox,
   "grid/index.twig": grid,
 };

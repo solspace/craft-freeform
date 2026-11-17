@@ -22,6 +22,9 @@ export function signatureCanvasStub() {
       state.pixels = "";
     },
     fillRect() {},
+    fillText() {
+      state.pixels = "typed ink";
+    },
     setTransform(...values: number[]) {
       state.transforms.push(values);
     },

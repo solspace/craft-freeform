@@ -192,17 +192,10 @@ class ActivityHealthServiceTest extends TestCase
         self::assertFalse($this->service->snapshot(7, [])['available']);
     }
 
-    public function testClassicUsesFileDatesAndNoneDoesNotReportStaleFileErrors(): void
+    public function testRetiredFilesAreIgnoredForBothActivityAndDisabledLogging(): void
     {
-        $this->settings->loggingStyle = 'classic';
-        $line = static fn ($date, $level) => '['.$date."] health.{$level}: Test message {} {}\n";
-        file_put_contents($this->path.'/freeform.log', $line(gmdate('c', time() - 3600), 'ERROR').$line(gmdate('c', time() - 86400 * 10), 'ERROR'));
-        file_put_contents($this->path.'/freeform-email.log', $line(gmdate('c', time() - 3600), 'WARNING'));
-        $result = $this->service->snapshot(7, ['submission']);
-        self::assertSame(1, $result['errors']);
-        self::assertSame(1, $result['warnings']);
-        self::assertSame([], $result['breakdown']);
-        self::assertCount(3, $result['links']);
+        file_put_contents($this->path.'/freeform.log', '['.gmdate('c')."] health.ERROR: Old error {} {}\n");
+        self::assertSame(0, $this->service->snapshot(7, [])['errors']);
         $this->settings->loggingStyle = 'none';
         self::assertSame(0, $this->service->snapshot(7, [])['errors']);
     }
@@ -225,20 +218,8 @@ class ActivityHealthServiceTest extends TestCase
         self::assertSame('All forms', $navigation['scope']);
         self::assertStringContainsString('days=2', $navigation['links'][0]['url']);
         self::assertSame('Open Activity Log', $navigation['links'][0]['label']);
-        $this->settings->loggingStyle = 'classic';
-        $navigation = $this->service->navigation(7);
-        self::assertSame(7, $navigation['days']);
-        self::assertCount(3, $navigation['links']);
-        self::assertStringContainsString('settings/email-log', $navigation['links'][2]['url']);
         $this->settings->loggingStyle = 'none';
         self::assertSame([], $this->service->navigation(7)['links']);
-    }
-
-    public function testActivityOnlyPermissionCannotReadClassicFiles(): void
-    {
-        $this->settings->loggingStyle = 'classic';
-        $this->expectException(ForbiddenHttpException::class);
-        PermissionHelper::asAuthenticatedUser(fn () => $this->service->snapshot(7, []), [strtolower(Freeform::PERMISSION_ACTIVITY_ACCESS)]);
     }
 
     #[TestWith([true, true, true])]

@@ -59,7 +59,7 @@ vi.mock("@ff-client/queries/forms", () => ({
     return {
       data: [
         { value: "tailwind-4-dark/index.twig", label: "Tailwind 4 Dark" },
-        { value: "basic-light/index.twig", label: "Basic Light" },
+        { value: "freeform-light/index.twig", label: "Freeform Light" },
       ],
       isLoading: false,
     };

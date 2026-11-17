@@ -1,3 +1,4 @@
+import { fieldId, isGroupedField } from "@solspace/freeform-core";
 import { defineComponent, type PropType } from "vue";
 import type {
   FreeformComponentProps,
@@ -117,8 +118,9 @@ export const DefaultFieldWrapper = defineComponent({
         return null;
       }
 
+      const Tag = isGroupedField(props.field) ? "fieldset" : "div";
       return (
-        <div
+        <Tag
           class={props.class}
           data-freeform-field={props.field.handle}
           data-field-container={props.field.handle}
@@ -128,7 +130,7 @@ export const DefaultFieldWrapper = defineComponent({
           }
         >
           {slots.default?.()}
-        </div>
+        </Tag>
       );
     };
   },
@@ -151,15 +153,21 @@ export const DefaultLabel = defineComponent({
         return null;
       }
 
+      const grouped = isGroupedField(props.field);
+      const Tag = grouped ? "legend" : "label";
       return (
-        <label class={props.class} for={`freeform-${props.field.handle}`}>
+        <Tag
+          class={props.class}
+          for={grouped ? undefined : fieldId(props.field)}
+          id={grouped ? `${fieldId(props.field)}-legend` : undefined}
+        >
           {props.field.label}
           {props.field.required ? (
             <span aria-hidden="true" class={props.requiredMarkClassName}>
               {props.requiredIndicator}
             </span>
           ) : null}
-        </label>
+        </Tag>
       );
     };
   },
@@ -180,7 +188,11 @@ export const DefaultInstructions = defineComponent({
         return null;
       }
 
-      return <div class={props.class}>{props.field.instructions}</div>;
+      return (
+        <div id={`${fieldId(props.field)}-instructions`} class={props.class}>
+          {props.field.instructions}
+        </div>
+      );
     };
   },
 });
@@ -188,6 +200,10 @@ export const DefaultInstructions = defineComponent({
 export const DefaultErrors = defineComponent({
   name: "DefaultErrors",
   props: {
+    field: {
+      type: Object as PropType<FreeformLabelProps["field"]>,
+      default: undefined,
+    },
     errors: { type: Array as PropType<string[]>, required: true },
     class: { type: String, default: undefined },
     errorClass: { type: String, default: undefined },
@@ -199,7 +215,11 @@ export const DefaultErrors = defineComponent({
       }
 
       return (
-        <div class={props.class} role="alert">
+        <div
+          id={props.field ? `${fieldId(props.field)}-error` : undefined}
+          class={props.class}
+          role="alert"
+        >
           {props.errors.map((error) => (
             <div key={error} class={props.errorClass}>
               {error}

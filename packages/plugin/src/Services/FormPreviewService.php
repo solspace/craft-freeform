@@ -130,9 +130,8 @@ class FormPreviewService
             $node->removeAttribute('formaction');
         }
 
-        // The date-picker loads its assets dynamically, so they are absent
-        // from the markup scanned below. Allow only the files its inputs need.
-        [$scripts, $styles] = $this->getDatepickerSources($xpath);
+        $scripts = [];
+        $styles = [];
         $images = [];
         $fonts = [];
         foreach ($xpath->query('//script | //link | //img') as $node) {
@@ -209,26 +208,6 @@ class FormPreviewService
         $head->insertBefore($meta, $head->firstChild);
 
         return $document->saveHTML();
-    }
-
-    private function getDatepickerSources(\DOMXPath $xpath): array
-    {
-        $pickers = $xpath->query('//form[@data-freeform and @data-scripts-datepicker]//*[@data-datepicker and @data-datepicker-enabled and not(@data-datepicker-enabled="0") and not(@data-datepicker-enabled="false") and not(@data-datepicker-kind="freeform")]');
-        if (!$pickers->length) {
-            return [[], []];
-        }
-
-        $base = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/';
-        $scripts = [$base.'flatpickr.min.js'];
-        foreach ($pickers as $picker) {
-            $locale = $picker->getAttribute('data-datepicker-locale');
-            // Never turn a template attribute into an arbitrary script URL.
-            if (!\in_array($locale, ['default', 'en'], true) && preg_match('/^[a-z]{2,3}(?:-[a-z]{2,3})?$/D', $locale)) {
-                $scripts[] = $base.'l10n/'.$locale.'.js';
-            }
-        }
-
-        return [$scripts, [$base.'flatpickr.min.css']];
     }
 
     private function withIsolatedAssets(callable $render): mixed

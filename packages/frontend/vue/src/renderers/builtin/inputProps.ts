@@ -13,6 +13,7 @@ export function inputProps(props: VueFieldRendererProps) {
     autoComplete?: string;
     "aria-invalid"?: boolean;
     "aria-describedby"?: string;
+    "aria-labelledby"?: string;
     maxLength?: number;
   };
 

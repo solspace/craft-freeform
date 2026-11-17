@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Session\ArraySessionHandler;
 use Illuminate\Session\Store;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Models\SurveySettings;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
@@ -88,9 +91,12 @@ class Craft6TemplateErrorsTest extends TestCase
     public function testFormCreationSettingsReceiveOnlyTheirOwnNativeErrors(): void
     {
         $settings = new Settings();
+        $settings->defaults = $this->createMock(Defaults::class);
+        $settings->defaults->method('getIterator')->willReturn(new \ArrayIterator());
+        $settings->defaults->richTextFieldToolbarConfiguration = '';
         $settings->addError('formCreationOptions', 'Choose at least one option.');
         $settings->addError('defaultAiIntegration', 'Choose an available integration.');
-        $errors = $this->readErrors($this->twig()->render('settings/_general.twig', [
+        $errors = $this->readErrors($this->twig()->render('settings/_form-builder.twig', [
             'settings' => $settings,
             'readOnly' => false,
             'aiIntegrations' => [],
@@ -100,7 +106,82 @@ class Craft6TemplateErrorsTest extends TestCase
 
         self::assertSame(['Choose at least one option.'], $errors['settings[formCreationOptions]']);
         self::assertSame(['Choose an available integration.'], $errors['settings[defaultAiIntegration]']);
-        self::assertSame([], $errors['settings[defaultView]']);
+        self::assertSame([], $errors['settings[defaults][twigAccess]']);
+    }
+
+    public function testBuilderDefaultsRemainCollapsedUnlessTheirCategoryHasValidationErrors(): void
+    {
+        $category = static fn (string $heading) => new class($heading) extends \ArrayIterator {
+            public function __construct(private string $heading)
+            {
+                parent::__construct([]);
+            }
+
+            public function isEnabled(): bool
+            {
+                return true;
+            }
+
+            public function isDelimited(): bool
+            {
+                return false;
+            }
+
+            public function getLabel(): string
+            {
+                return $this->heading;
+            }
+        };
+        $settings = new Settings();
+        $settings->defaults = $this->createMock(Defaults::class);
+        $settings->defaults->method('getIterator')->willReturn(new \ArrayIterator([
+            'settings' => $category('Default Form Settings'),
+            'notifications' => $category('Notification Defaults'),
+        ]));
+        $settings->defaults->richTextFieldToolbarConfiguration = '';
+        $context = [
+            'settings' => $settings,
+            'readOnly' => false,
+            'aiIntegrations' => [],
+            'craft' => ['freeform' => ['name' => 'Freeform', 'pro' => true]],
+        ];
+        $twig = $this->twig();
+        $document = new \DOMDocument();
+        @$document->loadHTML($twig->render('settings/_form-builder.twig', $context));
+        $xpath = new \DOMXPath($document);
+        self::assertSame(2, $xpath->query('//details[@data-defaults-section]')->length);
+        self::assertSame(0, $xpath->query('//details[@data-defaults-section and @open]')->length);
+        self::assertSame(2, $xpath->query('//details[@data-defaults-section]/summary/h2')->length);
+        foreach ($xpath->query('//details[@data-defaults-section]/summary') as $summary) {
+            $titleId = $summary->getAttribute('aria-labelledby');
+            $descriptionId = $summary->getAttribute('aria-describedby');
+            self::assertNotSame('', trim($xpath->query('//*[@id="'.$titleId.'"]')->item(0)->textContent));
+            self::assertNotSame('', trim($xpath->query('//*[@id="'.$descriptionId.'"]')->item(0)->textContent));
+        }
+
+        $settings->addError('defaults.settings.general.title.value', 'Enter a title.');
+        @$document->loadHTML($twig->render('settings/_form-builder.twig', $context));
+        $xpath = new \DOMXPath($document);
+        self::assertSame(1, $xpath->query('//details[@data-defaults-category="settings" and @open]')->length);
+        self::assertSame(0, $xpath->query('//details[@data-defaults-category="notifications" and @open]')->length);
+    }
+
+    public function testExportFormattingDoesNotRenderUnrelatedGlobalErrors(): void
+    {
+        $twig = $this->twig();
+        $twig->addGlobal('errors', ['unrelated' => ['A different field failed.']]);
+        $html = $twig->render('export/_formatting.twig', [
+            'idPrefix' => 'quick-export',
+            'formatting' => ExportFormatting::DEFAULTS,
+        ]);
+        self::assertStringNotContainsString('A different field failed.', $html);
+        self::assertStringContainsString('Export Formatting', $html);
+        $html = $twig->render('export/_formatting.twig', [
+            'idPrefix' => 'export-profile',
+            'formatting' => ExportFormatting::DEFAULTS,
+            'formattingErrors' => ['Choose valid formatting.'],
+        ]);
+        self::assertStringContainsString('Choose valid formatting.', $html);
     }
 
     public function testSurveySwitchReceivesOnlyItsOwnErrors(): void
@@ -159,7 +240,6 @@ class Craft6TemplateErrorsTest extends TestCase
         $source = str_replace(['{% js %}', '{% endjs %}'], ['{% block script %}', '{% endblock %}'], $source);
         $twig->getLoader()->addLoader(new ArrayLoader(['pdf-edit.twig' => $source, 'freeform/notifications/_layout' => '{% block actionButton %}{% endblock %}{% block content %}{% endblock %}{% block script %}{% endblock %}']));
         $twig->addFilter(new TwigFilter('hash', static fn ($value) => $value));
-        $twig->addFunction(new TwigFunction('ui', static fn () => ''));
         $html = $twig->render('pdf-edit.twig', [
             'template' => $template,
             'title' => 'New PDF Template',
@@ -198,6 +278,39 @@ class Craft6TemplateErrorsTest extends TestCase
         self::assertSame([], $this->readErrors($html)['profileId']);
     }
 
+    public function testConsolidatedAlertsPageKeepsItsDigestBooleanMenuAndOmitsRetiredControls(): void
+    {
+        $twig = $this->twig();
+        $twig->enableStrictVariables();
+        $twig->getLoader()->addLoader(new ArrayLoader([
+            'freeform/_components/digest-frequency' => file_get_contents(\dirname(__DIR__, 3).'/templates/_components/digest-frequency.twig'),
+        ]));
+        $twig->addGlobal('craft', ['freeform' => ['name' => 'Freeform'], 'app' => [
+            'version' => '6.0.0',
+            'request' => new class {
+                public function getSegment(int $index): string
+                {
+                    return 'notices-and-alerts';
+                }
+            },
+        ]]);
+        $html = $twig->render('settings/_notices-and-alerts.twig', [
+            'settings' => new Settings(),
+            'readOnly' => false,
+            'freeform' => ['edition' => new class {
+                public function isAtLeast(string $edition): bool
+                {
+                    return true;
+                }
+            }],
+        ]);
+        $fields = $this->readErrors($html);
+        self::assertArrayHasKey('settings[errorNotificationRecipients]', $fields);
+        self::assertArrayHasKey('settings[digestOnlyOnProduction]', $fields);
+        self::assertArrayNotHasKey('settings[alertNotificationRecipients]', $fields);
+        self::assertArrayNotHasKey('settings[displayFeed]', $fields);
+    }
+
     private function renderSpamSettings(Settings $settings): array
     {
         return $this->readErrors($this->twig()->render('settings/_spam.twig', [
@@ -209,9 +322,9 @@ class Craft6TemplateErrorsTest extends TestCase
 
     private function twig(): Environment
     {
-        $field = '<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>';
+        $field = '<script data-field="{{ config.name ?? config.id ?? "" }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>';
         $macros = '';
-        foreach (['checkboxSelectField', 'selectField', 'booleanMenuField', 'lightswitchField', 'textField', 'textareaField', 'autosuggestField', 'field', 'text', 'select'] as $name) {
+        foreach (['checkboxSelectField', 'selectField', 'booleanMenuField', 'lightswitchField', 'textField', 'textareaField', 'autosuggestField', 'field', 'text', 'select', 'lightswitch', 'checkboxSelect'] as $name) {
             $macros .= '{% macro '.$name.'(config, input) %}'.$field.'{% endmacro %}';
         }
 
@@ -219,6 +332,7 @@ class Craft6TemplateErrorsTest extends TestCase
             new ArrayLoader([
                 'freeform/_layouts/settings' => '{% block content %}{% endblock %}',
                 '_includes/forms' => $macros,
+                'freeform/_components/env-fields' => $macros,
                 'freeform/_components/measurement' => '{% macro input(config) %}<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>{% endmacro %}{% macro field(config) %}<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>{% endmacro %}',
                 'freeform/_components/settings-cards' => '{% macro compactChoice(config) %}{% endmacro %}{% macro choice(config) %}{% endmacro %}{% macro field(config) %}{% endmacro %}',
                 'freeform/_components/boolean-menu' => file_get_contents(\dirname(__DIR__, 3).'/templates/_components/boolean-menu.twig'),
@@ -231,7 +345,10 @@ class Craft6TemplateErrorsTest extends TestCase
             })(),
         ]));
         $twig->addFilter(new TwigFilter('t', static fn (string $text): string => $text));
+        $twig->addFilter(new TwigFilter('implementsClass', static fn (mixed $item, string $class): bool => $item instanceof $class));
+        $twig->addFilter(new TwigFilter('kebab', static fn (string $text): string => Str::kebab($text)));
         $twig->addFunction(new TwigFunction('freeformBooleanMenu', static fn (array $config): string => ''));
+        $twig->addFunction(new TwigFunction('ui', static fn (string $name, array $config = []): string => ''));
         $twig->addFilter(new TwigFilter('fieldErrors', static function ($errors): array {
             self::assertIsArray($errors, 'The CP field must receive a list of messages, not a MessageBag.');
 

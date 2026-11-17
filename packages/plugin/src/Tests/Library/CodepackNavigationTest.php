@@ -52,21 +52,21 @@ class CodepackNavigationTest extends TestCase
 
     public function testAssignedAndLegacyRoutesKeepTheFormsBuilderTemplate(): void
     {
-        foreach ([['forms', 'default', 'contact'], ['forms', 'basic-dark', 'contact'], ['custom', 'contact']] as $route) {
+        foreach ([['forms', 'default', 'contact'], ['forms', 'freeform-dark', 'contact'], ['custom', 'contact']] as $route) {
             [$html, $freeform] = $this->renderLayout($route);
             $template = 'custom' === $route[0] ? 'default' : $route[1];
             self::assertStringContainsString('forms|'.$template.'|contact', $html);
-            self::assertSame('default' === $template ? null : 'basic-dark/index.twig', $freeform->renderProperties['formattingTemplate']);
+            self::assertSame('default' === $template ? null : 'freeform-dark/index.twig', $freeform->renderProperties['formattingTemplate']);
         }
     }
 
     public function testInitialOverviewUsesBasicLightAndMarksOnlyBareFormsForPreferenceRestoration(): void
     {
         [$html] = $this->renderLayout(['forms']);
-        self::assertStringContainsString('forms|basic-light|', $html);
+        self::assertStringContainsString('forms|freeform-light|', $html);
         self::assertStringContainsString('data-demo-preview-implicit', $html);
-        self::assertStringContainsString('data-demo-preview="basic-light"', $html);
-        self::assertStringContainsString('/forms/basic-light/contact', $html);
+        self::assertStringContainsString('data-demo-preview="freeform-light"', $html);
+        self::assertStringContainsString('/forms/freeform-light/contact', $html);
         [$explicit] = $this->renderLayout(['forms', 'default']);
         self::assertStringNotContainsString('data-demo-preview-implicit', $explicit);
         self::assertStringContainsString('data-demo-preview="default"', $explicit);
@@ -78,8 +78,8 @@ class CodepackNavigationTest extends TestCase
             ['bootstrap-5-dark', 'bootstrap@5.3.8', true],
             ['tailwind-4-light', '@tailwindcss/browser@4.3.3', false],
             ['daisyui-5-dark', 'daisyui@5.7.27', true],
-            ['foundation-6', 'foundation-sites@6.8.1', false],
-            ['basic-dark', null, true],
+            ['bootstrap-5-light', 'bootstrap@5.3.8', false],
+            ['freeform-dark', null, true],
         ] as [$template, $dependency, $dark]) {
             [$html, $freeform] = $this->renderLayout(['forms', 'default', 'contact'], $template.'/index.twig');
             self::assertNull($freeform->renderProperties['formattingTemplate']);
@@ -102,7 +102,7 @@ class CodepackNavigationTest extends TestCase
             self::assertStringContainsString($assigned ? basename($assigned) : 'No formatting template assigned.', $html);
             self::assertStringNotContainsString('bootstrap@5.3.8', $html);
             self::assertStringNotContainsString('data-theme="dark"', $html);
-            self::assertStringContainsString('/forms/basic-light/contact/edit/test-token', $html);
+            self::assertStringContainsString('/forms/freeform-light/contact/edit/test-token', $html);
             self::assertSame(null !== $assigned, str_contains($html, 'This demo doesn’t automatically load your site’s CSS or JavaScript.'));
         }
     }
@@ -161,7 +161,7 @@ class CodepackNavigationTest extends TestCase
         return [$html, $freeform];
     }
 
-    private function render(string $area = 'forms', bool $spam = false, string $template = 'basic-light'): string
+    private function render(string $area = 'forms', bool $spam = false, string $template = 'freeform-light'): string
     {
         $templates = __DIR__.'/../../codepack/templates';
         $twig = new Environment(new ArrayLoader([

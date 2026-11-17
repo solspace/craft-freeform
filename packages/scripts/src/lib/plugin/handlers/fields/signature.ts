@@ -1,6 +1,7 @@
 import type Freeform from "@components/front-end/plugin/freeform";
 import { createScript } from "@lib/plugin/helpers/html";
 import type { FreeformHandler } from "types/form";
+import { typedSignature } from "../../../../../../frontend/core/src/signature/typed-signature";
 import { mountSignatureBitmap } from "./signature.bitmap";
 import { mountResponsiveSignatureCanvas } from "./signature.responsive";
 
@@ -51,6 +52,10 @@ class Signature implements FreeformHandler {
   freeform: Freeform;
 
   private fields = new Map<HTMLCanvasElement, SignatureFieldState>();
+  private typedFields = new Map<
+    HTMLInputElement,
+    { reset: () => void; destroy: () => void }
+  >();
   private loading = false;
 
   constructor(freeform: Freeform) {
@@ -62,6 +67,9 @@ class Signature implements FreeformHandler {
         if (event.defaultPrevented) return;
         this.reload();
         this.fields.forEach((field) => {
+          field.reset();
+        });
+        this.typedFields.forEach((field) => {
           field.reset();
         });
       }, 0);
@@ -82,6 +90,8 @@ class Signature implements FreeformHandler {
     if (!this.freeform.has("data-scripts-signature")) {
       return;
     }
+
+    this.mountTypedFields();
 
     if (typeof SignaturePad !== "function") {
       if (!this.loading) {
@@ -148,6 +158,13 @@ class Signature implements FreeformHandler {
           drawing = true;
           lastMove = 0;
           cancelRestore();
+          const typed = canvas.parentElement?.querySelector<HTMLInputElement>(
+            "[data-signature-typed]",
+          );
+          if (typed?.value) {
+            typed.value = "";
+            signaturePad.clear();
+          }
           responsive?.sync();
         },
         onEnd: () => {
@@ -237,6 +254,11 @@ class Signature implements FreeformHandler {
         };
         img.src = value;
       };
+      const onTyped = (event: CustomEvent<string>) => {
+        currentValue = event.detail;
+        restore(currentValue);
+      };
+      canvas.addEventListener("freeform-signature-typed", onTyped);
 
       this.fields.set(canvas, {
         input,
@@ -259,12 +281,96 @@ class Signature implements FreeformHandler {
           bitmap?.destroy();
           responsive?.destroy();
           clearButton?.removeEventListener("click", clear);
+          canvas.removeEventListener("freeform-signature-typed", onTyped);
         },
       });
 
       if (initialValue) restore(initialValue);
     });
   };
+
+  private mountTypedFields(): void {
+    const form = this.freeform.form;
+    this.typedFields.forEach((controller, input) => {
+      if (!form.contains(input)) {
+        controller.destroy();
+        this.typedFields.delete(input);
+      }
+    });
+    for (const typed of form.querySelectorAll<HTMLInputElement>(
+      "[data-signature-typed]",
+    )) {
+      if (this.typedFields.has(typed)) continue;
+      const wrapper = typed.closest<HTMLElement>(".freeform-signature-wrapper");
+      const canvas = wrapper?.querySelector<HTMLCanvasElement>(
+        "[data-signature-field]",
+      );
+      const hidden = canvas?.previousElementSibling;
+      if (!canvas || !(hidden instanceof HTMLInputElement)) continue;
+      const initialValue = hidden.value;
+      const clearButton = wrapper.querySelector<HTMLButtonElement>(
+        "[data-signature-clear]",
+      );
+      let pending: HTMLImageElement | undefined;
+      const cancel = () => {
+        if (pending) pending.onload = null;
+        pending = undefined;
+      };
+      const paint = (value: string) => {
+        cancel();
+        if (this.fields.has(canvas)) {
+          canvas.dispatchEvent(
+            new CustomEvent("freeform-signature-typed", { detail: value }),
+          );
+          return;
+        }
+        // Typing works even when the external drawing library is unavailable.
+        const context = canvas.getContext("2d");
+        context?.clearRect(0, 0, canvas.width, canvas.height);
+        if (!value || !context) return;
+        const image = new Image();
+        pending = image;
+        image.onload = () => {
+          if (pending !== image) return;
+          pending = undefined;
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        };
+        image.src = value;
+      };
+      const change = () => {
+        if (typed.matches(":disabled")) return;
+        const value = typedSignature(
+          typed.value,
+          canvas.width,
+          canvas.height,
+          canvas.ownerDocument,
+        );
+        hidden.value = value;
+        paint(value);
+      };
+      const clear = () => {
+        typed.value = "";
+        hidden.value = "";
+        paint("");
+      };
+      // Preserve text entered before the form finished initializing.
+      if (typed.value) change();
+      typed.addEventListener("input", change);
+      clearButton?.addEventListener("click", clear);
+      this.typedFields.set(typed, {
+        reset: () => {
+          typed.value = "";
+          hidden.value = initialValue;
+          paint(initialValue);
+        },
+        destroy: () => {
+          cancel();
+          typed.removeEventListener("input", change);
+          clearButton?.removeEventListener("click", clear);
+        },
+      });
+    }
+  }
 }
 
 export default Signature;

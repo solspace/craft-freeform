@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\IntegrationRecord;
 
 class m240619_111214_GenerateSpamBlockIntegrations extends Migration
@@ -20,8 +19,12 @@ class m240619_111214_GenerateSpamBlockIntegrations extends Migration
             return true;
         }
 
-        /** @var Settings $settings */
-        $settings = $plugin->getSettings();
+        // Read the original values: the v6 settings model no longer exposes them.
+        $settings = (object) array_merge([
+            'blockedEmails' => null, 'blockedKeywords' => null, 'blockedIpAddresses' => null,
+            'showErrorsForBlockedEmails' => false, 'showErrorsForBlockedKeywords' => false,
+            'blockedEmailsError' => 'Email blocked', 'blockedKeywordsError' => 'Keyword blocked',
+        ], \Craft::$app->projectConfig->get('plugins.freeform.settings') ?? []);
 
         if ($settings->blockedEmails) {
             $record = new IntegrationRecord();

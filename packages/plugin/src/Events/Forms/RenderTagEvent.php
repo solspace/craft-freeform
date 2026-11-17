@@ -175,42 +175,11 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         self::$addedScriptCache[] = $fullPath;
 
         $view = \Craft::$app->getView();
-        $insertType = $this->getSettingsService()->scriptInsertType();
         $insertLocation = $this->getSettingsService()->getSettingsModel()->scriptInsertLocation;
 
         $attributesObject = Attributes::fromArray($attributes);
 
-        if (self::ELEMENT_SCRIPT === $type) {
-            [$wrapOpen, $wrapClose] = ['<script type="text/javascript"'.$attributesObject.'>', '</script>'];
-            $tag = '<script type="text/javascript" src="%s"'.$attributesObject.'></script>';
-        } else {
-            [$wrapOpen, $wrapClose] = ['<style type="text/css"'.$attributesObject.'>', '</style>'];
-            $tag = '<link rel="stylesheet" type="text/css" href="%s"'.$attributesObject.' />';
-        }
-
-        $position = match ($insertLocation) {
-            Settings::SCRIPT_INSERT_LOCATION_HEADER => View::POS_BEGIN,
-            Settings::SCRIPT_INSERT_LOCATION_FOOTER => View::POS_END,
-            default => null,
-        };
-
-        if (Settings::SCRIPT_INSERT_TYPE_INLINE === $insertType) {
-            $chunk = file_get_contents($fullPath);
-
-            if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
-                $this->addChunk($wrapOpen.$chunk.$wrapClose);
-
-                return $this;
-            }
-
-            if (self::ELEMENT_SCRIPT === $type) {
-                $view->registerJs($chunk, $position);
-            } else {
-                $view->registerCss($chunk, array_merge(['position' => $position], $attributes));
-            }
-
-            return $this;
-        }
+        $position = View::POS_END;
 
         $inserter = match ($type) {
             self::ELEMENT_SCRIPT => [$view, 'registerJsFile'],
@@ -218,6 +187,10 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         };
 
         if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
+            $tag = self::ELEMENT_SCRIPT === $type
+                ? '<script type="text/javascript" src="%s"'.$attributesObject.'></script>'
+                : '<link rel="stylesheet" type="text/css" href="%s"'.$attributesObject.' />';
+
             return $this->addChunk(\sprintf($tag, $chunk));
         }
 

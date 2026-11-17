@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import Freeform from "./freeform";
 
 const setup = (overlay = true) => {
-  document.body.innerHTML = `<form data-freeform data-ajax ${overlay ? "data-show-processing-overlay" : ""} data-processing-text="Sending…"><button type="submit" data-freeform-action="submit">Send</button><button type="submit" name="form_previous_page_button" data-freeform-action="back">Back</button></form>`;
+  document.body.innerHTML = `<form data-freeform data-ajax ${overlay ? 'data-processing-display="overlay"' : ""} data-processing-text="Sending…"><button type="submit" data-freeform-action="submit">Send</button><button type="submit" name="form_previous_page_button" data-freeform-action="back">Back</button></form>`;
   const form = document.querySelector("form")!;
   const freeform = new Freeform(form);
   freeform._handlers = [];
@@ -23,7 +23,10 @@ describe("processing overlay", () => {
     const { form } = setup();
     form.addEventListener("freeform-on-submit", (event) => {
       const overlay = form.querySelector(".freeform-processing-overlay");
-      expect(overlay?.getAttribute("role")).toBe("status");
+      expect(overlay?.getAttribute("aria-hidden")).toBe("true");
+      const status = form.querySelector("[data-freeform-processing-status]");
+      expect(status?.getAttribute("role")).toBe("status");
+      expect(status?.textContent).toBe("Sending…");
       expect(overlay?.textContent).toBe("Sending…");
       event.preventDefault();
     });

@@ -26,7 +26,6 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
-use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\RenderSubmissionFieldEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -34,7 +33,9 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
+use Solspace\Freeform\Jobs\ProcessSubmissionJob;
 use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
@@ -393,8 +394,32 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function postProcessSubmission(Form $form, Submission $submission): void
     {
-        $event = new ProcessSubmissionEvent($form, $submission);
-        Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
+        if ($submission->isSpam || $form->isMarkedAsSpam()) {
+            return;
+        }
+
+        $monitor = \Craft::$container->get(FormMonitorProvider::class);
+        if ($this->getSettingsService()->isQueueEnabled() && !$monitor->isRequestFromFormMonitor($form)) {
+            \Craft::$container->get(FreeformQueueHandler::class)->queueJob(new ProcessSubmissionJob([
+                'formId' => $form->getId(),
+                'submissionId' => $submission->id,
+                'siteId' => $submission->siteId ?? $form->getSiteId(),
+                'disabled' => $form->isDisabled()->getSettings(),
+                'postedData' => $submission->id ? [] : $submission->getFormFieldValues(),
+                'submissionMetadata' => $submission->id ? [] : [
+                    'uid' => $submission->uid,
+                    'title' => $submission->title,
+                    'ip' => $submission->ip,
+                    'userId' => $submission->userId,
+                    'statusId' => $submission->statusId,
+                    'dateCreated' => $submission->dateCreated?->format(\DateTimeInterface::ATOM),
+                ],
+            ]));
+
+            return;
+        }
+
+        \Craft::$container->get(SubmissionProcessingService::class)->process($form, $submission);
     }
 
     public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool

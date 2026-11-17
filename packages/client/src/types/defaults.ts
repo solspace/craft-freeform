@@ -5,8 +5,7 @@ type ConfigItem<T = string> = {
 
 export type Defaults = {
   previewHtml: boolean;
-  twigInHtml: boolean;
-  twigIsolation: boolean;
+  twigAccess: "disabled" | "form" | "craft";
   includeSampleTemplates: boolean;
 
   notifications: {

@@ -13,7 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 
-class PayloadStorage implements FormContextStorageInterface
+class PayloadStorage
 {
     public const INPUT_PREFIX = 'freeform_payload';
     public const PROPERTY_KEY = 'payload';
@@ -106,31 +106,11 @@ class PayloadStorage implements FormContextStorageInterface
         $event->add($name, $payload);
     }
 
-    public function getBag(string $key, Form $form): ?SessionBag
+    public function getBag(Form $form): ?SessionBag
     {
         $payload = $this->getPostedPayload();
 
         return $this->getDecryptedBag($form, $payload);
-    }
-
-    public function registerBag(string $key, SessionBag $bag, Form $form): void
-    {
-        // isn't required
-    }
-
-    public function persist(): void
-    {
-        // isn't required
-    }
-
-    public function removeBag(string $key): void
-    {
-        // isn't required
-    }
-
-    public function cleanup(): void
-    {
-        // isn't required
     }
 
     private function getPostedPayload(): ?string
@@ -146,13 +126,20 @@ class PayloadStorage implements FormContextStorageInterface
             return null;
         }
 
-        $cacheKey = md5($payload);
+        $key = $this->getKey($form);
+        $cacheKey = hash('sha256', $key.'|'.$payload);
         if (!\array_key_exists($cacheKey, self::$decryptedPayloadCache)) {
-            $key = $this->getKey($form);
-            $json = \Craft::$app->security->decryptByKey(base64_decode($payload), $key);
-            $json = json_decode($json, true);
+            $encrypted = base64_decode($payload, true);
+            if (false === $encrypted) {
+                return null;
+            }
+            $decoded = \Craft::$app->security->decryptByKey($encrypted, $key);
+            if (false === $decoded) {
+                return null;
+            }
+            $json = json_decode($decoded, true);
 
-            if (null === $json) {
+            if (!\is_array($json) || !isset($json['utime'], $json['properties'], $json['attributes']) || !\is_array($json['properties']) || !\is_array($json['attributes'])) {
                 return null;
             }
 
@@ -170,7 +157,7 @@ class PayloadStorage implements FormContextStorageInterface
 
     private function getEncryptedBag(Form $form): string
     {
-        $cacheKey = $form->getHash();
+        $cacheKey = hash('sha256', $this->getKey($form).'|'.$form->getHash());
         if (!\array_key_exists($cacheKey, self::$encryptedPayloadCache)) {
             $key = $this->getKey($form);
 

@@ -18,7 +18,7 @@
             />
 
             <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">
-                {{ option.label|t('freeform')|raw }}
+                {{ field.translateOptionLabel(option) }}
             </label>
         </div>
     {% endfor %}

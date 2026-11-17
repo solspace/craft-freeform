@@ -4,20 +4,24 @@
     2:{short:'Tue', name:'Tuesday'}, 3:{short:'Wed', name:'Wednesday'},
     4:{short:'Thu', name:'Thursday'}, 5:{short:'Fri', name:'Friday'}, 6:{short:'Sat', name:'Saturday'},
 } %}
+{% set accessibleLabel = accessibleLabel ?? label %}
+{% set contextLabel = contextLabel ?? null %}
+{% set frequencyLabel = contextLabel ? '{digest} Frequency'|t('freeform', {digest:contextLabel}) : 'Frequency'|t('freeform') %}
+{% set weekdayLabel = contextLabel ? '{digest} Day of the Week'|t('freeform', {digest:contextLabel}) : 'Day of the week'|t('freeform') %}
 {% set native = craft.app.version starts with '6.' %}
 {% set groupTag = native ? 'craft-button-group' : 'div' %}
 {% set buttonTag = native ? 'craft-button' : 'button' %}
 {% set input %}
-    <div class="ff-digest-schedule" data-digest-schedule data-summary-daily="{{ 'Every morning'|t('freeform') }}" data-summary-weekly="{{ 'Every {day} morning'|t('freeform') }}">
+    <div class="ff-digest-schedule" role="group" aria-label="{{ accessibleLabel }}" data-digest-schedule data-summary-daily="{{ 'Daily'|t('freeform') }}" data-summary-weekly="{{ 'Every {day}'|t('freeform') }}">
         <div data-digest-controls hidden>
             <div class="ff-digest-row">
-                <{{ groupTag }} class="{{ native ? '' : 'btngroup btngroup--exclusive ' }}ff-digest-frequency{{ readOnly ? ' disabled' }}" role="group" aria-label="{{ 'Frequency'|t('freeform') }}">
+                <{{ groupTag }} class="{{ native ? '' : 'btngroup btngroup--exclusive ' }}ff-digest-frequency{{ readOnly ? ' disabled' }}" role="group" aria-label="{{ frequencyLabel }}">
                     <{{ buttonTag }} type="button" class="{{ native ? '' : 'btn' }}" data-digest-mode="daily" {{ readOnly ? 'disabled' }}>{{ 'Daily'|t('freeform') }}</{{ buttonTag }}>
                     <{{ buttonTag }} type="button" class="{{ native ? '' : 'btn' }}" data-digest-mode="weekly" {{ readOnly ? 'disabled' }}>{{ 'Weekly'|t('freeform') }}</{{ buttonTag }}>
                 </{{ groupTag }}>
                 <div class="ff-digest-weekly" data-digest-weekly>
                     <span class="light">{{ 'Send on'|t('freeform') }}</span>
-                    <{{ groupTag }} class="{{ native ? '' : 'btngroup btngroup--exclusive ' }}ff-digest-weekdays{{ readOnly ? ' disabled' }}" role="group" aria-label="{{ 'Day of the week'|t('freeform') }}">
+                    <{{ groupTag }} class="{{ native ? '' : 'btngroup btngroup--exclusive ' }}ff-digest-weekdays{{ readOnly ? ' disabled' }}" role="group" aria-label="{{ weekdayLabel }}">
                         {% for day, weekday in weekdays %}
                             <{{ buttonTag }} type="button" class="{{ native ? '' : 'btn' }}" data-digest-day="{{ day }}" data-day-name="{{ weekday.name|t('freeform') }}" aria-label="{{ weekday.name|t('freeform') }}" {{ readOnly ? 'disabled' }}>{{ weekday.short|t('freeform') }}</{{ buttonTag }}>
                         {% endfor %}
@@ -27,7 +31,7 @@
             <p class="light ff-digest-summary" data-digest-summary aria-live="polite"></p>
         </div>
         <div data-digest-legacy>
-            {{ forms.select({id:id ~ '-value', name:name, value:value, disabled:readOnly, options:{
+            {{ forms.select({id:id ~ '-value', name:name, value:value, disabled:readOnly, inputAttributes:{aria:{label:accessibleLabel}}, options:{
                 '-1':'Daily'|t('freeform'), 0:'Weekly on Sundays'|t('freeform'), 1:'Weekly on Mondays'|t('freeform'),
                 2:'Weekly on Tuesdays'|t('freeform'), 3:'Weekly on Wednesdays'|t('freeform'), 4:'Weekly on Thursdays'|t('freeform'),
                 5:'Weekly on Fridays'|t('freeform'), 6:'Weekly on Saturdays'|t('freeform'),
@@ -35,4 +39,4 @@
         </div>
     </div>
 {% endset %}
-{{ forms.field({id:id, fieldset:true, label:label, instructions:'Digest emails are attempted in the morning and cover the preceding period.'|t('freeform'), errors:errors}, input) }}
+{{ forms.field({id:id, fieldset:true, label:label, instructions:instructions is defined ? instructions : 'Digests cover the preceding day or week. Sending depends on site activity and Craft’s queue.'|t('freeform'), errors:errors}, input) }}

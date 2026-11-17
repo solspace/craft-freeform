@@ -34,7 +34,9 @@ export const SurveyResults: React.FC = () => {
       {isLoading && <ResultsLoadingSkeleton />}
       {!isLoading && (
         <div id="content" className="content-pane" style={{ padding: 0 }}>
-          <ResultsWrapper $highlightHighest={true}>
+          <ResultsWrapper
+            $highlightHighest={dataPrefs?.highlightHighest ?? false}
+          >
             <Chart />
             <ResultList />
           </ResultsWrapper>

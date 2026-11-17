@@ -19,7 +19,7 @@
                 </svg>
             {% else %}
                 {% set family = template|split('-')|first %}
-                {% set icon = family in ['bootstrap', 'daisyui', 'tailwind', 'foundation'] ? family : 'freeform' %}
+                {% set icon = family in ['bootstrap', 'daisyui', 'tailwind'] ? family : 'freeform' %}
                 <img src="{{ assetBaseUrl }}/images/formatting-templates/{{ icon }}.svg" width="16" height="16" alt="">
             {% endif %}
         </span>
@@ -35,7 +35,7 @@
         {% endif %}
     {% endmacro %}
 
-{% set templateOptions = ["default", "divider", "basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "daisyui-5-light", "daisyui-5-dark", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"] %}
+{% set templateOptions = ["default", "divider", "freeform-light", "freeform-dark", "freeform-floating-labels", "divider", "tailwind-4-light", "tailwind-4-dark", "divider", "bootstrap-5-light", "bootstrap-5-dark", "bootstrap-5-floating-labels", "divider", "daisyui-5-light", "daisyui-5-dark", "divider", "flexbox", "grid"] %}
 
 <header class="freeform-nav" data-demo-navigation{% if demoArea == 'forms' %} data-demo-preview="{{ pageTemplate|e('html_attr') }}" data-demo-forms-url="{{ (demoBaseUrl ~ '/forms')|e('html_attr') }}"{% if demoRequestedArea|default('forms') == 'forms' and not craft.app.request.segment(baseUrlSegments + 2) %} data-demo-preview-implicit{% endif %}{% endif %}>
     <div class="freeform-nav-main">
@@ -74,7 +74,7 @@
                         </button>
                         <div class="freeform-nav-dropdown-content">
                             {% for candidate in forms %}
-                                {% set formUrl = demoArea == 'submissions' ? demoBaseUrl ~ '/submissions/' ~ candidate.handle : demoBaseUrl ~ '/forms/' ~ (pageTemplate ?: 'basic-light') ~ '/' ~ candidate.handle %}
+                                {% set formUrl = demoArea == 'submissions' ? demoBaseUrl ~ '/submissions/' ~ candidate.handle : demoBaseUrl ~ '/forms/' ~ (pageTemplate ?: 'freeform-light') ~ '/' ~ candidate.handle %}
                                 <a{% if formHandle == candidate.handle %} class="active" aria-current="page"{% endif %} href="{{ formUrl }}"><span class="freeform-form-circle" style="background-color: {{ candidate.color|e('html_attr') }}"></span>{{ candidate.name }}{% if demoArea == 'submissions' %} ({{ freeform.submissions({formId: candidate.id}).count }}){% endif %}</a>
                             {% endfor %}
                         </div>

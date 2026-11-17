@@ -152,14 +152,15 @@
 .ff-activity-bottom { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-block-start: 16px; color: var(--activity-muted); font-size: 11px; }
 .ff-activity-actions .ff-activity-clear { margin: 0; }
 
-.ff-activity-open-log { display: inline-flex; align-items: center; gap: 6px; }
+// Keep the secondary link beside Craft's native Save action on this page.
+.content-footer:has(.ff-activity-open-log) > .flex > .flex-1 { display: none; }
 .ff-activity-open-log > svg { display: block; width: 16px; height: 16px; flex: 0 0 16px; }
 .ff-activity-settings > .field,
 .ff-activity-settings [data-logging-panel] > :not(hr) { max-width: 1100px; }
 .ff-activity-settings > hr,
 .ff-activity-settings [data-logging-panel] > hr { margin-inline: calc(var(--padding, var(--pane-padding, 24px)) * -1); }
 .ff-activity-settings [data-logging-panel][hidden] { display: none; }
-.ff-activity-settings [data-recording-options].is-paused { opacity: 0.5; }
+.ff-activity-settings { container-type: inline-size; }
 .ff-activity-settings-intro { margin-block-end: 24px; }
 .ff-activity-logging-warning.pane {
   --pane-padding: 12px;
@@ -175,8 +176,45 @@
 
   > p { margin: 0; }
 }
-.ff-activity-modes { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; }
+.ff-activity-modes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: stretch; gap: 10px; }
+.ff-activity-modes > .ff-choice-card { width: auto; }
+@container (max-width: 900px) {
+  .ff-activity-modes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container (max-width: 600px) {
+  .ff-activity-modes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 380px) {
+  .ff-activity-modes { grid-template-columns: minmax(0, 1fr); }
+}
 .ff-activity-event-grid { --settings-helper-title-size: 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.ff-activity-event-grid {
+  > .ff-settings-helper { padding: 12px 16px; }
+
+  .ff-settings-helper-copy {
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px 16px;
+  }
+
+  .ff-settings-helper-heading { min-height: 32px; gap: 8px; }
+  .ff-settings-helper-heading > label { font-size: 14px; }
+  .ff-settings-helper-icon { width: 28px; height: 32px; }
+  .ff-settings-helper-icon-symbol { inset-block-start: 2px; width: 26px; height: 26px; border-radius: var(--c-radius-md); }
+  .ff-settings-helper-icon svg { width: 18px; height: 18px; }
+  .ff-settings-helper-copy > .instructions { margin: 0; }
+  .ff-settings-helper-details { margin: 0; }
+  .ff-settings-helper-details:has(> .ff-activity-event-disclosure[open]) { grid-column: 1 / -1; }
+
+  @container (max-width: 800px) {
+    .ff-settings-helper-copy { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }
+    .ff-settings-helper-heading { grid-column: 1; grid-row: 1; }
+    .ff-settings-helper-copy > .instructions { grid-column: 1; grid-row: 2; }
+    .ff-settings-helper-details { grid-column: 2; grid-row: 1; }
+    .ff-settings-helper-details:has(> .ff-activity-event-disclosure[open]) { grid-column: 1 / -1; grid-row: 3; }
+  }
+}
 .ff-activity-data-disclosure {
   color: var(--activity-muted);
   font-size: 12px;
@@ -200,6 +238,21 @@
   }
 
   &[open] > summary > svg { transform: rotate(90deg); }
+}
+.ff-activity-event-disclosure-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--c-spacing-xl);
+  margin-block-start: var(--c-spacing-lg);
+
+  > dl { margin: 0; padding-block-start: 0; border-block-start: 0; }
+  > div { min-width: 0; }
+
+  @container (max-width: 700px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--c-spacing-lg);
+  }
 }
 .ff-activity-data-content {
   box-sizing: border-box;
@@ -258,7 +311,15 @@
 .ff-activity-limits { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
 .ff-activity-limits .field { margin: 0; }
 .ff-activity-limits .instructions { max-width: 740px; }
-.ff-activity-limits .freeform-measurement-field > .input > .freeform-measurement-input { width: 220px; max-width: 100%; }
+.freeform-settings #content .ff-activity-limits .freeform-measurement-input {
+  inline-size: 50%;
+  max-inline-size: 50%;
+
+  @container (max-width: 600px) {
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+}
 @media (max-width: 1200px) {
   .ff-activity-workspace { grid-template-columns: minmax(0, 1fr); }
 }
@@ -483,3 +544,66 @@ html:has([data-activity-log]) { scrollbar-gutter: stable; }
 .ff-activity-resolution-actions .ff-activity-resolve-button { background: var(--ff-status-success-fg); color: var(--activity-surface); border: 1px solid transparent; }
 .ff-activity-resolution-actions .ff-activity-resolve-button:hover { background: color-mix(in srgb, var(--ff-status-success-fg) 88%, var(--activity-ink)); }
 .ff-activity-resolution-actions .ff-activity-resolve-button:focus-visible { outline: 2px solid var(--ff-status-success-fg); outline-offset: 3px; }
+
+.ff-activity-actions .ff-activity-clear .btn {
+  background: var(--c-color-danger-fill-quiet);
+  color: var(--c-color-danger-on-quiet);
+  border-color: var(--c-color-danger-border-quiet);
+
+  &:hover {
+    background: var(--c-color-danger-fill-normal);
+    color: var(--c-color-danger-on-normal);
+  }
+}
+
+// Match the quiet secondary actions on Craft's Entries screen.
+.ff-activity-actions > a.btn,
+.ff-activity .btn:not(.submit):not([aria-pressed]) {
+  background: var(--c-color-neutral-fill-quiet);
+  color: var(--c-color-neutral-on-quiet);
+  border: 0;
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    background: var(--c-color-neutral-fill-normal);
+    color: var(--c-color-neutral-on-normal);
+  }
+}
+
+// Craft owns the joined edges; retain native submit buttons for GET navigation.
+.ff-activity-view-form #activity-view {
+  display: inline-flex;
+  align-items: stretch;
+
+  > .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: var(--c-size-control-md);
+    padding-inline: var(--c-form-control-spacing-inline);
+    margin-block: 0;
+    border: 1px solid transparent;
+    border-start-start-radius: var(--c-button-radius-start-start, 0);
+    border-start-end-radius: var(--c-button-radius-start-end, 0);
+    border-end-start-radius: var(--c-button-radius-end-start, 0);
+    border-end-end-radius: var(--c-button-radius-end-end, 0);
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-color-neutral-on-quiet);
+    font: inherit;
+    box-shadow: none;
+
+    &[aria-pressed="true"] {
+      background: var(--c-color-neutral-fill-loud);
+      color: var(--c-color-neutral-on-loud);
+      border-color: var(--c-color-neutral-border-loud);
+      z-index: 1;
+    }
+
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
+      z-index: 2;
+    }
+  }
+}

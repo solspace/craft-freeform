@@ -295,19 +295,19 @@ describe("workflow setup guide", () => {
   it("marks context-dependent recommended values without changing overrides or saved values", async () => {
     await render();
     await suggest();
-    const mode = field("Recording mode");
+    const mode = field("Activity Logging");
     expect(mode.textContent).toContain("Minimal");
     expect(mode.querySelector(".ff-recommended-badge")).not.toBeNull();
-    await change("Recording mode", "detailed");
+    await change("Activity Logging", "detailed");
     expect(
-      field("Recording mode").querySelector(".ff-recommended-badge"),
+      field("Activity Logging").querySelector(".ff-recommended-badge"),
     ).toBeNull();
-    const row = field("Recording mode").closest(".setup-suggestion")!;
+    const row = field("Activity Logging").closest(".setup-suggestion")!;
     expect(row.querySelector(".setup-recommended-value")?.textContent).toBe(
       "Recommended for this setup: Minimal",
     );
     expect(row.textContent).toContain("Currently saved: Minimal");
-    await act(async () => field("Recording mode").click());
+    await act(async () => field("Activity Logging").click());
     expect(
       document.querySelector(
         '.dropdown-rollout [data-value="minimal"] .ff-recommended-badge',
@@ -324,16 +324,16 @@ describe("workflow setup guide", () => {
         .click(),
     );
     expect(
-      field("Recording mode").querySelector(".ff-recommended-badge"),
+      field("Activity Logging").querySelector(".ff-recommended-badge"),
     ).not.toBeNull();
     expect(row.querySelector(".setup-recommended-value")).toBeNull();
     await click("Your workflow");
     await radio("advanced");
     await click("Suggested setup");
     // The edited value stays Minimal. Only the recommendation follows the answers.
-    expect(field("Recording mode").textContent).toContain("Minimal");
+    expect(field("Activity Logging").textContent).toContain("Minimal");
     expect(
-      field("Recording mode")
+      field("Activity Logging")
         .closest(".setup-suggestion")
         ?.querySelector(".setup-recommended-value")?.textContent,
     ).toBe("Recommended for this setup: Standard");
@@ -347,7 +347,7 @@ describe("workflow setup guide", () => {
       });
       await render();
       await suggest();
-      const control = field("Recording mode");
+      const control = field("Activity Logging");
       const label = activityMode === "detailed" ? "Detailed" : "Custom";
       expect(control.textContent).toContain(label);
       expect(control.querySelector(".ff-recommended-badge")).toBeNull();
@@ -356,38 +356,157 @@ describe("workflow setup guide", () => {
       );
     },
   );
+  it("offers one Activity Logging control with all five choices", async () => {
+    await render();
+    await suggest();
+    expect(
+      host.querySelectorAll('[aria-label="Activity Logging"]'),
+    ).toHaveLength(1);
+    expect(field("Logging Style")).toBeNull();
+    expect(field("Recording mode")).toBeNull();
+    await act(async () => field("Activity Logging").click());
+    for (const value of ["off", "minimal", "standard", "detailed", "custom"])
+      expect(
+        document.querySelector(`.dropdown-rollout [data-value="${value}"]`),
+      ).not.toBeNull();
+  });
+  it.each(["minimal", "custom"])(
+    "preserves saved Off and its remembered %s mode without proposing new logging",
+    async (activityMode) => {
+      vi.mocked(client.load).mockResolvedValueOnce({
+        ...setupOptions,
+        values: { ...setupValues, loggingStyle: "none", activityMode },
+      });
+      await render();
+      await suggest();
+      const control = field("Activity Logging");
+      expect(control.textContent).toContain("Off");
+      expect(control.closest(".setup-suggestion")?.textContent).toContain(
+        "Currently saved: Off",
+      );
+      expect(control.querySelector(".ff-recommended-badge")).toBeNull();
+      await click("Review");
+      expect(
+        host.querySelector(".setup-review")?.textContent || "",
+      ).not.toContain("Activity Logging");
+      await click("Apply setup");
+      const [changes, original] = vi.mocked(client.save).mock.calls[0];
+      expect(changes).not.toHaveProperty("loggingStyle");
+      expect(changes).not.toHaveProperty("activityMode");
+      expect(changes).not.toHaveProperty("activityEvents");
+      expect(original.activityMode).toBe(activityMode);
+    },
+  );
+  it("reviews Off once and preserves the original mode when saving after previewing another mode", async () => {
+    vi.mocked(client.load).mockResolvedValueOnce({
+      ...setupOptions,
+      values: { ...setupValues, activityMode: "custom" },
+    });
+    await render();
+    await suggest();
+    await change("Activity Logging", "detailed");
+    await change("Activity Logging", "off");
+    await click("Review");
+    const rows = Array.from(host.querySelectorAll(".setup-review > div"));
+    const logging = rows.filter(
+      (row) => row.querySelector("dt")?.textContent === "Activity Logging",
+    );
+    expect(logging).toHaveLength(1);
+    expect(logging[0].querySelector("dd")?.textContent).toBe("CustomOff");
+    expect(host.querySelector(".setup-review")?.textContent).not.toContain(
+      "loggingStyle",
+    );
+    await click("Apply setup");
+    const [changes, original] = vi.mocked(client.save).mock.calls[0];
+    expect(changes).toMatchObject({ loggingStyle: "none" });
+    expect(changes).not.toHaveProperty("activityMode");
+    expect(changes).not.toHaveProperty("activityEvents");
+    expect(original.activityMode).toBe("custom");
+  });
+  it("reviews enabling saved Custom logging once and sends only the existing API keys", async () => {
+    vi.mocked(client.load).mockResolvedValueOnce({
+      ...setupOptions,
+      values: { ...setupValues, loggingStyle: "none", activityMode: "minimal" },
+    });
+    await render();
+    await suggest();
+    await change("Activity Logging", "custom");
+    await click("Review");
+    const logging = Array.from(
+      host.querySelectorAll(".setup-review > div"),
+    ).filter(
+      (row) => row.querySelector("dt")?.textContent === "Activity Logging",
+    );
+    expect(logging).toHaveLength(1);
+    expect(logging[0].querySelector("dd")?.textContent).toBe("OffCustom");
+    expect(host.querySelector(".setup-review")?.textContent).not.toContain(
+      "loggingStyle",
+    );
+    await click("Apply setup");
+    const [changes] = vi.mocked(client.save).mock.calls[0];
+    expect(changes).toMatchObject({
+      loggingStyle: "activity",
+      activityMode: "custom",
+    });
+    expect(changes).not.toHaveProperty("activityEvents");
+    expect(Object.values(changes)).not.toContain("off");
+  });
+  it.each(["loggingStyle", "activityMode"] as const)(
+    "locks the combined logging selector when %s is configured",
+    async (key) => {
+      vi.mocked(client.load).mockResolvedValueOnce({
+        ...setupOptions,
+        values: { ...setupValues, activityMode: "standard" },
+        locked: [key],
+      });
+      await render();
+      await suggest();
+      expect(
+        host.querySelector<HTMLButtonElement>(
+          '[aria-label="Include Activity Logging"]',
+        )?.disabled,
+      ).toBe(true);
+      expect(field("Activity Logging").getAttribute("aria-disabled")).toBe(
+        "true",
+      );
+      expect(field("Activity Logging").textContent).toContain("Standard");
+      expect(
+        field("Activity Logging").closest(".setup-suggestion")?.textContent,
+      ).toContain("managed in your project configuration");
+      await click("Review");
+      await click("Apply setup");
+      const [changes] = vi.mocked(client.save).mock.calls[0];
+      expect(changes).not.toHaveProperty("loggingStyle");
+      expect(changes).not.toHaveProperty("activityMode");
+    },
+  );
   it("preselects requested failure alerts, requires supplied recipients, and leaves digests optional", async () => {
     await render();
     await workflow();
     await checkbox("Receive alerts about problems");
     await checkbox("Review submissions in Craft");
     await click("Continue");
-    expect(field("Send Email Alerts for Failed Notifications").value).toBe("");
-    expect(
-      field("Send Email Alerts for Failed Notifications").placeholder,
-    ).toBe("name@example.com, team@example.com");
-    expect(field("Critical System Error Report Recipients").value).toBe("");
-    expect(field("Stats Digest Email")).toBeNull();
+    expect(field("Error Alert Recipients").value).toBe("");
+    expect(field("Error Alert Recipients").placeholder).toBe(
+      "name@example.com, team@example.com",
+    );
+    expect(field("Stats Digest Recipients")).toBeNull();
     expect(button("Continue").disabled).toBe(true);
     await click("Review");
     expect(host.querySelector('[role="alert"]')?.textContent).toContain(
       "Enter alert recipients",
     );
     expect(client.save).not.toHaveBeenCalled();
-    await change(
-      "Send Email Alerts for Failed Notifications",
-      "qa-alerts@example.com",
-    );
-    await checkbox("Include Critical System Error Report Recipients");
+    await change("Error Alert Recipients", "qa-alerts@example.com");
     expect(button("Continue").disabled).toBe(false);
     await click("Review");
     expect(host.querySelectorAll(".setup-review dt small")).toHaveLength(0);
     await click("Apply setup");
     expect(vi.mocked(client.save).mock.calls[0][0]).toMatchObject({
-      alertNotificationRecipients: "qa-alerts@example.com",
+      errorNotificationRecipients: "qa-alerts@example.com",
     });
     expect(vi.mocked(client.save).mock.calls[0][0]).not.toHaveProperty(
-      "errorNotificationRecipients",
+      "alertNotificationRecipients",
     );
     expect(vi.mocked(client.save).mock.calls[0][0]).not.toHaveProperty(
       "clientDigestRecipients",
@@ -437,8 +556,8 @@ describe("workflow setup guide", () => {
     await workflow();
     await checkbox("Review submissions in Craft");
     await click("Continue");
-    expect(field("Stats Digest Email Frequency")).toBeNull();
-    await checkbox("Include Stats Digest Email Frequency");
+    expect(field("Stats Digest Frequency")).toBeNull();
+    await checkbox("Include Stats Digest Frequency");
     await click("Daily");
     expect(host.querySelector('[aria-label="Day of the week"]')).toBeNull();
     await click("Weekly");

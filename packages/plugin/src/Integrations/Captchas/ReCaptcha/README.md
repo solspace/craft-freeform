@@ -21,7 +21,7 @@ See Google's [migration guidance](https://docs.cloud.google.com/recaptcha/docs/m
    - **Checkbox** shows a checkbox and may ask the visitor to solve a puzzle.
 3. Enter the credentials for your chosen setup. See the key instructions below
    if you need to create or find them.
-4. Choose whether the integration should be **Enabled by default** on forms.
+4. Choose whether the integration should be **Enable on forms by default** on forms.
 5. Click **Save**.
 6. Open your form in the builder, go to **Integrations → Captchas**, and select
    **reCAPTCHA**. Make sure it is enabled, review its settings, and save the form.

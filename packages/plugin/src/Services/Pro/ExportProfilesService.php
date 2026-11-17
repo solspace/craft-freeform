@@ -18,11 +18,13 @@ use Solspace\Freeform\Events\Export\Profiles\RegisterExporterEvent;
 use Solspace\Freeform\Events\Export\Profiles\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
 use Solspace\Freeform\Records\Pro\ExportProfileRecord;
+use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\base\Component;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
@@ -125,7 +127,7 @@ class ExportProfilesService extends Component
             throw new BadRequestHttpException(Freeform::t('The selected export format is not allowed for this profile.'));
         }
 
-        return $this->createExporter($type, $profile->getForm(), $profile->getQuery(), $profile->getFieldDescriptors());
+        return $this->createExporter($type, $profile->getForm(), $profile->getQuery(), $profile->getFieldDescriptors(), $this->getExportSettings($profile->formatting));
     }
 
     /**
@@ -184,6 +186,11 @@ class ExportProfilesService extends Component
 
     public function save(ExportProfileModel $model): bool
     {
+        if (!ExportFormatting::isValid($model->formatting)) {
+            $model->addError('formatting', Freeform::t('Choose valid export formatting options.'));
+
+            return false;
+        }
         if (!$this->validateAllowedExportTypes($model)) {
             return false;
         }
@@ -210,6 +217,7 @@ class ExportProfilesService extends Component
         $record->filters = $model->filters;
         $record->statuses = $model->statuses;
         $record->allowedExportTypes = $model->allowedExportTypes;
+        $record->formatting = $model->formatting;
 
         $record->validate();
         $model->addErrors($record->getErrors());
@@ -281,22 +289,22 @@ class ExportProfilesService extends Component
         }
     }
 
-    public function getExportSettings(): ExportSettings
+    public function getQuickExportFormatting(?int $userId = null): array
     {
-        $settings = Freeform::getInstance()->settings;
-        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? new \DateTimeZone(\Craft::$app->getTimeZone());
+        $userId ??= \Craft::$app->getUser()->getId();
+        $record = $userId ? ExportSettingRecord::findOne(['userId' => $userId]) : null;
 
+        return ExportFormatting::normalize($record?->formatting);
+    }
+
+    public function getExportSettings(?array $formatting = null): ExportSettings
+    {
+        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? \Craft::$app->getTimeZone();
         if ($timezone instanceof \DateTimeZone) {
             $timezone = $timezone->getName();
         }
 
-        return new ExportSettings(
-            $settings->isRemoveNewlines(),
-            $settings->isExportLabels(),
-            $timezone,
-            $settings->isExportHandlesAsNames(),
-            $settings->isExportTrackedUrlParameters(),
-        );
+        return ExportSettings::fromFormatting($formatting ?? $this->getQuickExportFormatting(), $timezone);
     }
 
     public function getSubmissionForExport(SubmissionQuery $query): Submission
@@ -327,7 +335,8 @@ class ExportProfilesService extends Component
         string $type,
         Form $form,
         SubmissionQuery $query,
-        FieldDescriptorCollection $fieldDescriptors
+        FieldDescriptorCollection $fieldDescriptors,
+        ?ExportSettings $settings = null,
     ): SubmissionExportInterface {
         $exporters = $this->getExporters();
         if (!isset($exporters[$type])) {
@@ -336,7 +345,7 @@ class ExportProfilesService extends Component
 
         $class = $exporters[$type];
 
-        return new $class($form, $query, $fieldDescriptors, $this->getExportSettings());
+        return new $class($form, $query, $fieldDescriptors, $settings ?? $this->getExportSettings());
     }
 
     #[NoReturn]
@@ -392,6 +401,7 @@ class ExportProfilesService extends Component
                     'export_profiles.filters',
                     'export_profiles.statuses',
                     'export_profiles.allowedExportTypes',
+                    'export_profiles.formatting',
                 ]
             )
             ->from(ExportProfileRecord::TABLE.' export_profiles')
@@ -405,6 +415,7 @@ class ExportProfilesService extends Component
             $data['allowedExportTypes'] = json_decode($data['allowedExportTypes'], true, flags: \JSON_THROW_ON_ERROR);
         }
 
+        $data['formatting'] = ExportFormatting::normalize($data['formatting'] ?? null);
         $exportProfile = new ExportProfileModel($data);
 
         $jsonColumns = ['fields', 'filters', 'statuses'];

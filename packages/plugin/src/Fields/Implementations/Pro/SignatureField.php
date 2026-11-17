@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
@@ -27,7 +28,7 @@ use Twig\Markup;
     iconPath: __DIR__.'/../Icons/signature.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/signature.ejs',
 )]
-class SignatureField extends AbstractField implements ExtraFieldInterface, EncryptionInterface, NoEmailPresenceInterface, SkipGibberishCheckInterface
+class SignatureField extends AbstractField implements GroupedFieldInterface, ExtraFieldInterface, EncryptionInterface, NoEmailPresenceInterface, SkipGibberishCheckInterface
 {
     use EncryptionTrait;
 
@@ -49,13 +50,14 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     )]
     protected int $height = 100;
 
-    #[Limitation('props.signature', 'clear')]
-    #[DefaultValue('props.signature.clear')]
+    #[Limitation('props.signature', 'allowTyped')]
+    #[DefaultValue('props.signature.allowTyped')]
     #[Input\Boolean(
-        label: "Show 'Clear' button",
-        instructions: 'Allows user to erase and start over.',
+        label: 'Allow Typed Signatures',
+        instructions: 'Let visitors type their signature instead of drawing it.',
+        value: false,
     )]
-    protected bool $showClearButton = true;
+    protected bool $allowTypedSignature = false;
 
     #[Input\Boolean(
         label: 'Customize Appearance',
@@ -126,11 +128,6 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
         return $this->getTranslationTable()->get('height', $this->height);
     }
 
-    public function isShowClearButton(): bool
-    {
-        return $this->showClearButton;
-    }
-
     public function getBorderColor(): string
     {
         if (!$this->isCustomizeAppearance()) {
@@ -162,6 +159,11 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     public function getPenDotSize(): float
     {
         return $this->getTranslationTable()->get('penDotSize', $this->penDotSize);
+    }
+
+    public function isAllowTypedSignature(): bool
+    {
+        return $this->allowTypedSignature;
     }
 
     public function isCustomizeAppearance(): bool
@@ -220,6 +222,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
             ->getInput()
             ->clone()
             ->set('type', 'button')
+            ->remove('id')
             ->set('data-signature-clear')
         ;
 
@@ -238,7 +241,11 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
 
         $inputAttributes = (new Attributes())
             ->clone()
+            ->remove('id')
             ->set('type', 'hidden')
+            ->set('aria-describedby', $this->getAttributes()->getInput()->get('aria-describedby', false))
+            ->set('aria-invalid', $this->getAttributes()->getInput()->get('aria-invalid', false))
+            ->set('disabled', $this->getAttributes()->getInput()->get('disabled', false))
             ->set('name', $this->getHandle())
             ->set('value', $this->getValue())
             ->set($this->getRequiredAttribute())
@@ -262,6 +269,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
             ->set('data-dot-size', $this->getPenDotSize())
             ->set('data-border-color', $this->getBorderColor())
             ->set('data-background-color', $this->getBackgroundColor())
+            ->set('aria-hidden', 'true')
             ->set('data-signature-field')
             ->set('data-signature-customize-appearance', $this->isCustomizeAppearance() ? 'true' : 'false')
             ->set('data-signature-pen-cursor', $this->isShowPenCursor() ? 'true' : 'false')
@@ -273,13 +281,23 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
             $canvasAttributes->toHtmlTagArray()
         );
 
-        if ($this->showClearButton) {
-            $output .= Html::tag(
-                'button',
-                Freeform::t('Clear'),
-                $attributes->toHtmlTagArray(['field' => $this])
-            );
+        if ($this->isAllowTypedSignature()) {
+            $typedId = $this->getIdAttribute().'-typed';
+            $typedAttributes = $this->getAttributes()->getTypedInput()->clone()
+                ->set('type', 'text')->set('id', $typedId)->set('data-signature-typed')
+                ->set('autocomplete', 'off')->set('maxlength', 200)
+                ->set('aria-describedby', $this->getAttributes()->getInput()->get('aria-describedby', false))
+                ->set('aria-invalid', $this->getAttributes()->getInput()->get('aria-invalid', false))
+                ->set('disabled', $this->getAttributes()->getInput()->get('disabled', false))
+            ;
+            $labelAttributes = $this->getAttributes()->getTypedLabel()->clone()->set('for', $typedId);
+            $containerAttributes = $this->getAttributes()->getTypedContainer()->clone()->append('class', 'freeform-signature-type');
+            $output .= '<div'.$containerAttributes.'>';
+            $output .= Html::tag('input', '', $typedAttributes->toHtmlTagArray());
+            $output .= Html::tag('label', Html::encode(Freeform::t('Or type your signature')), $labelAttributes->toHtmlTagArray());
+            $output .= '</div>';
         }
+        $output .= Html::tag('button', Freeform::t('Clear'), $attributes->toHtmlTagArray(['field' => $this]));
 
         $output .= '</div>';
 

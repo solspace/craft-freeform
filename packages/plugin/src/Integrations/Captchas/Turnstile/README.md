@@ -6,7 +6,7 @@ Existing integrations keep their saved settings.
 ## Set up the integration
 
 1. Enter your **Site Key** and **Secret Key** from the [Cloudflare Turnstile dashboard](https://dash.cloudflare.com/).
-2. Choose whether the integration should be **Enabled by default** on forms.
+2. Choose whether the integration should be **Enable on forms by default** on forms.
 3. Click **Save**.
 4. Open your form in the builder, go to **Integrations → Captchas**, and select
    **Turnstile**. Make sure it is enabled, review its settings, and save the form.

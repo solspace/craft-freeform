@@ -68,7 +68,7 @@ class ActivityServiceTest extends TestCase
 
     public function testNoneStopsActivityEvenWithBothCompatibilityGuardsEnabled(): void
     {
-        $service = $this->service($this->settings(['loggingStyle' => 'none', 'activityMode' => 'detailed', 'activityEnabled' => '1', 'technicalFileLogging' => '1']));
+        $service = $this->service($this->settings(['loggingStyle' => 'none', 'activityMode' => 'detailed', 'activityEnabled' => '1']));
         $service->expects(self::never())->method('write');
         $service->record('error');
         $service->record('submission');
@@ -93,9 +93,9 @@ class ActivityServiceTest extends TestCase
         $service->flush();
     }
 
-    public function testClassicStyleStopsActivityWithoutChangingSavedPreferences(): void
+    public function testNoneStopsActivityWithoutChangingSavedPreferences(): void
     {
-        $settings = $this->settings(['loggingStyle' => 'classic', 'activityEnabled' => '1', 'activityMode' => 'detailed']);
+        $settings = $this->settings(['loggingStyle' => 'none', 'activityEnabled' => '1', 'activityMode' => 'detailed']);
         $service = $this->service($settings);
         $service->expects(self::once())->method('write')->with(self::callback(static fn ($rows) => 1 === \count($rows) && 'submission' === $rows[0]['event']));
         self::assertFalse($service->isEnabled('submission'));

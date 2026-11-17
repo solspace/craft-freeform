@@ -35,7 +35,7 @@ class OAuth2AuthController extends BaseController
         try {
             return $this->completeAuthorization();
         } catch (\Throwable $exception) {
-            $this->getLoggerService()->getLogger('oauth', 'freeform-integrations.log')->error(
+            $this->getLoggerService()->getLogger('oauth', 'integrations')->error(
                 'OAuth2 callback could not complete',
                 ['exceptionClass' => $exception::class]
             );

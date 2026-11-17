@@ -27,6 +27,7 @@ use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -40,7 +41,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
     iconPath: __DIR__.'/Icons/multi-select.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/multiple-select.ejs',
 )]
-class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValueInterface, DefaultValueInterface
+class MultipleSelectField extends BaseGeneratedOptionsField implements GroupedFieldInterface, MultiValueInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
     use OptionCollectionTrait;
@@ -73,7 +74,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
             [
                 'handle' => 'container',
                 'label' => 'Container',
-                'previewTag' => 'div',
+                'previewTag' => 'fieldset',
             ],
             [
                 'handle' => 'input',
@@ -83,7 +84,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
             [
                 'handle' => 'label',
                 'label' => 'Label',
-                'previewTag' => 'label',
+                'previewTag' => 'legend',
             ],
             [
                 'handle' => 'instructions',

@@ -87,6 +87,7 @@ function fixture(
       },
       value,
       classNames: { input: "legacy-signature" },
+      input: {},
       form: {
         resetVersion,
         isFieldEnabled: () => enabled,
@@ -223,9 +224,9 @@ it("tracks conditional enabled state without clearing or accepting disabled stro
   ).toBe(false);
 });
 
-it("keeps optional clear controls and resizes using the latest saved value", () => {
+it("keeps Clear available for legacy fields and resizes using the latest saved value", () => {
   const view = fixture(signatureJpeg, false);
-  expect(view.queryByRole("button", { name: "Clear" })).toBeNull();
+  expect(view.getByRole("button", { name: "Clear" })).not.toBeNull();
   fireEvent.click(view.getByText("Resize"));
   expect(view.canvas.width).toBe(300);
   expect(SignatureTestImage.instances.at(-1)!.src).toBe(signatureJpeg);
@@ -297,4 +298,35 @@ it("exports the separate ink bitmap for legacy fields without export flags and w
   expect(encode).toHaveBeenCalledWith("image/png");
   expect(encode.mock.instances.at(-1)).not.toBe(view.canvas);
   expect(view.value()).toBe(signaturePng);
+});
+
+it("offers typing only when enabled and uses the theme input class", () => {
+  const disabled = fixture();
+  expect(disabled.queryByLabelText("Or type your signature")).toBeNull();
+  disabled.unmount();
+  const enabled = fixture("", true, { allowTypedSignature: true });
+  expect(enabled.getByLabelText("Or type your signature").className).toBe(
+    "legacy-signature",
+  );
+});
+
+it("stores typed signatures as images and clears the typed alternative", () => {
+  const view = fixture("", true, { allowTypedSignature: true });
+  const input = view.getByLabelText<HTMLInputElement>("Or type your signature");
+  fireEvent.change(input, { target: { value: "Alex Example" } });
+  expect(view.value()).toBe(signaturePng);
+  expect(input.value).toBe("Alex Example");
+  fireEvent.click(view.getByRole("button", { name: "Clear" }));
+  expect(input.value).toBe("");
+  expect(view.value()).toBe("");
+});
+
+it("uses translated signature labels from the manifest", () => {
+  const view = fixture("", true, {
+    allowTypedSignature: true,
+    typedLabel: "Saisissez votre signature",
+    clearLabel: "Effacer",
+  });
+  expect(view.getByLabelText("Saisissez votre signature")).not.toBeNull();
+  expect(view.getByRole("button", { name: "Effacer" })).not.toBeNull();
 });

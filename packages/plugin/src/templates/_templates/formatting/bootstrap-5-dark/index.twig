@@ -67,6 +67,8 @@
         },
         "@signature": {
             attributes: {
+        typedInput: { class: "form-control bg-dark-subtle text-white" },
+        typedLabel: { class: "mb-1" },
                 input: { "-class": "form-control bg-dark-subtle text-white", "+class": "btn btn-outline-secondary freeform-signature-clear" },
             },
         },
@@ -98,12 +100,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% include "freeform/_templates/formatting/_error-summary.twig" %}
         </div>
     {% endif %}
 {% endif %}
 
 {# Render page tabs if multi-page #}
 {% if form.pages|length > 1 %}
+    {% include "freeform/_templates/formatting/_page-heading.twig" %}
     <ul class="nav nav-tabs mb-4">
         {% for page in form.pages %}
             <li class="nav-item"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>

@@ -20,6 +20,7 @@ import {
   type FormEvent,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -59,6 +60,7 @@ function snapshotFromState(
 }
 
 export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
+  const idPrefix = `freeform-${useId()}-`;
   const theme = options.theme ?? defaultTheme;
   const renderers = options.renderers ?? {};
   const allowRawHtml = options.allowRawHtml ?? false;
@@ -260,7 +262,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
       const value = formState?.getValue(handle);
 
       return {
-        id: `freeform-${handle}`,
+        id: field?.attributes?.input?.id ?? `${idPrefix}${handle}`,
         name: handle,
         value: value ?? "",
         onChange: (
@@ -285,7 +287,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
         "aria-invalid": (formState?.fieldErrors[handle]?.length ?? 0) > 0,
       };
     },
-    [isFieldEnabled, manifest?.fields, setValue, syncFromFormState],
+    [idPrefix, isFieldEnabled, manifest?.fields, setValue, syncFromFormState],
   );
 
   const submit = useCallback(

@@ -1,0 +1,4 @@
+<h2 class="freeform-page-heading" tabindex="-1" data-freeform-page-heading>
+    {{ form.currentPage.label }}
+    <span class="freeform-page-position">{{ 'Step {current} of {total}'|t('freeform', {current: form.currentPage.index + 1, total: form.pages|length}) }}</span>
+</h2>

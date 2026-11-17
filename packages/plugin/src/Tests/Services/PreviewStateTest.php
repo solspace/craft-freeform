@@ -100,17 +100,15 @@ class PreviewStateTest extends TestCase
         PreviewState::validateValues(['field' => str_repeat('x', 10001)]);
     }
 
-    #[TestWith(['basic-dark/index.twig'])]
+    #[TestWith(['freeform-dark/index.twig'])]
     #[TestWith(['bootstrap-5-dark/index.twig'])]
-    #[TestWith(['tailwind-3-dark/index.twig'])]
     #[TestWith(['tailwind-4-dark/index.twig'])]
     #[TestWith(['daisyui-5-dark/index.twig'])]
-    #[TestWith(['conversational/index.twig'])]
     public function testOnlyKnownDarkSamplesGetDarkBackground(string $template): void
     {
         self::assertTrue(PreviewState::isDark($template, false));
         self::assertFalse(PreviewState::isDark($template, true));
-        self::assertFalse(PreviewState::isDark('basic-light/index.twig', false));
+        self::assertFalse(PreviewState::isDark('freeform-light/index.twig', false));
     }
 
     #[TestWith(['', false, 1])]

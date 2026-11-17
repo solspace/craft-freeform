@@ -91,6 +91,28 @@ class Craft6BooleanMenuTest extends TestCase
         self::assertSame('slideout-enabled', $dom->getElementsByTagName('craft-combobox')->item(0)->getAttribute('id'));
     }
 
+    public function testEnvironmentHelpIsKeyboardAccessibleAndDoesNotSubmitAnotherValue(): void
+    {
+        app(InputNamespace::class)->set('slideout');
+        $dom = $this->render(['includeEnvVars' => true, 'value' => '$FREEFORM_BOOL_ON']);
+        $buttons = $dom->getElementsByTagName('button');
+        $badge = null;
+        foreach ($buttons as $button) {
+            if ('freeform-env-badge' === $button->getAttribute('class')) {
+                $badge = $button;
+            }
+        }
+        self::assertNotNull($badge);
+        self::assertSame('button', $badge->getAttribute('type'));
+        self::assertSame('', $badge->getAttribute('name'));
+        self::assertSame('Environment variable support', $badge->getAttribute('aria-label'));
+        $tooltip = $dom->getElementsByTagName('craft-tooltip')->item(0);
+        self::assertSame($badge->getAttribute('id'), $tooltip->getAttribute('for'));
+        self::assertSame('description', $tooltip->getAttribute('invoker-relation'));
+        self::assertStringContainsString('true/false', $tooltip->textContent);
+        self::assertSame('$FREEFORM_BOOL_ON', $this->selectedValue($dom->getElementsByTagName('craft-combobox')->item(0)));
+    }
+
     private function selectedValue(\DOMElement $combobox): string
     {
         return $combobox->getAttribute($combobox->hasAttribute('value') ? 'value' : 'model-value');

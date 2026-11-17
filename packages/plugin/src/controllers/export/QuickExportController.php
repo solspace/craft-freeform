@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Export\Objects\FieldDescriptor;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -154,6 +155,7 @@ class QuickExportController extends BaseController
                 'selectedFormId' => $selectedFormId,
                 'isSpam' => $isSpam,
                 'exporters' => $this->getExportProfileService()->getExporterTypes(),
+                'formatting' => ExportFormatting::normalize($settingRecord->formatting),
             ]
         );
     }
@@ -203,10 +205,20 @@ class QuickExportController extends BaseController
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
+        $formatting = \Craft::$app->request->post('formatting', ExportFormatting::normalize($settings->formatting));
+        if (!ExportFormatting::isValid($formatting)) {
+            throw new BadRequestHttpException(Freeform::t('Choose valid export formatting options.'));
+        }
+        if (\Craft::$app->request->post('rememberFormatting') === '1') {
+            $settings->formatting = $formatting;
+        }
+
         $fieldData = $exportFields[$form->getId()];
 
-        $settings->setting = $exportFields;
-        $settings->save();
+        $settings->setting = array_replace(JsonHelper::decode($settings->setting, true) ?: [], $exportFields);
+        if (!$settings->save()) {
+            throw new \RuntimeException('Unable to save export preferences.');
+        }
 
         $collection = new FieldDescriptorCollection();
 
@@ -237,7 +249,7 @@ class QuickExportController extends BaseController
             ->isSpam($isSpam)
         ;
 
-        $exporter = $exportProfilesService->createExporter($exportType, $form, $query, $collection);
+        $exporter = $exportProfilesService->createExporter($exportType, $form, $query, $collection, $exportProfilesService->getExportSettings($formatting));
         $exportProfilesService->export($exporter, $form);
     }
 

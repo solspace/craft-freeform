@@ -1,6 +1,8 @@
 import type { ReactFieldRendererProps } from "../../types.js";
+import { inputProps } from "./inputProps.js";
 
 export function OpinionScaleFieldRenderer(props: ReactFieldRendererProps) {
+  const input = inputProps(props);
   const value = String(props.value ?? "");
   const legends = (props.field.frontend?.config?.legends as string[]) ?? [];
 
@@ -9,7 +11,6 @@ export function OpinionScaleFieldRenderer(props: ReactFieldRendererProps) {
   return (
     <div>
       <div
-        role="radiogroup"
         className={props.classNames.input}
         style={
           useFallbackLayout
@@ -45,6 +46,9 @@ export function OpinionScaleFieldRenderer(props: ReactFieldRendererProps) {
               name={props.field.handle}
               value={option.value}
               checked={value === option.value}
+              aria-invalid={input["aria-invalid"]}
+              aria-describedby={input["aria-describedby"]}
+              required={props.field.required}
               disabled={!props.form.isFieldEnabled(props.field.handle)}
               onChange={() =>
                 props.form.setValue(props.field.handle, option.value)

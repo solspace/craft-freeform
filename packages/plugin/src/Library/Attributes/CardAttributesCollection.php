@@ -4,8 +4,7 @@ namespace Solspace\Freeform\Library\Attributes;
 
 class CardAttributesCollection extends Attributes
 {
-    protected Attributes $fieldset;
-    protected Attributes $legend;
+    protected Attributes $options;
     protected Attributes $card;
     protected Attributes $content;
     protected Attributes $imageWrapper;
@@ -16,8 +15,7 @@ class CardAttributesCollection extends Attributes
 
     public function __construct(?array $attributes = [])
     {
-        $this->fieldset = new Attributes();
-        $this->legend = new Attributes();
+        $this->options = new Attributes();
         $this->card = new Attributes();
         $this->content = new Attributes();
         $this->imageWrapper = new Attributes();
@@ -29,14 +27,9 @@ class CardAttributesCollection extends Attributes
         parent::__construct($attributes ?? []);
     }
 
-    public function getFieldset(): Attributes
+    public function getOptions(): Attributes
     {
-        return $this->fieldset;
-    }
-
-    public function getLegend(): Attributes
-    {
-        return $this->legend;
+        return $this->options;
     }
 
     public function getCard(): Attributes

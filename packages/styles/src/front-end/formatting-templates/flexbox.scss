@@ -35,7 +35,7 @@ $gutter: 15px;
       margin-top: -10px;
     }
 
-    label {
+    :is(label, legend) {
       display: block;
     }
 
@@ -43,7 +43,7 @@ $gutter: 15px;
       display: flex;
       flex-wrap: wrap;
 
-      label {
+      :is(label, legend) {
         padding-right: 10px;
       }
     }

@@ -36,7 +36,7 @@ class FormsServiceTest extends TestCase
         $defaults->settings = $defaultSettings;
         $defaults->includeSampleTemplates = $includeSamples;
         $model = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
-        $model->formattingTemplate = 'basic-light/index.twig';
+        $model->formattingTemplate = 'freeform-light/index.twig';
         $model->defaults = $defaults;
 
         $template = function (string $fileName): FormTemplate {
@@ -66,26 +66,26 @@ class FormsServiceTest extends TestCase
     public static function defaultFormattingTemplateProvider(): array
     {
         return [
-            'configured sample overrides legacy Basic Light' => [
+            'configured sample overrides legacy Freeform Light' => [
                 'tailwind-4-light/index.twig', true,
-                ['basic-light/index.twig', 'tailwind-4-light/index.twig'], [],
+                ['freeform-light/index.twig', 'tailwind-4-light/index.twig'], [],
                 'tailwind-4-light/index.twig',
             ],
-            'configured custom template overrides legacy Basic Light' => [
-                'insurance.twig', true, ['basic-light/index.twig'], ['insurance.twig'], 'insurance.twig',
+            'configured custom template overrides legacy Freeform Light' => [
+                'insurance.twig', true, ['freeform-light/index.twig'], ['insurance.twig'], 'insurance.twig',
             ],
             'custom template with samples disabled' => [
-                'insurance.twig', false, ['basic-light/index.twig'], ['insurance.twig'], 'insurance.twig',
+                'insurance.twig', false, ['freeform-light/index.twig'], ['insurance.twig'], 'insurance.twig',
             ],
             'explicitly no formatting template' => [
-                '', true, ['basic-light/index.twig'], [], '',
+                '', true, ['freeform-light/index.twig'], [], '',
             ],
             'missing configured template uses available fallback' => [
-                'missing.twig', true, ['basic-light/index.twig'], ['insurance.twig'], 'basic-light/index.twig',
+                'missing.twig', true, ['freeform-light/index.twig'], ['insurance.twig'], 'freeform-light/index.twig',
             ],
             'disabled samples are excluded from fallback' => [
                 'tailwind-4-light/index.twig', false,
-                ['basic-light/index.twig', 'tailwind-4-light/index.twig'], ['insurance.twig'], 'insurance.twig',
+                ['freeform-light/index.twig', 'tailwind-4-light/index.twig'], ['insurance.twig'], 'insurance.twig',
             ],
             'no available templates retains fallback' => [
                 'missing.twig', false, [], [], 'flexbox.html',

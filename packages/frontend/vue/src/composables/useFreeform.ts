@@ -22,6 +22,7 @@ import {
   ref,
   shallowRef,
   toValue,
+  useId,
   watch,
   watchEffect,
 } from "vue";
@@ -63,6 +64,7 @@ function snapshotFromState(
 export function useFreeform(
   options: MaybeRefOrGetter<UseFreeformOptions>,
 ): UseFreeformResult {
+  const idPrefix = `freeform-${useId()}-`;
   const opts = computed(() => toValue(options));
   const theme = computed(() => opts.value.theme ?? defaultTheme);
   const renderers = computed(() => opts.value.renderers ?? {});
@@ -266,7 +268,7 @@ export function useFreeform(
     const value = formState?.getValue(handle);
 
     return {
-      id: `freeform-${handle}`,
+      id: field?.attributes?.input?.id ?? `${idPrefix}${handle}`,
       name: handle,
       value: value ?? "",
       onChange: (event: Event) => {

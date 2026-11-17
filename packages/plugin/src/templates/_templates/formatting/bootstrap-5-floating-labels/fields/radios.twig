@@ -16,7 +16,7 @@
                    {% if field.hasErrors %}aria-invalid="true"{% endif %}
             />
             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                {{ option.label|t('freeform')|raw }}
+                {{ field.translateOptionLabel(option) }}
             </label>
         </div>
     {% endfor %}

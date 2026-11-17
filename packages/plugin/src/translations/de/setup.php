@@ -25,8 +25,6 @@ return [
     'Keep your existing custom event choices.' => 'Bestehende benutzerdefinierte Ereignisauswahl beibehalten.',
     'Leave the setup guide without saving your changes?' => 'Einrichtungsanleitung verlassen, ohne die Änderungen zu speichern?',
     'Loading your current settings…' => 'Aktuelle Einstellungen werden geladen…',
-    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform. Classic Logging writes technical files.' => 'Protokolle helfen dir bei der Untersuchung aufgetretener Probleme. Die Aktivitätsprotokollierung führt einen durchsuchbaren Verlauf in Freeform. Die klassische Protokollierung schreibt technische Dateien.',
-    'Turning logging off is not recommended. Use Classic Logging with Errors to retain important failures.' => 'Das Abschalten der Protokollierung wird nicht empfohlen. Verwende klassische Protokollierung mit Fehlern, um wichtige Fehler zu erfassen.',
     'Not set' => 'Nicht festgelegt',
     'Previous' => 'Zurück',
     'Record errors and critical failures.' => 'Fehler und kritische Ausfälle aufzeichnen.',
@@ -249,4 +247,6 @@ return [
     'Set up an upload volume' => 'Upload-Volume einrichten',
     'Configure an asset volume in Craft, then allow it under Allowed Upload Volumes in Freeform settings.' => 'Konfiguriere ein Asset-Volume in Craft und erlaube es dann unter Erlaubte Upload-Volumes in den Freeform-Einstellungen.',
     'The Setup Guide requires an administrator and an environment that allows admin changes.' => 'Die Einrichtungsanleitung erfordert einen Administrator und eine Umgebung, die administrative Änderungen erlaubt.',
+    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform.' => 'Protokolle helfen bei der Untersuchung von Problemen. Das Aktivitätsprotokoll speichert einen durchsuchbaren Verlauf in Freeform.',
+    'Turning logging off is not recommended. Use Activity Logging with the Minimal recording mode to retain important failures.' => 'Das Abschalten der Protokollierung wird nicht empfohlen. Verwenden Sie das Aktivitätsprotokoll im Modus Minimal, um wichtige Fehler festzuhalten.',
 ];

@@ -43,7 +43,6 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Twig\Error\LoaderError as TwigLoaderError;
-use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
 use Twig\Markup;
 
@@ -52,8 +51,6 @@ class MailerService extends BaseService implements MailHandlerInterface
     public const EVENT_BEFORE_SEND = 'beforeSend';
     public const EVENT_AFTER_SEND = 'afterSend';
     public const EVENT_BEFORE_RENDER = 'beforeRender';
-
-    public const ERROR_CODE_LINES_PROXIMITY = 5;
 
     public const LOG_CATEGORY = 'freeform_notifications';
 
@@ -168,7 +165,6 @@ class MailerService extends BaseService implements MailHandlerInterface
                 ];
 
                 $logger?->error($message, $context);
-                $this->notifyAboutEmailSendingError($emailAddress, $notificationTemplate, $exception, $form, $logger);
             }
         }
 
@@ -506,73 +502,6 @@ class MailerService extends BaseService implements MailHandlerInterface
     private function parseEnvInArray(array $array): array
     {
         return array_map(static fn ($item) => trim(App::parseEnv($item)), $array);
-    }
-
-    private function notifyAboutEmailSendingError(
-        string $failedRecipient,
-        NotificationTemplate $failedNotification,
-        \Exception $exception,
-        Form $form,
-        ?LoggerInterface $logger,
-    ): void {
-        $freeform = Freeform::getInstance();
-        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
-            return;
-        }
-
-        // Skip this if the global error notification service is enabled
-        if ($freeform->settings->isErrorNotificationEnabled()) {
-            return;
-        }
-
-        $recipients = $this->getSettingsService()->getFailedNotificationRecipients();
-        if (!\count($recipients)) {
-            return;
-        }
-
-        $recipients = $this->processRecipients($recipients, $form);
-
-        $templateMode = \Craft::$app->view->getTemplateMode();
-        \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-
-        $notificationPath = __DIR__.'/../templates/_templates/email/error-notify.twig';
-        $notification = NotificationTemplate::fromFile($notificationPath);
-
-        $code = null;
-        if ($exception instanceof RuntimeError) {
-            $line = $exception->getTemplateLine();
-            $code = $exception->getSourceContext()->getCode();
-            $source = explode(\PHP_EOL, $code);
-            $proximity = self::ERROR_CODE_LINES_PROXIMITY;
-
-            $code = [
-                'lines' => [
-                    'first' => max(1, $line - $proximity),
-                    'last' => min(\count($source), $line + $proximity),
-                    'highlight' => $line,
-                ],
-                'source' => $source,
-            ];
-        }
-
-        $message = $this->compileMessage(
-            $notification,
-            [
-                'form' => $form,
-                'recipient' => $failedRecipient,
-                'exception' => $exception,
-                'notification' => $failedNotification,
-                'code' => $code,
-            ],
-            $logger,
-        );
-
-        $message->setTo($recipients);
-
-        $logger?->info('Sending email about failed notifications', ['recipients' => $recipients]);
-
-        \Craft::$app->mailer->send($message);
-        \Craft::$app->view->setTemplateMode($templateMode);
     }
 
     private function attachSignature(Message $message, SignatureField $field, ?LoggerInterface $logger): void

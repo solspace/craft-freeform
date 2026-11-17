@@ -7,21 +7,20 @@
     border-block-start: 1px solid var(--c-color-neutral-border-quiet);
   }
 
-  > h2 {
-    margin-block: 0 var(--c-spacing-xl);
-    font-size: var(--c-text-lg);
-    line-height: var(--c-leading-normal);
-  }
-
-  .field > [slot='input']:is(craft-input, craft-select, craft-combobox, craft-autosuggest, .freeform-boolean-menu) {
+  .field > [slot='input']:is(craft-input, craft-select, craft-combobox, craft-autosuggest, .freeform-boolean-menu, .freeform-env-control) {
     inline-size: 100%;
     max-inline-size: 40rem;
   }
 
-  .ff-toolbar-setting .field > craft-combobox[slot='input'] {
+  .ff-toolbar-setting .field > :is(craft-combobox, .freeform-env-control)[slot='input'] {
     inline-size: 100%;
     max-inline-size: none;
   }
+}
+
+// Keep the native panel gap when a page omits its repeated title.
+.freeform-settings-no-heading #content-main {
+  .cp-container:has(> div > h1.cp-h1) { display: none; }
 }
 
 // Freeform submission metadata is plugin content inside Craft's native details rail.
@@ -38,6 +37,21 @@
 }
 // Keep the legacy settings content within Craft's native panel rhythm.
 .freeform-settings #content {
+  .freeform-submission-timing > .freeform-measurement-input[slot='input'] {
+    inline-size: 50%;
+    max-inline-size: 50%;
+
+    @media (max-width: 768px) {
+      inline-size: 100%;
+      max-inline-size: 100%;
+    }
+  }
+
+  #save-form-session-limit-field .freeform-measurement-input {
+    inline-size: 100%;
+    max-inline-size: 40rem;
+  }
+
   hr {
     position: relative;
     inset-inline-start: calc(-1 * var(--c-spacing-lg));
@@ -49,9 +63,64 @@
     border-block-start: 1px solid var(--c-color-neutral-border-quiet);
   }
 
-  hr + h2 { margin-block: 0 var(--c-spacing-xl); }
+  // Plain settings sections follow Craft's .cp-h2 typography and 24px field gap.
+  // Keep service introductions and their promotional headings in their own layouts.
+  > h2,
+  form > h2,
+  .cp-container > div > h2,
+  .ff-template-manager > h2,
+  .ff-template-manager .pane > h2,
+  .ff-activity-settings > h2 {
+    margin-block: 0 calc(var(--c-spacing-lg) + var(--c-spacing-md));
+    font-size: var(--c-text-lg);
+    font-weight: 700;
+    line-height: 1.25;
 
-  craft-select-color { inline-size: 14rem; max-inline-size: 100%; }
+    &:has(+ p) {
+      margin-block-end: var(--c-spacing-sm);
+
+      + p { margin-block: 0 calc(var(--c-spacing-lg) + var(--c-spacing-md)); }
+    }
+  }
+
+  .ff-content-section-heading,
+  .ff-diag-section > h2 {
+    font-size: var(--c-text-lg);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .ff-defaults-section > summary {
+    color: var(--c-text-default);
+    font-size: var(--c-text-lg);
+    font-weight: 700;
+    line-height: 1.25;
+
+    > h2 { font: inherit; }
+  }
+
+  :is(.ff-defaults-section, .ff-settings-details) > summary:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
+    border-radius: var(--c-radius-sm);
+  }
+
+  .ff-defaults-section > .categories {
+    margin-block-start: calc(var(--c-spacing-lg) + var(--c-spacing-md));
+  }
+
+  .ff-digest-settings-group {
+    margin-block: var(--c-spacing-xl);
+
+    > .cp-h3 {
+      margin-block: 0 var(--c-spacing-lg);
+      font-size: var(--c-text-base);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+  }
+
+  craft-select-color { inline-size: 14rem; max-inline-size: min(100%, 14rem); }
   .ff-status-name { display: inline-flex; align-items: center; gap: var(--c-spacing-md); }
 
   .ff-toolbar-editor { width: 100%; min-width: 0; }
@@ -74,7 +143,6 @@
     align-items: center;
     gap: var(--c-spacing-lg) var(--c-spacing-xl);
     padding: var(--c-spacing-xl);
-    border-color: var(--c-color-neutral-border-quiet);
     border-radius: var(--c-radius-lg);
     background: var(--c-surface-raised);
 
@@ -139,8 +207,11 @@
     cursor: pointer;
 
     span { fill: currentColor; }
-    span.unlocked { color: var(--c-color-success-on-quiet); }
-    span.locked { color: var(--c-color-danger-on-quiet); }
+    span.unlocked { color: rgb(from var(--c-color-success-border-quiet) r g b / 1); }
+    span.locked { color: rgb(from var(--c-color-danger-border-quiet) r g b / 1); }
+    craft-icon { width: 18px; height: 18px; }
+
+    &.locked { background: color-mix(in srgb, var(--c-color-danger-fill-quiet) 20%, transparent); }
 
     &:hover { color: var(--c-text-default); }
 
@@ -161,4 +232,50 @@
   min-height: 0;
   overflow-y: auto;
   scrollbar-gutter: stable;
+}
+
+// A compact, keyboard-accessible hint replaces repeated environment help rows.
+.freeform-cp .freeform-env-control {
+  position: relative;
+  min-inline-size: 0;
+
+  @at-root .freeform-cp .freeform-env-badge {
+    position: absolute;
+    inset-inline-end: var(--c-spacing-sm);
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    block-size: 1.125rem;
+    padding-block: 0;
+    padding-inline: var(--c-spacing-xs);
+    border: 0;
+    border-radius: var(--c-radius-sm);
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-text-quiet);
+    font-size: calc(var(--c-text-sm) - 1px);
+    font-weight: 600;
+    line-height: 1;
+    cursor: help;
+
+    &:hover { color: var(--c-text-default); }
+    &:focus-visible {
+      outline: 2px solid var(--c-color-accent-border-normal);
+      outline-offset: 2px;
+    }
+  }
+
+  input:not([type='hidden']) { padding-inline-end: 4rem; }
+
+  &--boolean, &--combobox {
+    .freeform-env-badge { inset-inline-end: 2rem; }
+    input:not([type='hidden']) { padding-inline-end: 5rem; }
+  }
+
+  &--measurement {
+    .freeform-env-badge { inset-inline-start: var(--c-spacing-sm); inset-inline-end: auto; }
+    input:not([type='hidden']) { padding-inline-start: 3.5rem; padding-inline-end: var(--unit-space); }
+  }
 }

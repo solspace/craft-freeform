@@ -29,20 +29,13 @@
   .file-download-list {
     display: flex;
     flex-wrap: nowrap;
-    gap: 4px;
-    .btn {
-      display: inline-flex;
-      flex: 0 0 auto;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      min-height: 28px;
-      height: 28px;
-      padding: 0 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      line-height: 20px;
-      &:hover { background: rgba(128, 128, 128, .06); }
+    gap: var(--c-spacing-sm);
+    craft-button { flex: 0 0 auto; }
+    .ff-export-file-icon {
+      flex-basis: 14px;
+      width: 14px;
+      height: 14px;
+      craft-icon { font-size: 14px; }
     }
   }
 }

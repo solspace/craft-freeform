@@ -4,7 +4,6 @@
   grid-template-columns: repeat(var(--card-columns, 5), 1fr);
   gap: 16px;
 
-  &__legend,
   &__card__input {
     position: absolute;
     width: 1px;
@@ -78,4 +77,9 @@
       }
     }
   }
+}
+
+.ff-cards__card:has(input:focus-visible) .ff-cards__card__content {
+  outline: 2px solid var(--ff-color-border-focus, Highlight);
+  outline-offset: 3px;
 }

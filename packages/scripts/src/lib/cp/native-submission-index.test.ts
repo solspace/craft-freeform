@@ -5,6 +5,39 @@ import {
   openNativeQuickExport,
 } from "./native-submission-index";
 
+class ExportSlideout {
+  static instances: ExportSlideout[] = [];
+  outerContainer = document.createElement("div");
+  container = document.createElement("div");
+  private callbacks = new Map<string, () => void>();
+  constructor(
+    host: HTMLElement,
+    public settings: {
+      triggerElement: HTMLElement;
+      closeOnEsc: boolean;
+      containerAttributes: Record<string, string>;
+    },
+  ) {
+    this.container.className = settings.containerAttributes.class;
+    this.container.append(host);
+    this.outerContainer.append(this.container);
+    ExportSlideout.instances.push(this);
+  }
+  on(event: string, callback: () => void) {
+    this.callbacks.set(event, callback);
+  }
+  open() {
+    document.body.append(this.outerContainer);
+  }
+  close() {
+    this.callbacks.get("close")?.();
+    this.settings.triggerElement.focus();
+  }
+  destroy() {
+    this.outerContainer.remove();
+  }
+}
+
 describe("native submission tools", () => {
   const markup = `<form><input name="_token" value="test-token"><h1>Export data</h1>
     <select name="form_id"><option value="5">Contact</option><option value="6">Quote</option></select>
@@ -27,6 +60,8 @@ describe("native submission tools", () => {
 
   beforeEach(() => {
     document.body.innerHTML = '<button id="export">Quick Export</button>';
+    ExportSlideout.instances = [];
+    vi.stubGlobal("Craft", { Slideout: ExportSlideout });
     Object.defineProperty(HTMLDialogElement.prototype, "showModal", {
       configurable: true,
       value: function (this: HTMLDialogElement) {
@@ -43,6 +78,7 @@ describe("native submission tools", () => {
   });
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     Reflect.deleteProperty(HTMLDialogElement.prototype, "showModal");
     Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
     document.body.innerHTML = "";
@@ -80,7 +116,8 @@ describe("native submission tools", () => {
     document
       .querySelector<HTMLElement>('craft-button[variant="fill"]')!
       .click();
-    expect(document.querySelector("dialog")).toBeNull();
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
+    expect(ExportSlideout.instances.at(-1)?.settings.closeOnEsc).toBe(true);
     expect(document.activeElement?.id).toBe("export");
   });
 
@@ -95,7 +132,11 @@ describe("native submission tools", () => {
     expect(trigger.disabled).toBe(false);
     expect(document.querySelector("dialog")).toBeNull();
     await openNativeQuickExport(service, trigger, false);
-    expect(document.querySelector("dialog")?.open).toBe(true);
+    expect(
+      document
+        .querySelector('[role="dialog"]')
+        ?.getAttribute("aria-labelledby"),
+    ).toBe("ff-native-export-title");
   });
 
   it("binds late-mounted rows once and keeps failed review actions retryable", async () => {

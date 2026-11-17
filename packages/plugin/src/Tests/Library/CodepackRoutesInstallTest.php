@@ -6,8 +6,10 @@ use CraftCms\Cms\ProjectConfig\ProjectConfig;
 use CraftCms\Cms\Route\Data\Route;
 use CraftCms\Cms\Route\Routes;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use Illuminate\View\FileViewFinder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -54,13 +56,21 @@ class CodepackRoutesInstallTest extends TestCase
         $installer->install('freeform-demo');
         self::assertCount(11, $saved);
 
+        // Laravel's view finder does not resolve directory paths to index.twig.
+        // Check the installed targets as well as matching their incoming URLs.
+        $views = new FileViewFinder(new Filesystem(), [__DIR__.'/../../codepack/templates'], ['twig']);
+        foreach ($saved as $route) {
+            $template = substr($route->template, \strlen('freeform-demo/'));
+            self::assertFileExists($views->find($template));
+        }
+
         $router = new Router(new Dispatcher(app()), app());
         foreach ($saved as $route) {
             $router->get($route->getUri(), static fn () => 'Demo');
         }
-        $matched = $router->getRoutes()->match(Request::create('/freeform-demo/forms/basic-light/testerson'));
-        self::assertSame(['template' => 'basic-light', 'form' => 'testerson'], $matched->parameters());
-        $matched = $router->getRoutes()->match(Request::create('/freeform-demo/forms/basic-light/testerson/edit/abc123'));
+        $matched = $router->getRoutes()->match(Request::create('/freeform-demo/forms/freeform-light/testerson'));
+        self::assertSame(['template' => 'freeform-light', 'form' => 'testerson'], $matched->parameters());
+        $matched = $router->getRoutes()->match(Request::create('/freeform-demo/forms/freeform-light/testerson/edit/abc123'));
         self::assertSame('abc123', $matched->parameter('id'));
         $matched = $router->getRoutes()->match(Request::create('/freeform-demo/submissions/testerson'));
         self::assertSame('testerson', $matched->parameter('form'));

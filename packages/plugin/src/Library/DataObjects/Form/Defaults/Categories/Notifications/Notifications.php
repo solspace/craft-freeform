@@ -17,6 +17,6 @@ class Notifications extends BaseCategory
 
     public function getLabel(): string
     {
-        return 'Notifications Defaults';
+        return 'Notification Defaults';
     }
 }

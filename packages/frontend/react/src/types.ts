@@ -146,6 +146,7 @@ export type FreeformInstructionsProps = {
 };
 
 export type FreeformErrorsProps = {
+  field?: ManifestFieldDefinition;
   errors: string[];
   className?: string;
   errorClassName?: string;

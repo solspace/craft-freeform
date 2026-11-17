@@ -19,8 +19,6 @@ class ActivityHealthTemplateTest extends TestCase
     #[TestWith([true, 'activity', 1, 0])]
     #[TestWith([true, 'activity', 2, 1])]
     #[TestWith([false, 'activity'])]
-    #[TestWith([true, 'classic'])]
-    #[TestWith([true, 'classic', 0])]
     #[TestWith([true, 'none'])]
     #[TestWith([true, 'none', 0, 0, false, false])]
     #[TestWith([false, 'none'])]

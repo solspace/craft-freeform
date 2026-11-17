@@ -12,6 +12,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Configuration\ExportFormatting;
 
 class ExportProfileModel extends Model
 {
@@ -32,6 +33,7 @@ class ExportProfileModel extends Model
 
     /** Null preserves unrestricted formats for existing profiles. */
     public ?array $allowedExportTypes = null;
+    public array $formatting = ExportFormatting::DEFAULTS;
 
     public static function create(Form $form): self
     {
@@ -39,6 +41,7 @@ class ExportProfileModel extends Model
 
         $model->formId = $form->getId();
         $model->statuses = '*';
+        $model->formatting = Freeform::getInstance()->exportProfiles->getQuickExportFormatting();
 
         return $model;
     }
@@ -167,6 +170,7 @@ class ExportProfileModel extends Model
             'statuses',
             'filters',
             'allowedExportTypes',
+            'formatting',
         ];
     }
 

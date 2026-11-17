@@ -10,7 +10,8 @@
 {% endif %}
 
 {% if suggestEnvVars ?? false %}
-    {% include "_includes/forms/autosuggest" %}
+    {% set envInput %}{% include "_includes/forms/autosuggest" %}{% endset %}
+    {{ freeformEnvControl(_context, envInput, "measurement") }}
 {% else %}
     {{ forms.text(_context|merge({unit: null, suffix: false})) }}
 {% endif %}

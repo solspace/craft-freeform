@@ -243,31 +243,22 @@ class ActivityController extends BaseController
             throw new ForbiddenHttpException('Settings cannot be changed in this environment.');
         }
         $body = \Craft::$app->getRequest()->getBodyParam('settings', []);
-        if (!\is_array($body) || !\is_string($body['activityMode'] ?? null) || !\in_array($body['activityMode'], ActivityPolicy::MODES, true)) {
+        if (!\is_array($body)) {
             throw new BadRequestHttpException('Invalid activity mode.');
         }
 
         try {
-            $technicalLogging = ActivityInput::technicalLogging($body);
-            $loggingStyle = ActivityInput::loggingStyle($body['loggingStyle'] ?? $this->getSettingsService()->getSettingsModel()->loggingStyle);
+            $savedSettings = $this->getSettingsService()->getSettingsModel();
+            $recordingSettings = ActivityInput::recordingSettings($body, $savedSettings->loggingStyle, $savedSettings->activityMode);
         } catch (\InvalidArgumentException $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }
-        $data = [
-            'loggingStyle' => $loggingStyle,
-            'activityMode' => $body['activityMode'],
-            // The style cards are the only on/off control in the CP.
+        $data = $recordingSettings + [
+            // The Activity Logging cards are the only on/off control in the CP.
             'activityEnabled' => '1',
-            'technicalFileLogging' => '1',
             'activityRetentionDays' => filter_var($body['activityRetentionDays'] ?? null, \FILTER_VALIDATE_INT) ?: 0,
             'activityMaxRows' => filter_var($body['activityMaxRows'] ?? null, \FILTER_VALIDATE_INT) ?: 0,
-        ] + $technicalLogging;
-        if ('custom' === $data['activityMode']) {
-            if (!\is_array($body['activityEvents'] ?? null)) {
-                throw new BadRequestHttpException('Invalid activity event settings.');
-            }
-            $data['activityEvents'] = $body['activityEvents'];
-        }
+        ];
         $settings = clone $this->getSettingsService()->getSettingsModel();
         $settings->setAttributes($data, false);
         if (!$settings->validate()) {

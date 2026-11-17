@@ -1,5 +1,7 @@
+<label class="ff-preview-choice <%= required ? "required" : "" %>">
 <input type="checkbox"
        class="checkbox"
        <% if (checkedByDefault) { %>checked="checked"<% } %>
 />
-<label for="" class="<%= required ? "required" : "" %>"><%= label %></label>
+<span><%= label %></span>
+</label>

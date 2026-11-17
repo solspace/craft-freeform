@@ -27,6 +27,26 @@ it("does not rewrite an existing custom or CSS color on mount", () => {
   expect(text.value).toBe("rgba(30, 90, 140, .5)");
   expect(changed).not.toHaveBeenCalled();
 });
+it("uses labelled native Craft checkboxes for transparency and keeps changes and disabled state in sync", () => {
+  const { root, text, changed } = setup("#123456", { allowTransparent: true });
+  const toggle = root.querySelector<HTMLInputElement>(
+    'craft-checkbox input[slot="input"]',
+  )!;
+  const caption = root.querySelector<HTMLLabelElement>(
+    'craft-checkbox label[slot="label"]',
+  )!;
+  expect(caption.htmlFor).toBe(toggle.id);
+  expect(caption.textContent).toBe("Transparent");
+  toggle.click();
+  expect(changed).toHaveBeenLastCalledWith("rgba(0,0,0,0)");
+  expect(text.value).toBe("Transparent");
+  picker.update({ value: "#abcdef" });
+  expect(toggle.checked).toBe(false);
+  picker.update({ disabled: true });
+  expect(toggle.disabled).toBe(true);
+  toggle.click();
+  expect(changed).toHaveBeenCalledTimes(1);
+});
 it("previews legacy hex values without rewriting their stored value", () => {
   const { root, text, changed } = setup("3a85ee");
   expect(text.value).toBe("#3a85ee");

@@ -3,11 +3,12 @@ import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const MarkdownWrapper = styled.div`
+  --freeform-instructions-surface: color-mix(in oklab, var(--c-color-neutral-fill-quiet) 50%, var(--c-surface-default));
   margin: 0 -16px;
   margin-inline-start: calc(-1 * var(--freeform-integration-padding-start));
   padding: 0;
 
-  background-color: var(--c-color-neutral-fill-quiet);
+  background-color: var(--freeform-instructions-surface);
 
   border-top: 1px solid var(--c-color-border-quiet);
 `;
@@ -21,7 +22,7 @@ export const Instructions = styled.div`
   max-height: 0;
   margin-top: 0;
 
-  background-color: var(--c-color-neutral-fill-quiet);
+  background-color: var(--freeform-instructions-surface);
 
   overflow-y: hidden;
   overflow-x: hidden;
@@ -304,9 +305,9 @@ export const Content = styled.div`
   && details {
     box-sizing: border-box;
     margin: 10px 0;
-    border: 1px solid var(--gray-200, #cdd8e4);
+    border: 1px solid var(--c-color-neutral-border-quiet);
     border-radius: 8px;
-    background: light-dark(var(--white, #fff), var(--pane-bg, #fff));
+    background: transparent;
 
     > summary {
       display: flex;
@@ -316,8 +317,8 @@ export const Content = styled.div`
       padding: 11px 14px;
       box-sizing: border-box;
       border-radius: 7px;
-      background: light-dark(#f8fafc, var(--gray-050, #f8fafc));
-      color: light-dark(var(--gray-600, #515f6c), ${colors.muted});
+      background: transparent;
+      color: var(--c-text-default);
       font-weight: 600;
       line-height: 20px;
       list-style: none;
@@ -341,11 +342,11 @@ export const Content = styled.div`
       }
 
       &:hover {
-        background: light-dark(#edf2f8, var(--ui-control-hover-bg-color, #edf2f8));
+        background: color-mix(in oklab, var(--c-text-default) 5%, transparent);
       }
 
       &:focus-visible {
-        outline: var(--focus-ring);
+        outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
         outline-offset: -2px;
       }
     }
@@ -355,10 +356,10 @@ export const Content = styled.div`
     }
 
     &[open] > summary {
-      border-bottom: 1px solid var(--gray-200, #cdd8e4);
+      border-bottom: 1px solid var(--c-color-neutral-border-quiet);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
-      background: light-dark(#edf2f8, var(--ui-control-hover-bg-color, #edf2f8));
+      background: color-mix(in oklab, var(--c-text-default) 5%, transparent);
 
       &::before {
         transform: rotate(45deg);

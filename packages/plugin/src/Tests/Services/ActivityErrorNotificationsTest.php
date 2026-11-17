@@ -27,7 +27,6 @@ class ActivityErrorNotificationsTest extends TestCase
     use UsesCraft6Container;
 
     #[TestWith(['activity'])]
-    #[TestWith(['classic'])]
     #[TestWith(['none'])]
     public function testDirectErrorsNotifyIndependentlyOfRecordingStyleAndNeverNotifyForWarnings(string $style): void
     {

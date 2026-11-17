@@ -117,7 +117,6 @@ class SignatureAppearanceTest extends TestCase
         $field->method('getHandle')->willReturn('signature');
         $field->method('getIdAttribute')->willReturn('signature-pad');
         $field->method('getRequiredAttribute')->willReturn('');
-        (new \ReflectionProperty(SignatureField::class, 'showClearButton'))->setValue($field, false);
 
         return $field;
     }

@@ -14,7 +14,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
 
 class DataStorage extends BaseCategory
 {
-    #[Label('Store Submitted Data for this Form')]
+    #[Label('Store Submitted Data for This Form')]
     #[SetDefaultValue(true)]
     public BoolItem $storeData;
 

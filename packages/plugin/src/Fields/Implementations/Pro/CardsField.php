@@ -18,6 +18,7 @@ use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Cards\CardCollection;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
@@ -32,7 +33,7 @@ use yii\base\Event;
     iconPath: __DIR__.'/../Icons/cards.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/cards.ejs',
 )]
-class CardsField extends AbstractField implements MultiValueInterface, ExtraFieldInterface, EncryptionInterface
+class CardsField extends AbstractField implements GroupedFieldInterface, MultiValueInterface, ExtraFieldInterface, EncryptionInterface
 {
     use EncryptionTrait;
     use ImageAssetTrait;
@@ -96,14 +97,9 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
         order: 1000,
         tabs: [
             [
-                'handle' => 'fieldset',
-                'label' => 'Fieldset',
-                'previewTag' => 'fieldset',
-            ],
-            [
-                'handle' => 'legend',
-                'label' => 'Legend',
-                'previewTag' => 'legend',
+                'handle' => 'options',
+                'label' => 'Options',
+                'previewTag' => 'div',
             ],
             [
                 'handle' => 'card',
@@ -325,36 +321,17 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
             );
         }
 
-        // =========
-        // LEGEND
-        // =========
-        $legend = $cardAttributes
-            ->getLegend()
-            ->clone()
-            ->append('class', 'ff-cards__legend')
-            ->setIfEmpty('id', 'ff-cards__legend-'.$fieldId)
-        ;
-        $legendHtml = Html::tag(
-            $legend->getTag('legend'),
-            $this->getInstructions() ?: $this->getLabel(),
-            $legend->toHtmlTagArray(['field' => $this])
-        );
-
-        // =========
-        // Fieldset
-        // =========
-        $fieldset = $cardAttributes
-            ->getFieldset()
+        $options = $cardAttributes
+            ->getOptions()
             ->clone()
             ->append('class', 'ff-cards')
-            ->setIfEmpty('aria-labelledby', 'ff-cards__legend-'.$fieldId)
             ->append('style', '--card-columns: '.$this->getCardsPerRow())
         ;
 
         return Html::tag(
-            $fieldset->getTag('fieldset'),
-            $legendHtml.$output,
-            $fieldset->toHtmlTagArray(['field' => $this])
+            $options->getTag(),
+            $output,
+            $options->toHtmlTagArray(['field' => $this])
         );
     }
 }

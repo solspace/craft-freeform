@@ -8,7 +8,7 @@ Existing integrations keep their saved settings.
 1. Enter your **Site Key** and **API Key** from the [Friendly Captcha dashboard](https://app.friendlycaptcha.eu/).
 2. Choose **When to start verification**. **On form focus** suits most forms. It starts
    verification when the visitor focuses a field.
-3. Choose whether the integration should be **Enabled by default** on forms.
+3. Choose whether the integration should be **Enable on forms by default** on forms.
 4. Click **Save**.
 5. Open your form in the builder, go to **Integrations → Captchas**, and select
    **Friendly Captcha**. Make sure it is enabled, review its settings, and save the form.

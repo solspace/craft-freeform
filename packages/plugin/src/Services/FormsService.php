@@ -583,11 +583,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $this->getSettingsService()->isAutoScrollToErrors();
     }
 
-    public function isFormSubmitDisable(): bool
-    {
-        return $this->getSettingsService()->isFormSubmitDisable();
-    }
-
     public function getDefaultFormattingTemplate(): string
     {
         $settings = $this->getSettingsService();

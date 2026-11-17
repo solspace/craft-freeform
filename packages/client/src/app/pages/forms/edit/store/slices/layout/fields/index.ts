@@ -172,6 +172,14 @@ export const fieldsSlice = createSlice({
 
       const field = state.find((field) => field.uid === uid);
       field.properties[handle] = value;
+      if (
+        handle === "maxValue" &&
+        field.typeClass ===
+          "Solspace\\Freeform\\Fields\\Implementations\\Pro\\RatingField" &&
+        Number(field.properties.defaultValue) > Number(value)
+      ) {
+        field.properties.defaultValue = "";
+      }
     },
     batchEdit: (state, action: PayloadAction<EditBatch>) => {
       const { uid, typeClass, properties } = action.payload;

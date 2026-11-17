@@ -6,6 +6,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Configuration\FormBehaviorUpgrade;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Serializer\Attribute\Ignore;
 
@@ -19,6 +20,7 @@ class Settings
 
     public function __construct(array $settings, PropertyProvider $propertyProvider)
     {
+        $settings = FormBehaviorUpgrade::metadata($settings);
         $this->behavior = new BehaviorSettings();
         $this->general = new GeneralSettings();
         $this->accessor = new PropertyAccessor();

@@ -100,7 +100,7 @@ export const LimitedUsersDetail: React.FC = () => {
               navigate(`/settings/limited-users`);
             }
 
-            notifications.success(translate("Permission saved successfully."));
+            notifications.success(translate("Permission profile saved."));
           },
         },
       );
@@ -174,7 +174,7 @@ export const LimitedUsersDetail: React.FC = () => {
               <div className="heading">
                 <label htmlFor="limited-user-name">{translate("Name")}</label>
                 <div className="instructions" id="limited-user-name-help">
-                  {translate("Enter the name of the limited user permission.")}
+                  {translate("Name this permission profile.")}
                 </div>
               </div>
               <div className="input">
@@ -197,7 +197,7 @@ export const LimitedUsersDetail: React.FC = () => {
                   className="instructions"
                   id="limited-user-description-help"
                 >
-                  {translate("Enter a description for this permission.")}
+                  {translate("Describe who should use this profile.")}
                 </div>
               </div>
               <div className="input">

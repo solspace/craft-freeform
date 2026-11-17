@@ -8,19 +8,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Digest\DigestBundle;
-use Solspace\Freeform\Bundles\Feed\FeedBundle;
 use Solspace\Freeform\Bundles\Notifications\Export\ExportNotifications;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Jobs\RefreshFeedJob;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
-use Solspace\Freeform\Services\FreeformFeedService;
-use Solspace\Freeform\Services\LockService;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 use yii\web\Response;
 
-#[CoversClass(FeedBundle::class)]
-#[CoversClass(FreeformFeedService::class)]
 #[CoversClass(DigestBundle::class)]
 #[CoversClass(ExportNotifications::class)]
 class BackgroundRequestsTest extends TestCase
@@ -51,69 +47,12 @@ class BackgroundRequestsTest extends TestCase
         \Yii::$app = $this->previousYiiApp;
     }
 
-    #[TestWith([false, false, true])]
-    #[TestWith([true, false, true])]
-    #[TestWith([false, true, true])]
-    #[TestWith([false, false, false])]
-    #[TestWith([false, true, false])]
-    public function testFeedRefreshesInControlPanelAndQueuesOnFrontend(bool $console, bool $cp, bool $installed): void
+    public function testPreviouslyQueuedFeedJobsFinishWithoutAccessingTheRetiredFeature(): void
     {
-        $this->setRequest($console, $cp);
-        $feed = $this->createMock(FreeformFeedService::class);
-        $feed->expects($cp && !$console && $installed ? self::once() : self::never())->method('fetchFeed');
-        $feed->expects(!$cp && !$console && $installed ? self::once() : self::never())->method('queueFeedRefresh');
-
-        $plugin = $this->createMock(Freeform::class);
-        $plugin->isInstalled = $installed;
-        $plugin->expects(!$console && $installed ? self::once() : self::never())
-            ->method('__get')->with('feed')->willReturn($feed)
-        ;
-        app()->instance(Freeform::class, $plugin);
-
-        $bundle = new FeedBundle();
-        $this->handlers[] = [$bundle, 'queueFeedRefresh'];
-        Event::trigger(Application::class, Application::EVENT_AFTER_REQUEST);
-    }
-
-    public function testDisabledFeedDoesNotAccessDatabaseOrParseFeed(): void
-    {
-        // The application deliberately has no database component.
-        $this->setRequest(false, true);
-        $settings = $this->createConfiguredMock(SettingsService::class, ['isDisplayFeed' => false]);
-        $plugin = $this->createMock(Freeform::class);
-        $plugin->method('__get')->with('settings')->willReturn($settings);
-        app()->instance(Freeform::class, $plugin);
-
-        $feed = $this->getMockBuilder(FreeformFeedService::class)->onlyMethods(['parseFeed'])->getMock();
-        $feed->expects(self::never())->method('parseFeed');
-        $feed->fetchFeed();
-    }
-
-    public function testDigestJobCanStillRefreshFeedInConsole(): void
-    {
-        $this->setRequest(true, false);
-        $settings = $this->createConfiguredMock(SettingsService::class, ['isDisplayFeed' => true]);
-        $lock = $this->createMock(LockService::class);
-        $lock->expects(self::once())->method('isLockedWithGuard')
-            ->with(FreeformFeedService::CACHE_KEY_FEED, FreeformFeedService::LOCK_KEY_FEED, FreeformFeedService::CACHE_TTL_FEED)
-            ->willReturn(false)
-        ;
-        $plugin = $this->createMock(Freeform::class);
-        $plugin->method('__get')->willReturnMap([
-            ['settings', $settings],
-            ['lock', $lock],
-        ]);
-        app()->instance(Freeform::class, $plugin);
-        \Craft::$app->db = new class {
-            public function tableExists(string $table): bool
-            {
-                return true;
-            }
-        };
-
-        $feed = $this->getMockBuilder(FreeformFeedService::class)->onlyMethods(['parseFeed'])->getMock();
-        $feed->expects(self::once())->method('parseFeed');
-        $feed->fetchFeed();
+        $job = unserialize(serialize(new RefreshFeedJob('legacy-token')));
+        \Craft::$app = null;
+        $job->execute(null);
+        self::assertSame('legacy-token', $job->token);
     }
 
     public function testExportsRunAfterResponseContentIsSent(): void

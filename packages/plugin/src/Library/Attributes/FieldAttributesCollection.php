@@ -11,6 +11,9 @@ class FieldAttributesCollection extends Attributes
     protected Attributes $error;
     protected Attributes $option;
     protected Attributes $optionLabel;
+    protected Attributes $typedContainer;
+    protected Attributes $typedInput;
+    protected Attributes $typedLabel;
 
     public function __construct(?array $attributes = [])
     {
@@ -21,8 +24,26 @@ class FieldAttributesCollection extends Attributes
         $this->error = new Attributes();
         $this->option = new Attributes();
         $this->optionLabel = new Attributes();
+        $this->typedContainer = new Attributes();
+        $this->typedInput = new Attributes();
+        $this->typedLabel = new Attributes();
 
         parent::__construct($attributes ?? []);
+    }
+
+    public function getTypedContainer(): Attributes
+    {
+        return $this->typedContainer;
+    }
+
+    public function getTypedInput(): Attributes
+    {
+        return $this->typedInput;
+    }
+
+    public function getTypedLabel(): Attributes
+    {
+        return $this->typedLabel;
     }
 
     public function getInput(): Attributes

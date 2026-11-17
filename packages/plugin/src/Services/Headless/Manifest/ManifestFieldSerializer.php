@@ -32,6 +32,7 @@ use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Fields\PayPalField;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Fields\SquareField;
@@ -101,6 +102,12 @@ class ManifestFieldSerializer
             if (\is_string($autofill) && '' !== $autofill) {
                 $data['attributes']['input'] = ['autocomplete' => $autofill];
             }
+        }
+
+        $explicitId = $field->getAttributes()->getInput()->get('id');
+        if (\is_string($explicitId) && '' !== $explicitId) {
+            $data['attributes']['input'] = (array) $data['attributes']['input'];
+            $data['attributes']['input']['id'] = $explicitId;
         }
 
         if ($field instanceof OptionsInterface) {
@@ -224,7 +231,6 @@ class ManifestFieldSerializer
                 'useDatepicker' => $field->isUseDatepicker(),
                 'locale' => $field->getLocale() ?: \Craft::$app->locale->id,
                 'format' => $field->getFormat(),
-                'datepickerFormat' => $field->getDatepickerFormat(),
                 'nativeInputType' => $field->getInputType(),
                 'clock24h' => $field->isClock24h(),
                 'minDate' => $field->getMinDateInputValue($field->isUseNativeTypes() ? $field->getNativeFormat() : ($field->isShowTime() ? 'Y-m-d\TH:i:s' : 'Y-m-d')),
@@ -434,11 +440,13 @@ class ManifestFieldSerializer
 
         if ($field instanceof SignatureField) {
             return [
+                'allowTypedSignature' => $field->isAllowTypedSignature(),
+                'typedLabel' => Freeform::t('Or type your signature'),
+                'clearLabel' => Freeform::t('Clear'),
                 'customizeAppearance' => $field->isCustomizeAppearance(),
                 'showPenCursor' => $field->isShowPenCursor(),
                 'width' => $field->getWidth(),
                 'height' => $field->getHeight(),
-                'showClearButton' => $field->isShowClearButton(),
                 'borderColor' => $field->getBorderColor(),
                 'backgroundColor' => $field->getBackgroundColor(),
                 'penColor' => $field->getPenColor(),
@@ -497,7 +505,7 @@ class ManifestFieldSerializer
         $options = [];
         foreach ($field->getOptions() as $option) {
             $options[] = [
-                'label' => $option->getLabel(),
+                'label' => $field->translateOptionLabel($option),
                 'value' => $option->getValue(),
                 'checked' => method_exists($option, 'isChecked') ? $option->isChecked() : false,
                 'default' => method_exists($option, 'isChecked') ? $option->isChecked() : false,

@@ -1,6 +1,8 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/env-fields" as envFields %}
+{% import "freeform/_components/settings-cards" as cards %}
 {% import "freeform/_components/measurement" as measurement %}
 
 {% set crumbs = [
@@ -21,6 +23,22 @@
     <div class="field smart-switch first">
         <div>
             {{ forms.lightswitch({
+                name: "settings[defaults][includeSampleTemplates]",
+                on: settings.defaults.includeSampleTemplates,
+                disabled: readOnly,
+            }) }}
+        </div>
+        <div>
+            {{ forms.field({
+                label: "Include Sample Formatting Templates"|t('freeform'),
+                instructions: "Make Freeform’s sample formatting templates available in the form builder."|t('freeform'),
+            }) }}
+        </div>
+    </div>
+
+    <div class="field smart-switch">
+        <div>
+            {{ forms.lightswitch({
                 name: "settings[defaults][previewHtml]",
                 on: settings.defaults.previewHtml,
                 disabled: readOnly,
@@ -28,52 +46,52 @@
         </div>
         <div>
             {{ forms.field({
-                label: "Live Render HTML Markup"|t('freeform'),
-                instructions: "Live rendering HTML markup in field labels, option labels and HTML blocks inside the Form Builder interface can sometimes conflict with Freeform's display of the form preview inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
+                label: "Render HTML in Builder Previews"|t('freeform'),
+                instructions: "Render HTML in field labels, option labels, and HTML blocks in builder previews. Disable this if markup disrupts the preview."|t('freeform'),
             }) }}
         </div>
     </div>
 
-    <div class="field smart-switch">
-        <div>
-            {{ forms.lightswitch({
-                name: "settings[defaults][twigInHtml]",
-                on: settings.defaults.twigInHtml,
-                disabled: readOnly,
-            }) }}
+    {% set twigModes = {
+        form: {label: 'Form variables only', description: 'Twig can access Freeform’s form and field variables.', path: 'M5 3h14v18H5ZM8 7h8M8 11h8M8 15h5'},
+        craft: {label: 'Craft variables', description: 'Twig can also access Craft’s template variables and functions.', path: 'm8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18'},
+        disabled: {label: 'Disabled', description: 'HTML blocks cannot execute Twig.', path: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM6 6l12 12'},
+    } %}
+    {% set twigAccessInput %}
+        <div class="ff-choice-cards" data-columns="3">
+            {% for value, option in twigModes %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({
+                    id: 'html-twig-' ~ value,
+                    name: 'settings[defaults][twigAccess]',
+                    value: value,
+                    selected: settings.defaults.twigAccess == value,
+                    disabled: readOnly,
+                    label: option.label|t('freeform'),
+                    description: option.description|t('freeform'),
+                    recommended: value == 'form',
+                    icon: icon,
+                }) }}
+            {% endfor %}
         </div>
-        <div>
-            {{ forms.field({
-                label: "Allow Twig to be enabled in HTML blocks"|t('freeform'),
-                instructions: "A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code."|t('freeform'),
-            }) }}
-        </div>
-    </div>
-
-    <div class="field smart-switch">
-        <div>
-            {{ forms.lightswitch({
-                name: "settings[defaults][twigIsolation]",
-                on: settings.defaults.twigIsolation,
-                disabled: readOnly,
-            }) }}
-        </div>
-        <div>
-            {{ forms.field({
-                label: "Render HTML block Twig in Isolated Mode"|t('freeform'),
-                instructions: "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well."|t('freeform'),
-            }) }}
-        </div>
-    </div>
+    {% endset %}
+    {{ forms.field({
+        id: 'html-block-twig-access',
+        name: 'settings[defaults][twigAccess]',
+        fieldset: true,
+        label: "HTML Block Twig Access"|t('freeform'),
+        instructions: "Choose whether HTML blocks can use Twig and which variables are available. Twig must also be enabled on each HTML block."|t('freeform'),
+        errors: settings.errors().get("defaults.twigAccess"),
+    }, twigAccessInput) }}
 
     {% if craft.freeform.pro %}
 
         <div class="ff-toolbar-setting" data-toolbar-editor>
-            {{ forms.autosuggestField({
+            {{ envFields.autosuggestField({
                 id: 'rich-text-toolbar',
                 class: "code",
-                label: "Rich Text Field Toolbar Configuration"|t('freeform'),
-                instructions: "Choose the toolbar buttons for rich text fields. Drag to reorder, use **Add…** for buttons or dividers, and hover or focus a button to preview it."|t('freeform'),
+                label: "Rich Text Toolbar"|t('freeform'),
+                instructions: "Choose the buttons available in rich text fields."|t('freeform'),
                 name: "settings[defaults][richTextFieldToolbarConfiguration]",
                 value: settings.defaults.richTextFieldToolbarConfiguration,
                 errors: settings.getErrors("defaults.richTextFieldToolbarConfiguration"),
@@ -83,11 +101,11 @@
         </div>
 
         <div class="ff-toolbar-setting" data-toolbar-editor>
-            {{ forms.autosuggestField({
+            {{ envFields.autosuggestField({
                 id: 'notification-toolbar',
                 class: "code",
-                label: "Email Notification Template Toolbar Configuration"|t('freeform'),
-                instructions: "Choose the toolbar buttons for email notification templates. Drag to reorder, use **Add…** for buttons or dividers, and hover or focus a button to preview it."|t('freeform'),
+                label: "Notification Template Toolbar"|t('freeform'),
+                instructions: "Choose the buttons available in notification templates."|t('freeform'),
                 name: "settings[emailNotificationToolbarConfiguration]",
                 value: settings.emailNotificationToolbarConfiguration,
                 errors: settings.getErrors("emailNotificationToolbarConfiguration"),
@@ -98,39 +116,117 @@
 
     {% endif %}
 
-    <div class="field smart-switch">
-        <div>
-            {{ forms.lightswitch({
-                name: "settings[defaults][includeSampleTemplates]",
-                on: settings.defaults.includeSampleTemplates,
-                disabled: readOnly,
-            }) }}
-        </div>
-        <div>
-            {{ forms.field({
-                label: "Include Freeform's Sample Formatting Templates"|t('freeform'),
-                instructions: "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting."|t('freeform'),
-            }) }}
-        </div>
-    </div>
+    {% set uploadVolumeOptions = [] %}
+    {% set uploadVolumeHandles = [] %}
+    {% for volume in craft.app.volumes.allVolumes %}
+        {% set uploadVolumeOptions = uploadVolumeOptions|merge([{value: volume.handle, label: volume.name}]) %}
+        {% set uploadVolumeHandles = uploadVolumeHandles|merge([volume.handle]) %}
+    {% endfor %}
+    {% if settings.allowedUploadVolumes is iterable %}
+        {% for handle in settings.allowedUploadVolumes %}
+            {% if handle not in uploadVolumeHandles %}
+                {% set uploadVolumeOptions = uploadVolumeOptions|merge([{value: handle, label: "Unavailable volume: {handle}"|t('freeform', {handle: handle})}]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {{ forms.checkboxSelectField({
+        label: "Allowed Upload Volumes"|t('freeform'),
+        instructions: "Choose the volumes available as upload destinations in the form builder."|t('freeform'),
+        id: 'allowedUploadVolumes',
+        name: 'settings[allowedUploadVolumes]',
+        values: settings.allowedUploadVolumes == 'none' ? [] : settings.allowedUploadVolumes,
+        options: uploadVolumeOptions,
+        showAllOption: true,
+        errors: settings.errors().get('allowedUploadVolumes'),
+        disabled: readOnly,
+    }) }}
 
+    <details class="ff-settings-details ff-upload-volume-details">
+        <summary>{{ "About upload volume access"|t('freeform') }}</summary>
+        <p>{{ "Applies to File Upload fields and File Upload columns in Table fields. Users also need permission to view the selected volume. Select All to allow current and future volumes, or clear every option to allow none. Existing forms keep their saved destinations; saving a form requires an allowed destination."|t('freeform') }}</p>
+    </details>
+
+    <hr>
+
+    <h2>{{ "Form Creation"|t('freeform') }}</h2>
+
+    <div data-form-creation-methods>
+    {{ forms.checkboxSelectField({
+        label: "Creation Methods"|t('freeform'),
+        instructions: "Choose at least one method for Add new form. A single method opens directly without showing the chooser."|t('freeform'),
+        name: "settings[formCreationOptions]",
+        values: settings.formCreationOptions,
+        options: [
+            {value: 'wizard', label: "Guided setup"|t('freeform')},
+            {value: 'ai', label: "Create with AI (Pro only)"|t('freeform')},
+            {value: 'blank', label: "Quick setup"|t('freeform')},
+        ],
+        errors: settings.errors().get("formCreationOptions"),
+        disabled: readOnly,
+    }) }}
+    </div>
+    {% if craft.freeform.pro %}
+        {% set aiOptions = [{value: '', label: "No default — choose when creating a form"|t('freeform')}] %}
+        {% set defaultAiAvailable = false %}
+        {% for integration in aiIntegrations %}
+            {% set aiOptions = aiOptions|merge([{
+                value: integration.uid,
+                label: integration.name ~ (integration.model ? ' — ' ~ integration.model : ''),
+            }]) %}
+            {% if integration.uid == settings.defaultAiIntegration %}
+                {% set defaultAiAvailable = true %}
+            {% endif %}
+        {% endfor %}
+        {% if settings.defaultAiIntegration and not defaultAiAvailable %}
+            {% set aiOptions = aiOptions|merge([{
+                value: settings.defaultAiIntegration,
+                label: "Unavailable integration — choose another default"|t('freeform'),
+            }]) %}
+        {% endif %}
+        <div data-form-creation-ai {{ 'ai' not in settings.formCreationOptions ? 'hidden' }}>
+        {{ forms.selectField({
+            label: "Default AI Integration"|t('freeform'),
+            instructions: "Preselect an integration for Create with AI. If no default is available, users choose one when creating a form."|t('freeform'),
+            id: "defaultAiIntegration",
+            name: "settings[defaultAiIntegration]",
+            value: settings.defaultAiIntegration,
+            options: aiOptions,
+            errors: settings.errors().get("defaultAiIntegration"),
+            disabled: readOnly,
+        }) }}
+        </div>
+    {% endif %}
+
+    {% set defaultDescriptions = {
+        notifications: 'Choose default templates for each notification type.',
+        settings: 'Set default form behavior, processing, data storage, success messages, and limits.',
+        props: 'Set default options for dates, uploads, tables, signatures, and other field types.'
+    } %}
     {% for catName, category in settings.defaults|filter(def => def.enabled) %}
         <hr>
 
-        <h2>{{ category.label|t('freeform') }}</h2>
+        {% set categoryErrorKeys = settings.errors().keys()|filter(key => key == 'defaults' or key == 'defaults.' ~ catName or key starts with 'defaults.' ~ catName ~ '.' or key starts with 'defaults[' ~ catName ~ ']') %}
+        <details class="ff-defaults-section" data-defaults-section data-defaults-category="{{ catName }}" {{ categoryErrorKeys|length ? 'open' }}>
+        <summary aria-labelledby="defaults-{{ catName }}-title" aria-describedby="defaults-{{ catName }}-description">
+            <h2 aria-labelledby="defaults-{{ catName }}-title">
+                <svg class="ff-defaults-summary-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg>
+                <span class="ff-defaults-summary-copy">
+                    <span id="defaults-{{ catName }}-title">{{ category.label|t('freeform') }}</span>
+                    <span class="ff-defaults-summary-description" id="defaults-{{ catName }}-description">{{ (defaultDescriptions[catName] ?? '')|t('freeform') }}</span>
+                </span>
+            </h2>
+        </summary>
         <ul class="categories {{ category.delimited ? 'delimited' }}">
+            {% set defaultsRowIndex = 0 %}
             {% for subName, subCategory in category %}
                 <li>
-                    <ul class="category-item-list">
+                    <h3 class="ff-defaults-group-heading" id="defaults-{{ catName }}-{{ subName }}-heading">{{ subCategory.label|t('freeform') }}</h3>
+                    <ul class="category-item-list" aria-labelledby="defaults-{{ catName }}-{{ subName }}-heading">
                         {% for itemName, item in subCategory %}
                             {% set path = "settings[defaults]["~catName~"]["~subName~"]["~itemName~"]" %}
 
-                            <li>
+                            <li class="ff-defaults-row {{ defaultsRowIndex is odd ? 'is-striped' }}">
                                 <label>
-                                    {{ subCategory.label|t('freeform') }}
-
-                                    {{ include('freeform/settings/arrow-icon.svg') }}
-
                                     {{ item.label|t('freeform') }}
                                 </label>
 
@@ -175,27 +271,34 @@
                                 </div>
 
                                 {% if not readOnly %}
-                                    <button type="button" tabindex="-1" class="lock-button {{ item.locked ? "locked" }}">
+                                    {% set settingLabel = subCategory.label|t('freeform') ~ ' — ' ~ item.label|t('freeform') %}
+                                    {% set lockLabel = 'Lock this default: {setting}'|t('freeform', {setting: settingLabel}) %}
+                                    {% set unlockLabel = 'Unlock this default: {setting}'|t('freeform', {setting: settingLabel}) %}
+                                    <button type="button" class="lock-button {{ item.locked ? 'locked' }}"
+                                            data-default-lock data-lock-label="{{ lockLabel }}" data-unlock-label="{{ unlockLabel }}"
+                                            title="{{ item.locked ? unlockLabel : lockLabel }}" aria-label="{{ item.locked ? unlockLabel : lockLabel }}">
                                         <input
                                                 type="hidden"
                                                 class="{{ item.locked ? "locked" }}"
                                                 name="{{ path }}[locked]"
                                                 value="{{ item.locked ? '1' : '0' }}"
                                         />
-                                        <span class="locked">
-                                            {{ include("freeform/settings/locked-icon.svg") }}
+                                        <span class="locked" aria-hidden="true">
+                                            <craft-icon name="lock-keyhole" family="light"></craft-icon>
                                         </span>
-                                        <span class="unlocked">
-                                            {{ include("freeform/settings/unlocked-icon.svg") }}
+                                        <span class="unlocked" aria-hidden="true">
+                                            <craft-icon name="lock-keyhole-open" family="light"></craft-icon>
                                         </span>
                                     </button>
                                 {% endif %}
                             </li>
+                            {% set defaultsRowIndex = defaultsRowIndex + 1 %}
                         {% endfor %}
                     </ul>
                 </li>
             {% endfor %}
         </ul>
+        </details>
     {% endfor %}
 
 {% endblock %}

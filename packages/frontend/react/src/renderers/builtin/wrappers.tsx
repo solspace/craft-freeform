@@ -1,3 +1,4 @@
+import { fieldId, isGroupedField } from "@solspace/freeform-core";
 import type { ComponentType } from "react";
 import type {
   FreeformButtonProps,
@@ -84,8 +85,9 @@ export function DefaultFieldWrapper({
     return null;
   }
 
+  const Tag = isGroupedField(field) ? "fieldset" : "div";
   return (
-    <div
+    <Tag
       className={className}
       data-freeform-field={field.handle}
       data-field-container={field.handle}
@@ -93,7 +95,7 @@ export function DefaultFieldWrapper({
       hidden={!form.isFieldVisible(field.handle) || isVisuallyHidden}
     >
       {children}
-    </div>
+    </Tag>
   );
 }
 
@@ -107,15 +109,21 @@ export function DefaultLabel({
     return null;
   }
 
+  const grouped = isGroupedField(field);
+  const Tag = grouped ? "legend" : "label";
   return (
-    <label className={className} htmlFor={`freeform-${field.handle}`}>
+    <Tag
+      className={className}
+      htmlFor={grouped ? undefined : fieldId(field)}
+      id={grouped ? `${fieldId(field)}-legend` : undefined}
+    >
       {field.label}
       {field.required ? (
         <span aria-hidden="true" className={requiredMarkClassName}>
           {requiredIndicator}
         </span>
       ) : null}
-    </label>
+    </Tag>
   );
 }
 
@@ -127,10 +135,15 @@ export function DefaultInstructions({
     return null;
   }
 
-  return <div className={className}>{field.instructions}</div>;
+  return (
+    <div id={`${fieldId(field)}-instructions`} className={className}>
+      {field.instructions}
+    </div>
+  );
 }
 
 export function DefaultErrors({
+  field,
   errors,
   className,
   errorClassName,
@@ -140,7 +153,11 @@ export function DefaultErrors({
   }
 
   return (
-    <div className={className} role="alert">
+    <div
+      id={field ? `${fieldId(field)}-error` : undefined}
+      className={className}
+      role="alert"
+    >
       {errors.map((error) => (
         <div key={error} className={errorClassName}>
           {error}

@@ -19,6 +19,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
+use Solspace\Freeform\Library\Configuration\ErrorAlertRecipients;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -99,7 +100,30 @@ class SettingsService extends BaseService
      */
     public function getSolspaceFormTemplates(): array
     {
-        return $this->getTemplatesIn($this->getSolspaceFormTemplateDirectory());
+        $templates = array_values(array_filter(
+            $this->getTemplatesIn($this->getSolspaceFormTemplateDirectory()),
+            static fn (FormTemplate $template) => !str_starts_with(basename($template->getFileName()), '_')
+        ));
+        $order = array_flip([
+            'freeform-light/index.twig',
+            'freeform-dark/index.twig',
+            'freeform-floating-labels/index.twig',
+            'tailwind-4-light/index.twig',
+            'tailwind-4-dark/index.twig',
+            'bootstrap-5-light/index.twig',
+            'bootstrap-5-dark/index.twig',
+            'bootstrap-5-floating-labels/index.twig',
+            'daisyui-5-light/index.twig',
+            'daisyui-5-dark/index.twig',
+            'flexbox/index.twig',
+            'grid/index.twig',
+        ]);
+        usort(
+            $templates,
+            static fn (FormTemplate $a, FormTemplate $b) => ($order[$a->getFileName()] ?? \PHP_INT_MAX) <=> ($order[$b->getFileName()] ?? \PHP_INT_MAX)
+        );
+
+        return $templates;
     }
 
     /**
@@ -146,11 +170,6 @@ class SettingsService extends BaseService
         return Settings::SCRIPT_INSERT_LOCATION_FOOTER === $this->getSettingsModel()->scriptInsertLocation;
     }
 
-    public function isHeaderScripts(): bool
-    {
-        return Settings::SCRIPT_INSERT_LOCATION_HEADER === $this->getSettingsModel()->scriptInsertLocation;
-    }
-
     public function isFormScripts(): bool
     {
         return Settings::SCRIPT_INSERT_LOCATION_FORM === $this->getSettingsModel()->scriptInsertLocation;
@@ -161,54 +180,14 @@ class SettingsService extends BaseService
         return Settings::SCRIPT_INSERT_LOCATION_MANUAL === $this->getSettingsModel()->scriptInsertLocation;
     }
 
-    public function scriptInsertType(): string
-    {
-        return $this->getSettingsModel()->scriptInsertType;
-    }
-
-    public function isFormSubmitDisable(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->formSubmitDisable);
-    }
-
-    public function isRememberSubmitOrder(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->rememberPageSubmitOrder);
-    }
-
     public function isAutoScrollToErrors(): bool
     {
         return BooleanHelper::normalize($this->getSettingsModel()->autoScrollToErrors);
     }
 
-    public function isAutoScroll(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->autoScroll);
-    }
-
     public function isUseIdempotencyKey(): bool
     {
         return BooleanHelper::normalize($this->getSettingsModel()->useIdempotencyKey);
-    }
-
-    public function isRemoveNewlines(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->removeNewlines);
-    }
-
-    public function isExportLabels(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->exportLabels);
-    }
-
-    public function isExportHandlesAsNames(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->exportHandlesAsNames);
-    }
-
-    public function isExportTrackedUrlParameters(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->exportTrackedUrlParameters);
     }
 
     public function isSitesEnabled(): bool
@@ -263,7 +242,7 @@ class SettingsService extends BaseService
         $age = $this->getSettingsModel()->purgableUnfinalizedAssetAgeInMinutes;
 
         if (null === $age || '' === $age || (int) $age <= 0) {
-            return Settings::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
+            return null;
         }
 
         return $age;
@@ -309,8 +288,6 @@ class SettingsService extends BaseService
 
     public function getSettingsNavigation(): array
     {
-        $loggingStyle = $this->getSettingsModel()->getEffectiveLoggingStyle();
-        $logs = Freeform::getInstance()->logger->getLogNavigation('classic' === $loggingStyle);
         $solspaceAiNavItem = null;
         if (PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS)) {
             $plugin = Freeform::getInstance();
@@ -321,7 +298,7 @@ class SettingsService extends BaseService
             'setup' => $this->canUseSetupGuide() ? ['title' => Freeform::t('Setup Guide')] : null,
             'general' => ['title' => Freeform::t('General Settings')],
             'form-behavior' => ['title' => Freeform::t('Form Behavior')],
-            'queue-processing' => ['title' => Freeform::t('Queue Processing')],
+            'queue-processing' => ['title' => Freeform::t('Form Processing')],
             'form-builder' => ['title' => Freeform::t('Form Builder')],
             'limited-users' => ['title' => Freeform::t('Limited Users')],
             'spam' => ['title' => Freeform::t('Spam Protection')],
@@ -331,17 +308,10 @@ class SettingsService extends BaseService
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'ai' => $solspaceAiNavItem,
             'hdalerts' => ['heading' => Freeform::t('System Health')],
-            'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
-            'diagnostics' => ['title' => Freeform::t('Diagnostics')],
+            'notices-and-alerts' => ['title' => Freeform::t('Alerts & Digests')],
             'activity' => ['title' => Freeform::t('Logging')],
+            'diagnostics' => ['title' => Freeform::t('Diagnostics')],
         ];
-
-        if ($logs) {
-            $nav['hdlogs'] = ['heading' => Freeform::t('Logs')];
-            foreach ($logs as $route => $label) {
-                $nav[$route] = ['title' => Freeform::t($label)];
-            }
-        }
 
         $nav = array_filter($nav);
 
@@ -356,11 +326,6 @@ class SettingsService extends BaseService
         return BooleanHelper::normalize($this->getSettingsModel()->spamFolderEnabled);
     }
 
-    public function isDisplayFeed(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->displayFeed);
-    }
-
     public function isAjaxEnabledByDefault(): bool
     {
         return $this->getSettingsModel()->defaults->settings->processing->ajax->getValue();
@@ -372,9 +337,6 @@ class SettingsService extends BaseService
             'limited-users',
             'statuses',
             'pdf-templates',
-            'error-log',
-            'integrations-log',
-            'email-log',
             'diagnostics',
             'integrations/email-marketing',
             'integrations/crm',
@@ -402,11 +364,6 @@ class SettingsService extends BaseService
         return PermissionHelper::isAdmin() && $this->isAllowAdminEdit();
     }
 
-    public function getFailedNotificationRecipients(): RecipientCollection
-    {
-        return $this->getRecipientCollection($this->getSettingsModel()->alertNotificationRecipients ?? '');
-    }
-
     public function isErrorNotificationEnabled(): bool
     {
         return $this->getErrorNotificationRecipients()->count() > 0;
@@ -414,7 +371,7 @@ class SettingsService extends BaseService
 
     public function getErrorNotificationRecipients(): RecipientCollection
     {
-        return $this->getRecipientCollection($this->getSettingsModel()->errorNotificationRecipients ?? '');
+        return RecipientCollection::fromArray(ErrorAlertRecipients::resolve($this->getSettingsModel()->errorNotificationRecipients));
     }
 
     public function getDigestRecipients(): RecipientCollection
@@ -459,14 +416,9 @@ class SettingsService extends BaseService
         }
 
         $total = 0;
-        if ('all' === $type || 'notices' === $type) {
-            $total += $freeform->feed->getUnreadCount();
-        }
-
-        if ('all' === $type || 'errors' === $type) {
+        if ('errors' === $type) {
             if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS)) {
                 $total += match ($this->getSettingsModel()->getEffectiveLoggingStyle()) {
-                    'classic' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) ? $freeform->logger->getErrorLogLineCount() : 0,
                     'activity' => $freeform->activity->getErrorCount(),
                     default => 0,
                 };
@@ -510,19 +462,9 @@ class SettingsService extends BaseService
         return BooleanHelper::normalize($this->getSettingsModel()->formFieldShowOnlyAllowedForms);
     }
 
-    public function isNotificationQueueEnabled(): bool
+    public function isQueueEnabled(): bool
     {
-        return BooleanHelper::normalize($this->getSettingsModel()->useQueueForEmailNotifications);
-    }
-
-    public function isIntegrationQueueEnabled(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->useQueueForIntegrations);
-    }
-
-    public function isAiFieldQueueEnabled(): bool
-    {
-        return BooleanHelper::normalize($this->getSettingsModel()->useQueueForAiFields);
+        return $this->getSettingsModel()->isQueueEnabled();
     }
 
     public function isBypassSpamCheckOnLoggedInUsers(): bool

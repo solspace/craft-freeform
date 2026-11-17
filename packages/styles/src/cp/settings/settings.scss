@@ -19,6 +19,99 @@
   }
 }
 
+.ff-settings-details {
+  margin-block: var(--c-spacing-md, 8px) var(--c-spacing-lg, 16px);
+  color: var(--c-text-quiet, var(--light-text-color));
+
+  > summary { width: fit-content; cursor: pointer; }
+  > p { margin-block: var(--c-spacing-md, 8px) 0; }
+}
+
+.ff-defaults-section {
+  > summary {
+    display: block;
+    padding-block: var(--c-spacing-sm, 4px);
+    border-radius: var(--c-radius-sm, 3px);
+    list-style: none;
+    cursor: pointer;
+
+    &::marker { content: ''; }
+    &::-webkit-details-marker { display: none; }
+  }
+
+  > summary > h2 {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--c-spacing-md, 8px);
+    margin: 0;
+  }
+
+  .ff-defaults-summary-copy { flex: 1; min-width: 0; }
+  .ff-defaults-summary-description {
+    display: block;
+    margin-block-start: var(--c-spacing-sm, 4px);
+    color: var(--c-text-quiet, var(--light-text-color));
+    font-size: var(--c-text-base, 14px);
+    font-weight: normal;
+    line-height: 1.5;
+  }
+
+  .ff-defaults-summary-chevron {
+    display: block;
+    flex: 0 0 18px;
+    order: -1;
+    width: 18px;
+    height: 18px;
+    margin-block-start: calc(.625em - 9px);
+    color: var(--c-text-quiet, var(--light-text-color));
+    transition: transform 150ms ease;
+  }
+
+  &[open] > summary .ff-defaults-summary-chevron { transform: rotate(90deg); }
+  > .categories { margin-block: 24px 0; }
+
+  > .categories:not(.delimited) { gap: var(--c-spacing-lg, 16px); }
+
+  .ff-defaults-group-heading {
+    margin-block: 0 var(--c-spacing-md, 8px);
+    margin-inline-start: calc(18px + var(--c-spacing-md, 8px));
+    color: var(--c-text-default, var(--text-color));
+    font-size: var(--c-text-base, 14px);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .category-item-list > li > label {
+    padding-inline-start: calc(18px + var(--c-spacing-md, 8px) + var(--c-spacing-lg, 16px));
+  }
+
+  .category-item-list > .ff-defaults-row {
+    grid-template-columns: minmax(14rem, 22rem) minmax(0, 40rem) 34px;
+    column-gap: var(--c-spacing-lg, 16px);
+    align-items: center;
+    padding: var(--c-spacing-sm, 4px) var(--c-spacing-md, 8px);
+    border-radius: var(--c-radius-sm, 3px);
+
+    &.is-striped {
+      background: light-dark(
+        color-mix(in srgb, var(--c-color-neutral-fill-quiet, var(--gray-050, #f3f7fc)) 40%, transparent),
+        color-mix(in srgb, var(--c-color-neutral-fill-quiet, var(--gray-050, #f3f7fc)) 20%, transparent)
+      );
+    }
+
+    @media (max-width: 700px) {
+      grid-template-columns: minmax(0, 1fr) 34px;
+      row-gap: var(--c-spacing-sm, 4px);
+
+      > label { grid-column: 1 / -1; }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-defaults-summary-chevron { transition: none; }
+  }
+}
+
 .ff-toolbar-setting {
   max-width: none;
 
@@ -27,7 +120,14 @@
   .ff-toolbar-editor { padding: 0; border: 0; background: transparent; }
   .ff-toolbar-row { display: flex; align-items: center; gap: 8px; padding: 6px; border: 1px solid var(--gray-200, #cdd8e4); background: var(--gray-050, #f3f7fc); border-radius: 6px; }
   .ff-toolbar-items { display: flex; flex: 1; min-width: 0; align-items: center; flex-wrap: wrap; gap: 3px; min-height: 34px; }
-  .ff-toolbar-row [data-toolbar-add] { box-sizing: border-box; min-height: 32px; height: 32px; font-size: 12px; }
+  .ff-toolbar-row [data-toolbar-add] {
+    box-sizing: border-box;
+    min-height: 32px;
+    height: 32px;
+    padding-inline: calc(var(--c-spacing-md, 8px) + var(--c-spacing-sm, 4px));
+    gap: var(--c-spacing-sm, 4px);
+    font-size: 12px;
+  }
   .ff-toolbar-chip { position: relative; flex: 0 0 auto; border: 1px solid transparent; border-radius: 4px; color: var(--gray-700, #3f4d5a); }
   .ff-toolbar-handle { display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 32px; height: 32px; padding: 0 4px; border: 0; background: transparent; color: inherit; font: inherit; cursor: grab; }
   .ff-toolbar-chip-symbol svg, .ff-toolbar-choice-icon svg { display: block; width: 24px; height: 24px; fill: currentColor; }
@@ -117,7 +217,7 @@
   max-width: 1100px;
   box-sizing: border-box;
   padding: 20px;
-  border: 1px solid var(--gray-200, #cdd8e4);
+  border: 0;
   border-radius: 8px;
   background: var(--secondary-pane-bg, var(--gray-050, #f3f7fc));
 

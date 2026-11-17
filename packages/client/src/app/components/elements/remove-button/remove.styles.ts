@@ -20,9 +20,10 @@ export const RemoveButtonWrapper = styled(animated.button)`
   scale: 1;
   transition: background-color 120ms ease-out, color 120ms ease-out, scale 120ms ease-out;
 
-  &:hover {
-    background-color: ${colors.error};
-    color: #fff;
+  &:hover,
+  &:focus-visible {
+    background-color: var(--c-color-danger-fill-normal);
+    color: var(--c-color-danger-on-normal);
   }
 
   @media (prefers-reduced-motion: reduce) { transition: none; }

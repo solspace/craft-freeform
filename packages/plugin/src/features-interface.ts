@@ -69,16 +69,13 @@ interface Features {
       renderHtmlInComposer: boolean;
       ajaxEnabledByDefault: boolean;
       includeDefaultFormattingTemplates: boolean;
-      removeNewlinesOnExport: boolean;
       populateValuesFromGet: boolean;
-      disableSubmit: boolean;
       autoScroll: boolean;
       useIdempotencyKey: boolean;
       jsInsertLocation: JSInsertLocation;
       purgeSubmissions: boolean;
       purgeInterval: 7;
       formattingTemplatesPath: boolean;
-      sendAlertsOnFailedNotifications: boolean;
       notificationTemplatesPath: boolean;
       modifiedStatuses: boolean;
       demoTemplatesInstalled: boolean;

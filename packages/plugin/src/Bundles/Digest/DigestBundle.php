@@ -8,7 +8,6 @@ use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Jobs\SendDigestJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\FeedRecord;
 use yii\base\Event;
 
 class DigestBundle extends FeatureBundle
@@ -39,10 +38,6 @@ class DigestBundle extends FeatureBundle
         $clientRecipients = $settings->getClientDigestRecipients();
 
         if (!$devRecipients->count() && !$clientRecipients->count()) {
-            return;
-        }
-
-        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
             return;
         }
 

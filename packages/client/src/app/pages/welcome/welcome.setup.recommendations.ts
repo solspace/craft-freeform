@@ -2,6 +2,7 @@ import type {
   SetupKey,
   SetupOptions,
   SetupSelectOption,
+  SetupValues,
 } from "./welcome.setup.api";
 
 export type SetupAnswers = {
@@ -45,6 +46,11 @@ const boolean = choices([
   ["true", "Enabled"],
   ["false", "Disabled"],
 ]);
+// The guide presents one control while retaining the existing settings API keys.
+export const activityLoggingValue = (
+  values: Pick<SetupValues, "loggingStyle" | "activityMode">,
+): string => (values.loggingStyle === "none" ? "off" : values.activityMode);
+
 export const recommendationsFor = (
   answers: SetupAnswers,
   options: SetupOptions,
@@ -155,7 +161,7 @@ export const recommendationsFor = (
     if (options.canUseAlerts) {
       add(
         "clientDigestRecipients",
-        "Stats Digest Email",
+        "Stats Digest Recipients",
         "Optionally send a regular performance summary to the people reviewing submissions.",
         current.clientDigestRecipients,
         "Site setting",
@@ -164,7 +170,7 @@ export const recommendationsFor = (
       );
       add(
         "clientDigestFrequency",
-        "Stats Digest Email Frequency",
+        "Stats Digest Frequency",
         "Choose a schedule for the stats digest if recipients are provided.",
         current.clientDigestFrequency,
         "Site setting",
@@ -182,48 +188,28 @@ export const recommendationsFor = (
       );
     }
   }
-  add(
-    "loggingStyle",
-    "Logging Style",
-    "Keep a searchable record of failures and important form activity.",
-    current.loggingStyle === "classic" ? "classic" : "activity",
-    "Site setting",
-    choices([
-      ["activity", "Activity Logging"],
-      ["classic", "Classic Logging"],
-      ["none", "None"],
-    ]),
-  );
+  const preserveLogging =
+    current.loggingStyle === "none" ||
+    ["custom", "detailed"].includes(current.activityMode);
   add(
     "activityMode",
-    "Recording mode",
-    "Choose how much Activity history to keep for the forms you plan to build.",
-    ["custom", "detailed"].includes(current.activityMode)
-      ? current.activityMode
+    "Activity Logging",
+    "Choose which event types to record. Off preserves your recording preferences. Custom uses your saved event choices from Logging settings.",
+    preserveLogging
+      ? activityLoggingValue(current)
       : answers.scale === "basic"
         ? "minimal"
         : "standard",
     "Site setting",
     choices([
+      ["off", "Off"],
       ["minimal", "Minimal"],
       ["standard", "Standard"],
       ["detailed", "Detailed"],
-      ...(current.activityMode === "custom" ? [["custom", "Custom"]] : []),
+      ["custom", "Custom"],
     ]),
     false,
-    ["custom", "detailed"].includes(current.activityMode),
-  );
-  add(
-    "loggingLevel",
-    "Log Detail",
-    "Record errors and critical failures.",
-    current.loggingLevel,
-    "Site setting",
-    choices([
-      ["error", "Errors"],
-      ["info", "Info"],
-      ["debug", "Debug"],
-    ]),
+    preserveLogging,
   );
   add(
     "spamProtectionBehavior",
@@ -319,60 +305,39 @@ export const recommendationsFor = (
   }
   if (needs("reliability") && options.canUseAlerts) {
     add(
-      "alertNotificationRecipients",
-      "Send Email Alerts for Failed Notifications",
-      "Choose who should hear when an email notification cannot be delivered.",
-      current.alertNotificationRecipients,
-      "Site setting",
-    );
-    add(
       "errorNotificationRecipients",
-      "Critical System Error Report Recipients",
-      "Choose who should receive critical system error reports.",
+      "Error Alert Recipients",
+      "Choose who should receive alerts for email failures, integration failures, and other Freeform errors.",
       current.errorNotificationRecipients,
       "Site setting",
     );
   }
-  if (answers.queue === "ready") {
-    if (needs("emails"))
-      add(
-        "useQueueForEmailNotifications",
-        "Use Queue for Email Notifications",
-        "Process notification emails in the background using your configured queue runner.",
-        "true",
-        "Site setting",
-        boolean,
-      );
-    if (needs("external"))
-      add(
-        "useQueueForIntegrations",
-        "Use Queue for Integrations",
-        "Process supported integration tasks in the background using your configured queue runner.",
-        "true",
-        "Site setting",
-        boolean,
-      );
-    if (needs("aiProcessing") && options.canUseAi)
-      add(
-        "useQueueForAiFields",
-        "Use Queue for AI Processing",
-        "Process AI field tasks in the background using your configured queue runner.",
-        "true",
-        "Site setting",
-        boolean,
-      );
+  if (
+    answers.queue === "ready" &&
+    (needs("emails") ||
+      needs("external") ||
+      (needs("aiProcessing") && options.canUseAi))
+  ) {
+    add(
+      "useQueue",
+      "Process Submissions in the Background",
+      "Use Craft’s queue for AI processing, email notifications, and integrations. AI processing finishes before notifications and integrations are dispatched.",
+      "true",
+      "Site setting",
+      boolean,
+    );
   }
   if (needs("emails") || answers.reuse === "shared") {
     add(
       "defaultFromName",
-      "Default From Name for New Templates",
+      "Default Sender Name",
       "Use Craft system values or enter the sender name for new email templates.",
       current.defaultFromName,
       "New email template default",
     );
     add(
       "defaultFromEmail",
-      "Default From Email for New Templates",
+      "Default Sender Email",
       "Freeform sends through Craft mail settings. Existing email templates keep their sender details.",
       current.defaultFromEmail,
       "New email template default",

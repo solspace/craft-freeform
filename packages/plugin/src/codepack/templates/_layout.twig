@@ -15,7 +15,7 @@
 {%- set demoRequestedArea = craft.app.request.segment(baseUrlSegments + 1) -%}
 {# Keep old /custom links as aliases for Forms with the assigned template. #}
 {%- set demoArea = demoRequestedArea == 'custom' ? 'forms' : demoRequestedArea -%}
-{%- set pageTemplate = demoRequestedArea == 'custom' ? 'default' : craft.app.request.segment(baseUrlSegments + 2)|default('basic-light') -%}
+{%- set pageTemplate = demoRequestedArea == 'custom' ? 'default' : craft.app.request.segment(baseUrlSegments + 2)|default('freeform-light') -%}
 {%- set pageTemplateFile = pageTemplate == 'default' ? null : pageTemplate ~ '/index.twig' -%}
 {%- if demoArea == "submissions" -%}
     {%- set spamMode = craft.app.request.segment(baseUrlSegments + 2) != "delete" and (craft.app.request.segment(baseUrlSegments + 4) == "spam" or craft.app.request.segment(baseUrlSegments + 3) == "spam") -%}
@@ -30,10 +30,10 @@
     {%- set pageTemplateFile = null -%}
 {%- elseif demoArea == "extras" -%}
     {%- set formHandle = "" -%}
-    {%- set pageTemplateFile = "basic-light/index.twig" -%}
+    {%- set pageTemplateFile = "freeform-light/index.twig" -%}
 {%- elseif demoArea is empty -%}
     {%- set formHandle = "" -%}
-    {%- set pageTemplate = "basic-light" %}
+    {%- set pageTemplate = "freeform-light" %}
 {%- endif -%}
 {%- if formHandle -%}
     {%- set form = freeform.form(formHandle, {
@@ -53,7 +53,7 @@
     {%- set sampleTemplate = assignedTemplate and not customTemplate ? freeform.settingsService.solspaceFormTemplates|filter(candidate => candidate.filePath ends with assignedTemplate)|first : null -%}
     {%- set assetTemplate = sampleTemplate ? sampleTemplate.fileName|split('/')|first : 'default' -%}
 {%- endif -%}
-{%- set colorMode = assetTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "tailwind-4-dark", "daisyui-5-dark", "conversational"] ? "dark" : "light" -%}
+{%- set colorMode = assetTemplate in ["freeform-dark", "bootstrap-5-dark", "tailwind-4-dark", "daisyui-5-dark"] ? "dark" : "light" -%}
 
 <!doctype html>
 <html lang="en"
@@ -70,13 +70,9 @@
             <link href="https://cdn.jsdelivr.net/npm/daisyui@5.7.27" rel="stylesheet" type="text/css">
             <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
         {% endif %}
-        {% if assetTemplate in ["bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels"] %}
+        {% if assetTemplate in ["bootstrap-5-light", "bootstrap-5-dark", "bootstrap-5-floating-labels"] %}
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        {% endif %}
-        {% if assetTemplate == "foundation-6" %}
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css" crossorigin="anonymous">
-            <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js" crossorigin="anonymous"></script>
         {% endif %}
         {% if assetTemplate in ["tailwind-4-light", "tailwind-4-dark"] %}
             <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>

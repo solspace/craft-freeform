@@ -1,4 +1,5 @@
 import {
+  fieldId,
   getSignatureConfig,
   isSignatureValueEmpty,
   mountSignaturePad,
@@ -19,6 +20,7 @@ export function SignatureFieldRenderer(props: ReactFieldRendererProps) {
   const previousReset = useRef(resetVersion);
   const latest = useRef(props);
   latest.current = props;
+  const [typed, setTyped] = useState("");
   const [hasInk, setHasInk] = useState(!isSignatureValueEmpty(props.value));
   const config = getSignatureConfig(props.field);
   const width = config.width ?? 400;
@@ -47,6 +49,7 @@ export function SignatureFieldRenderer(props: ReactFieldRendererProps) {
           form.setValue(field.handle, value);
         },
         onInkChange: setHasInk,
+        onDrawStart: () => setTyped(""),
         isEnabled: () => {
           const { form, field } = latest.current;
           return form.isFieldEnabled(field.handle);
@@ -62,6 +65,7 @@ export function SignatureFieldRenderer(props: ReactFieldRendererProps) {
   }, [width, height, penColor, backgroundColor, penSize]);
 
   useEffect(() => {
+    if (!props.value) setTyped("");
     controllerRef.current?.update(
       props.value,
       previousReset.current !== resetVersion,
@@ -90,19 +94,46 @@ export function SignatureFieldRenderer(props: ReactFieldRendererProps) {
           backgroundColor:
             config.customizeAppearance === false ? "#fff" : backgroundColor,
         }}
-        aria-label={props.field.label}
+        tabIndex={-1}
+        aria-hidden="true"
       />
-      {config.showClearButton !== false ? (
-        <button
-          type="button"
-          disabled={
-            (!hasInk && (props.value == null || props.value === "")) || !enabled
-          }
-          onClick={() => controllerRef.current?.clear()}
-        >
-          Clear
-        </button>
-      ) : null}
+      {config.allowTypedSignature === true && (
+        <div className="freeform-signature-type">
+          <label
+            className={props.classNames.label}
+            htmlFor={`${fieldId(props.field)}-typed`}
+          >
+            {config.typedLabel ?? "Or type your signature"}
+          </label>
+          <input
+            className={props.classNames.input}
+            id={`${fieldId(props.field)}-typed`}
+            type="text"
+            autoComplete="off"
+            maxLength={200}
+            disabled={!enabled}
+            value={typed}
+            aria-describedby={
+              props.input["aria-describedby"] as string | undefined
+            }
+            aria-invalid={props.input["aria-invalid"] as boolean | undefined}
+            onChange={(event) => {
+              setTyped(event.target.value);
+              controllerRef.current?.type(event.target.value);
+            }}
+          />
+        </div>
+      )}
+      <button
+        type="button"
+        disabled={(!hasInk && !props.value && !typed) || !enabled}
+        onClick={() => {
+          setTyped("");
+          controllerRef.current?.clear();
+        }}
+      >
+        {config.clearLabel ?? "Clear"}
+      </button>
     </div>
   );
 }

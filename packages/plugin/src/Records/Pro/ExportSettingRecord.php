@@ -18,9 +18,10 @@ use craft\db\ActiveRecord;
 /**
  * Class Freeform_ExportSettingRecord.
  *
- * @property int   $id
- * @property int   $userId
- * @property array $setting
+ * @property ?array $formatting
+ * @property int    $id
+ * @property int    $userId
+ * @property array  $setting
  */
 class ExportSettingRecord extends ActiveRecord
 {

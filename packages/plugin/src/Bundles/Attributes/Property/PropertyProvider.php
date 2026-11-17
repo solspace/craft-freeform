@@ -394,13 +394,12 @@ class PropertyProvider
 
     private function processDefaultValue(\ReflectionProperty $property, Property $attribute): bool
     {
+        $lock = AttributeHelper::findAttribute($property, Lock::class);
+        if ($lock && !$this->defaultsProvider->isLocked($lock->path)) {
+            $attribute->disabled = true;
+        }
         $defaultValue = AttributeHelper::findAttribute($property, DefaultValue::class);
         if (!$defaultValue) {
-            $lock = AttributeHelper::findAttribute($property, Lock::class);
-            if ($lock) {
-                $attribute->disabled = !$this->defaultsProvider->isLocked($lock->path);
-            }
-
             return false;
         }
 

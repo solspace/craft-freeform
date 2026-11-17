@@ -243,14 +243,6 @@ class FreeformVariable
         return $this->getSettingsService()->getSettingsNavigation();
     }
 
-    /**
-     * @deprecated use the ::loadFreeformPlugin() method from now on
-     */
-    public function loadFreeformScripts(): Markup
-    {
-        return $this->loadFreeformPlugin();
-    }
-
     public function loadScripts(array $scripts = []): Markup
     {
         $event = new CollectScriptsEvent($scripts);

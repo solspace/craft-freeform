@@ -4,10 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Session;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
-use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\DatabaseStorage;
-use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\FormContextStorageInterface;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PayloadStorage;
-use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\SessionStorage;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Events\FormEventInterface;
@@ -20,7 +17,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
-use Solspace\Freeform\Models\Settings;
 use yii\base\Event;
 
 class SessionContext
@@ -28,48 +24,20 @@ class SessionContext
     public const KEY_HASH = 'formHash';
     public const KEY_UNIQUE_ID = 'freeform-unique-id';
     public const KEY_SITE_HANDLE = 'freeform-site-handle';
+    public const KEY_FIELD_ID_PREFIX = 'freeform-id-prefix';
 
-    /** @var FormContextStorageInterface */
-    private $storage;
+    private PayloadStorage $storage;
 
     public function __construct()
     {
         $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
 
-        $context = $settingsModel->sessionContext;
-        $ttl = $settingsModel->getSessionContextTimeToLiveMinutes();
-        $count = $settingsModel->getSessionContextCount();
-        $secret = $settingsModel->getSessionContextSecret();
-
-        switch ($context) {
-            case Settings::CONTEXT_TYPE_DATABASE:
-                $this->storage = new DatabaseStorage($ttl, $count);
-
-                break;
-
-            case Settings::CONTEXT_TYPE_SESSION:
-                if (\Craft::$app->request->isConsoleRequest) {
-                    $this->storage = new PayloadStorage($secret);
-                } else {
-                    $this->storage = new SessionStorage($ttl, $count);
-                }
-
-                break;
-
-            case Settings::CONTEXT_TYPE_PAYLOAD:
-            default:
-                $this->storage = new PayloadStorage($secret);
-
-                break;
-        }
+        $this->storage = new PayloadStorage($settingsModel->getSessionContextSecret());
 
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'registerFormHash']);
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormHash']);
-        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormContext']);
-        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'cleanupStorage']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
-        Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'cleanupAfterSubmit']);
         Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'cleanupOnSaveForm']);
 
         Event::on(
@@ -102,6 +70,10 @@ class SessionContext
             )
         );
 
+        if (null === $form->getProperties()->get('fieldIdPrefix')) {
+            $event->addChunk('<input type="hidden" name="'.self::KEY_FIELD_ID_PREFIX.'" value="'.htmlspecialchars($form->getFieldPrefix(), \ENT_QUOTES, 'UTF-8').'" />');
+        }
+
         $siteHandle = $form->getSiteHandle();
         if ($siteHandle) {
             $event->addChunk(
@@ -124,31 +96,9 @@ class SessionContext
         $event->add(self::KEY_SITE_HANDLE, $siteHandle);
     }
 
-    public function cleanupAfterSubmit(FormEventInterface $event): void
-    {
-        $form = $event->getForm();
-
-        $request = \Craft::$app->getRequest();
-        if ($request->isAjax || $request->isConsoleRequest) {
-            return;
-        }
-
-        $key = self::getBagKey($form);
-        if (null === $key) {
-            return;
-        }
-
-        $this->storage->removeBag($key);
-    }
-
     public function cleanupOnSaveForm(SaveFormEvent $event): void
     {
         $event->getForm()->getProperties()->remove(Form::HASH_KEY);
-    }
-
-    public function cleanupStorage(): void
-    {
-        $this->storage->cleanup();
     }
 
     public function registerFormHash(FormEventInterface $event): void
@@ -163,29 +113,6 @@ class SessionContext
         $hash = "{$formHash}-{$pageHash}-{$sessionToken}";
 
         $bag->set(Form::HASH_KEY, $hash);
-    }
-
-    public function registerFormContext(FormEventInterface $event): void
-    {
-        $form = $event->getForm();
-
-        $key = self::getBagKey($form);
-        if (null === $key) {
-            return;
-        }
-
-        $bag = $this->storage->getBag($key, $form);
-        if (null !== $bag) {
-            return;
-        }
-
-        $bag = new SessionBag($form->getId());
-        $bag->setProperties($form->getProperties()->toArray());
-        $bag->setAttributes($form->getAttributes()->toArray());
-
-        $this->storage->registerBag($key, $bag, $form);
-        $this->storage->persist();
-        $this->storage->cleanup();
     }
 
     public function retrieveContext(HandleRequestEvent $event): void
@@ -205,6 +132,12 @@ class SessionContext
 
         $form->getProperties()->merge($bag->getProperties());
         $form->getAttributes()->merge($bag->getAttributes());
+        // Cached HTML may be mounted twice. The client only rebases generated
+        // IDs; carry that placement's namespace into subsequent responses.
+        $prefix = RequestHelper::post(self::KEY_FIELD_ID_PREFIX);
+        if (null === $form->getProperties()->get('fieldIdPrefix') && \is_string($prefix) && preg_match('/^freeform-[a-zA-Z0-9_-]+-[a-f0-9]{12}-$/D', $prefix) && \strlen($prefix) <= 200) {
+            $form->getProperties()->set(Form::PROPERTY_FIELD_ID_PREFIX, $prefix);
+        }
 
         $form->setFormPosted(self::isFormPosted($form));
         $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPageIndex()));
@@ -226,8 +159,6 @@ class SessionContext
             $sessionBag->setAttributes($form->getAttributes()->toArray());
             $sessionBag->setLastUpdate(new Carbon('now', 'UTC'));
         }
-
-        $this->storage->persist();
     }
 
     public static function getFormHash(Form $form): string
@@ -349,6 +280,6 @@ class SessionContext
             return null;
         }
 
-        return $this->storage->getBag($key, $form);
+        return $this->storage->getBag($form);
     }
 }

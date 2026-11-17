@@ -1,3 +1,4 @@
+import { editorButton } from "@ff-client/styles/craft6";
 import styled, { createGlobalStyle } from "styled-components";
 
 export const DialogStyles = createGlobalStyle`
@@ -33,6 +34,7 @@ export const Message = styled.p`
 
 export const Actions = styled.div.attrs({ slot: "footer" })`
   display: flex;
+  align-items: center;
   gap: var(--c-spacing-md);
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -40,8 +42,9 @@ export const Actions = styled.div.attrs({ slot: "footer" })`
 
 export const CancelButton = styled.button.attrs({
   type: "button",
-  className: "btn",
 })`
+  ${editorButton}
+
   && {
     background: var(--c-button-default-fill, transparent);
     border: var(--c-button-default-border, 1px solid transparent);
@@ -59,18 +62,16 @@ export const CancelButton = styled.button.attrs({
   }
 `;
 
-export const DeleteButton = styled.button.attrs({
-  type: "button",
-  className: "btn",
-})`
+export const DeleteButton = styled(CancelButton)`
   && {
     background: var(--c-color-danger-fill-loud);
     border: 1px solid transparent;
     color: var(--c-color-danger-on-loud);
   }
 
-  &&:hover {
-    background: hsl(from var(--c-color-danger-fill-loud) h s calc(l - 5));
+  &&:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--c-color-danger-fill-loud), var(--c-color-mix-hover));
+    color: var(--c-color-danger-on-loud);
   }
 
   &&:focus-visible {
@@ -85,7 +86,8 @@ export const ContinueButton = styled(DeleteButton)`
     color: var(--c-color-accent-on-loud);
   }
 
-  &&:hover {
-    background: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 5));
+  &&:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--c-color-accent-fill-loud), var(--c-color-mix-hover));
+    color: var(--c-color-accent-on-loud);
   }
 `;

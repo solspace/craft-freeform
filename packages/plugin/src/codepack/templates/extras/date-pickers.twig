@@ -10,7 +10,7 @@
     {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
     <article class="freeform-form-browser freeform-example-detail" aria-labelledby="example-title">
-    {% set exampleDescription %}The following example shows some ways to manipulate a Date &amp; Time field type using Freeform's developer events.{% endset %}
+    {% set exampleDescription %}Use Freeform’s built-in date and time picker with the field’s configured format, locale, time interval, and date limits.{% endset %}
     {% include "demo/extras/_items.twig" with { mode: 'header', exampleHandle: 'date-pickers' } %}
 
     {% if form %}
@@ -20,22 +20,7 @@
 
         {{ form.render() }}
 
-        <script>
-            {# Replace flatpickr instance options as you wish #}
-            document.addEventListener("flatpickr-before-init", (event) => {
-                // event.options object contains the whole options object that will be passed to the flatpickr instance
-                event.options.defaultHour = 8; // starts the time picker at 8:00 am
-                event.options.minuteIncrement = 15; // moves the time picker in 15 minute increments instead of 1
-                event.options.minTime = "08:00"; // sets minimum start time to 8:00 am
-                event.options.maxTime = "17.00"; // sets maximum start time to 5:00 pm
-                flatpickr.l10ns.default.firstDayOfWeek = 1; // sets first day of week to Monday
-                event.options.disable = [ // disables Sundays and Saturdays from being available options in datepicker
-                    function(date) {
-                        return (date.getDay() === 0 || date.getDay() === 6);
-                    }
-                ];
-            })
-        </script>
+
 
             </div>
         </section>
@@ -60,7 +45,7 @@
                         Set the following configuration for this field as:
                         <ul>
                             <li><b>Type</b> set to <i>Both</i></li>
-                            <li><b>Use built-in datepicker</b> checked/enabled</li>
+                            <li><b>Date picker</b> set to <i>Freeform</i></li>
                         </ul>
                     </li>
                 </ul>

@@ -42,7 +42,6 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public const PICKER_OPTIONS = [
         'freeform' => 'Freeform',
-        'flatpickr' => 'Classic',
         'browser' => 'Browser',
         'none' => 'None',
     ];
@@ -81,7 +80,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[DefaultValue('props.date.picker')]
     #[Input\ButtonGroup(
         label: 'Date picker',
-        instructions: 'Freeform: searchable calendar and time list. Classic: Flatpickr. Browser: device controls. None: text input.',
+        instructions: 'Freeform: searchable calendar and time list. Browser: device controls. None: text input.',
         order: 1,
         options: self::PICKER_OPTIONS,
     )]
@@ -119,7 +118,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[VisibilityFilter('properties.picker !== "browser"')]
     #[Limitation('props.date', 'locale')]
     #[DefaultValue('props.date.locale')]
-    #[VisibilityFilter('["freeform", "flatpickr"].includes(properties.picker)')]
+    #[VisibilityFilter('properties.picker === "freeform"')]
     #[Input\Text(
         label: 'Force a locale',
         instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
@@ -267,25 +266,14 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         if (!isset($properties['picker'])) {
             $properties['picker'] = !empty($properties['useNativeTypes'])
                 ? 'browser'
-                : (($properties['useDatepicker'] ?? true) ? 'flatpickr' : 'none');
+                : (($properties['useDatepicker'] ?? true) ? 'freeform' : 'none');
+        }
+
+        if (!isset(self::PICKER_OPTIONS[$properties['picker']])) {
+            $properties['picker'] = 'freeform';
         }
 
         return $properties;
-    }
-
-    public static function getSupportedLocale(string $locale): string
-    {
-        if (preg_match('/^([a-z]{2})-/', $locale, $matches)) {
-            $locale = $matches[1];
-        }
-
-        static $supportedLocales = ['ar', 'at', 'az', 'be', 'bg', 'bn', 'cat', 'cs', 'cy', 'da', 'de', 'eo', 'es', 'et', 'fa', 'fi', 'fo', 'fr', 'gr', 'he', 'hi', 'hr', 'hu', 'id', 'is', 'it', 'ja', 'km', 'ko', 'kz', 'lt', 'lv', 'mk', 'mn', 'ms', 'my', 'nl', 'no', 'pa', 'pl', 'pt', 'ro', 'ru', 'si', 'sk', 'sl', 'sq', 'sr-cyr', 'sr', 'sv', 'th', 'tr', 'uk', 'vn', 'zh-tw', 'zh'];
-
-        if (\in_array(strtolower($locale), $supportedLocales, true)) {
-            return strtolower($locale);
-        }
-
-        return 'default';
     }
 
     /**
@@ -392,7 +380,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getPicker(): string
     {
-        return isset(self::PICKER_OPTIONS[$this->picker]) ? $this->picker : 'flatpickr';
+        return isset(self::PICKER_OPTIONS[$this->picker]) ? $this->picker : 'freeform';
     }
 
     public function getPickerLabels(): array
@@ -409,7 +397,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function isUseDatepicker(): bool
     {
-        return \in_array($this->getPicker(), ['freeform', 'flatpickr'], true);
+        return 'freeform' === $this->getPicker();
     }
 
     public function isUseNativeTypes(): bool
@@ -572,17 +560,6 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         return null;
     }
 
-    public function getDatepickerFormat(): string
-    {
-        $format = $this->getFormat();
-
-        return str_replace(
-            ['G', 'g', 'a', 'A'],
-            ['H', 'h', 'K', 'K'],
-            $format
-        );
-    }
-
     /**
      * Converts Y/m/d to YYYY/MM/DD, etc.
      */
@@ -720,14 +697,6 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             $value = $this->getValue();
         }
 
-        $minDate = $this->getMinDate() === 'today'
-            ? 'today'
-            : $this->getMinDateInputValue($this->getFormat());
-
-        $maxDate = $this->getMaxDate() === 'today'
-            ? 'today'
-            : $this->getMaxDateInputValue($this->getFormat());
-
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
@@ -750,14 +719,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             ->set('data-datepicker-reference-timestamp', $this->getPickerReferenceTimestamp())
             ->set('data-datepicker-min-offset', $this->getMinDateOffset())
             ->set('data-datepicker-max-offset', $this->getMaxDateOffset())
-            ->set('data-datepicker-format', $this->getDatepickerFormat())
             ->set('data-datepicker-enabletime', $hasTime)
             ->set('data-datepicker-enabledate', $hasDate)
             ->set('data-datepicker-clock_24h', $this->isClock24h())
-            ->set('data-datepicker-locale', $this->getSupportedLocale($locale))
             ->set('data-datepicker-language', $locale)
-            ->set('data-datepicker-min-date', $minDate)
-            ->set('data-datepicker-max-date', $maxDate)
         ;
 
         if ($this->isUseDatepicker()) {

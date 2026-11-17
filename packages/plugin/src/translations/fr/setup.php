@@ -25,8 +25,6 @@ return [
     'Keep your existing custom event choices.' => 'Conservez votre sélection personnalisée d’événements.',
     'Leave the setup guide without saving your changes?' => 'Quitter le guide sans enregistrer vos modifications ?',
     'Loading your current settings…' => 'Chargement de vos réglages actuels…',
-    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform. Classic Logging writes technical files.' => 'Les journaux aident à comprendre les problèmes après leur apparition. Le journal d’activité conserve un historique consultable dans Freeform. La journalisation classique écrit des fichiers techniques.',
-    'Turning logging off is not recommended. Use Classic Logging with Errors to retain important failures.' => 'Il est déconseillé de désactiver les journaux. Utilisez la journalisation classique au niveau Erreurs pour conserver les défaillances importantes.',
     'Not set' => 'Non défini',
     'Previous' => 'Précédent',
     'Record errors and critical failures.' => 'Enregistrez les erreurs et les défaillances critiques.',
@@ -249,4 +247,6 @@ return [
     'Set up an upload volume' => 'Configurer un volume de téléversement',
     'Configure an asset volume in Craft, then allow it under Allowed Upload Volumes in Freeform settings.' => 'Configurez un volume de ressources dans Craft, puis autorisez-le dans les volumes de téléversement autorisés des paramètres Freeform.',
     'The Setup Guide requires an administrator and an environment that allows admin changes.' => 'Le guide de configuration nécessite un administrateur et un environnement autorisant les modifications administratives.',
+    'Logging helps you investigate problems after they happen. Activity Logging keeps a searchable history inside Freeform.' => 'Les journaux aident à examiner les problèmes. Le journal d’activité conserve un historique consultable dans Freeform.',
+    'Turning logging off is not recommended. Use Activity Logging with the Minimal recording mode to retain important failures.' => 'Il est déconseillé de désactiver les journaux. Utilisez le journal d’activité en mode Minimal pour conserver les défaillances importantes.',
 ];

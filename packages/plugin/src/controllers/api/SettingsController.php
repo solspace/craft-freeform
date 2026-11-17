@@ -30,18 +30,15 @@ class SettingsController extends BaseController
 
         $defaults = $this->getSettingsService()->getSettingsModel()->defaults->jsonSerialize();
         $defaults['settings']['processing']['ajax']['value'] = $request->getBodyParam('ajaxByDefault', true);
-        $defaults['settings']['general']['formattingTemplate']['value'] = $request->getBodyParam('defaultFormattingTemplate', 'basic-light');
+        $defaults['settings']['general']['formattingTemplate']['value'] = $request->getBodyParam('defaultFormattingTemplate', 'freeform-light');
 
         $this->saveSettings(
             [
                 'defaults' => $defaults,
                 'pluginName' => $request->getBodyParam('name'),
                 'defaultView' => $request->getBodyParam('defaultView', 'forms'),
-                'formSubmitDisable' => $request->getBodyParam('disableSubmit', true),
                 'autoScrollToErrors' => $request->getBodyParam('autoScroll', true),
                 'scriptInsertLocation' => $request->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),
-                'scriptInsertType' => $request->getBodyParam('jsInsertType', Settings::SCRIPT_INSERT_TYPE_INLINE),
-                'sessionContext' => $request->getBodyParam('sessionType', Settings::CONTEXT_TYPE_PAYLOAD),
             ]
         );
 
@@ -66,8 +63,7 @@ class SettingsController extends BaseController
         $this->requirePostRequest();
         $this->saveSettings(
             [
-                'alertNotificationRecipients' => $this->getRequest()->getBodyParam('errorRecipients'),
-                'displayFeed' => $this->getRequest()->getBodyParam('updateNotices', true),
+                'errorNotificationRecipients' => $this->getRequest()->getBodyParam('errorRecipients'),
                 'digestRecipients' => $this->getRequest()->getBodyParam('digestRecipients'),
                 'digestFrequency' => (int) $this->getRequest()->getBodyParam('digestFrequency'),
                 'clientDigestRecipients' => $this->getRequest()->getBodyParam('clientDigestRecipients'),

@@ -4,11 +4,13 @@ export const SIGNATURE_PEN_CURSOR =
   'url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M15%205l2-2a2.83%202.83%200%200%201%204%204L8%2020l-5%201%201-5Z%22%20fill%3D%22white%22%20stroke%3D%22white%22%20stroke-width%3D%223.5%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cg%20fill%3D%22white%22%20stroke%3D%22%23111827%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M15%205l2-2a2.83%202.83%200%200%201%204%204L8%2020l-5%201%201-5Z%22%2F%3E%3Cpath%20d%3D%22m15%205%204%204M4%2016l4%204%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 3 21, crosshair';
 
 export type SignatureConfig = {
+  allowTypedSignature?: boolean;
+  typedLabel?: string;
+  clearLabel?: string;
   customizeAppearance?: boolean;
   showPenCursor?: boolean;
   width?: number;
   height?: number;
-  showClearButton?: boolean;
   borderColor?: string;
   backgroundColor?: string;
   penColor?: string;

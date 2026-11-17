@@ -2,13 +2,9 @@ import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
 import type { StringProperty } from "@ff-client/types/properties";
 import classes from "@ff-client/utils/classes";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { EnvLine } from "./env.line";
-import { Suggestions } from "./suggestions/suggestions";
-import { InputWithSuggestionsFieldWrapper } from "./suggestions/suggestions.styles";
+import { EnvSuggestInput } from "./env-suggest";
 
 const StringInput: React.FC<ControlType<StringProperty>> = ({
   value,
@@ -33,17 +29,17 @@ const StringInput: React.FC<ControlType<StringProperty>> = ({
     property.flags?.includes("as-readonly-in-instance");
   const isEnvSuggest = property.flags?.includes("env-suggest");
 
-  const { data } = useQuery({
-    queryKey: ["autosuggest", "env"],
-    queryFn: () => axios.get("/api/autosuggest/env").then((res) => res.data),
-    enabled: isEnvSuggest,
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-
   return (
     <Control property={property} errors={errors} context={context}>
-      <InputWithSuggestionsFieldWrapper>
+      {isEnvSuggest ? (
+        <EnvSuggestInput
+          value={value}
+          property={property}
+          updateValue={updateValue}
+          errors={errors}
+          autoFocus={autoFocus}
+        />
+      ) : (
         <input
           id={handle}
           ref={ref}
@@ -61,18 +57,7 @@ const StringInput: React.FC<ControlType<StringProperty>> = ({
           placeholder={property.placeholder}
           onChange={(event) => updateValue(event.target.value)}
         />
-        {isEnvSuggest && !!data && (
-          <>
-            <Suggestions
-              inputRef={ref}
-              filter={value}
-              suggestions={data}
-              update={(value) => updateValue(value)}
-            />
-            <EnvLine />
-          </>
-        )}
-      </InputWithSuggestionsFieldWrapper>
+      )}
     </Control>
   );
 };

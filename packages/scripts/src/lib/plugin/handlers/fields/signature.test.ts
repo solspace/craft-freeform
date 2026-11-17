@@ -468,3 +468,29 @@ it.each([undefined, "false"])(
     expect(view.input.value).toBe(saved);
   },
 );
+
+it("preserves typing started before initialization and drawing-library loading", async () => {
+  vi.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue(fresh);
+  vi.mocked(HTMLCanvasElement.prototype.getContext).mockReturnValue({
+    clearRect: vi.fn(),
+    fillText: vi.fn(),
+    drawImage,
+  } as unknown as CanvasRenderingContext2D);
+  const form = document.createElement("form");
+  form.setAttribute("data-scripts-signature", "");
+  form.innerHTML = markup().replace(
+    "</div>",
+    '<input type="text" data-signature-typed value="Alex Example"></div>',
+  );
+  document.body.append(form);
+  new Signature({
+    form,
+    has: (attribute: string) => form.hasAttribute(attribute),
+  } as Freeform);
+  expect(new FormData(form).get("signature")).toBe(fresh);
+  await finishLoading();
+  expect(images.at(-1)!.src).toBe(fresh);
+  images.at(-1)!.onload!();
+  expect(drawImage).toHaveBeenCalled();
+  expect(new FormData(form).get("signature")).toBe(fresh);
+});

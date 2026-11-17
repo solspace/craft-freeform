@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/env-fields" as envFields %}
 {% import 'freeform/_components/settings-cards' as cards %}
 
 {% set crumbs = [
@@ -248,7 +249,7 @@
         <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
             {{ forms.lightswitchField({
-                label: "Control Panel Management for File-based Email Templates"|t('freeform'),
+                label: "Edit File Templates in the Control Panel"|t('freeform'),
                 instructions: "Allows users to create and edit file-based email templates from the Notifications area and form builder."|t('freeform'),
                 name: "settings[allowFileTemplateEdit]",
                 on: settings.allowFileTemplateEdit,
@@ -316,8 +317,8 @@
         </div>
     </div>
 
-    {{ forms.autosuggestField({
-        label: "Default From Email for New Templates"|t('freeform'),
+    {{ envFields.autosuggestField({
+        label: "Default Sender Email"|t('freeform'),
         id: "defaultFromEmail",
         class: "code",
         suggestEnvVars: true,
@@ -327,11 +328,11 @@
         value: settings.defaultFromEmail,
         errors: settings.getErrors("defaultFromEmail"),
         disabled: readOnly,
-        instructions: "The default email address to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
+        instructions: "Populates the 'From Email' field in new notification templates."|t('freeform'),
     }) }}
 
-    {{ forms.autosuggestField({
-        label: "Default From Name for New Templates"|t('freeform'),
+    {{ envFields.autosuggestField({
+        label: "Default Sender Name"|t('freeform'),
         id: "defaultFromName",
         class: "code",
         suggestEnvVars: true,
@@ -341,7 +342,7 @@
         value: settings.defaultFromName,
         errors: settings.getErrors("defaultFromName"),
         disabled: readOnly,
-        instructions: "The default name to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
+        instructions: "Populates the 'From Name' field in new notification templates."|t('freeform'),
     }) }}
 
     {% if
@@ -396,6 +397,7 @@
 {% endblock %}
 
 {% css %}
+    .ff-template-manager { padding-block-start: var(--c-spacing-lg); }
     .ff-template-manager > hr { margin-inline: calc(var(--padding, var(--pane-padding, 24px)) * -1); }
 
     .ff-template-manager #formTemplateDirectory,

@@ -178,37 +178,11 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->ajax;
                 },
             ],
-            'focusFirstError' => [
-                'name' => 'focusFirstError',
-                'type' => Type::boolean(),
-                'description' => 'Should failed validation focus the first visible field with an error',
-                'resolve' => static function ($source) {
-                    return $source->getSettings()->focusFirstError;
-                },
-            ],
-            'showProcessingSpinner' => [
-                'name' => 'showProcessingSpinner',
-                'type' => Type::boolean(),
-                'description' => 'Should the submit button show a spinner when submitting',
-                'resolve' => static function ($source) {
-                    return $source->getSettings()->showProcessingSpinner;
-                },
-            ],
-            'showProcessingText' => [
-                'name' => 'showProcessingText',
-                'type' => Type::boolean(),
-                'description' => 'Should the submit button change the button label while submitting',
-                'resolve' => static function ($source) {
-                    return $source->getSettings()->showProcessingText;
-                },
-            ],
-            'showProcessingOverlay' => [
-                'name' => 'showProcessingOverlay',
-                'type' => Type::boolean(),
-                'description' => 'Should the form show a processing overlay while submitting',
-                'resolve' => static function ($source) {
-                    return $source->getSettings()->showProcessingOverlay;
-                },
+            'processingDisplay' => [
+                'name' => 'processingDisplay',
+                'type' => Type::string(),
+                'description' => 'Where submission feedback appears: button, overlay, or both',
+                'resolve' => static fn ($source) => $source->getSettings()->processingDisplay,
             ],
             'processingText' => [
                 'name' => 'processingText',
@@ -262,14 +236,7 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->stopSubmissionsAfter;
                 },
             ],
-            'disableSubmit' => [
-                'name' => 'disableSubmit',
-                'type' => Type::boolean(),
-                'description' => "Should the form's submit button be disabled when the form is submitted",
-                'resolve' => static function () {
-                    return Freeform::getInstance()->forms->isFormSubmitDisable();
-                },
-            ],
+
             'disableReset' => [
                 'name' => 'disableReset',
                 'type' => Type::boolean(),

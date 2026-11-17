@@ -359,18 +359,20 @@ beforeEach(() => {
       "returnUrl",
     ],
     defaults: {
-      formattingTemplate: "basic-light.twig",
+      formattingTemplate: "freeform-light.twig",
       storeData: false,
       successBehavior: "reload",
       successMessage: "Thanks!",
       errorMessage: "Please check your entries.",
       returnUrl: "",
     },
-    formattingTemplates: [{ value: "basic-light.twig", label: "Basic Light" }],
+    formattingTemplates: [
+      { value: "freeform-light.twig", label: "Freeform Light" },
+    ],
     formattingTemplateGroups: [
       {
         label: "Solspace",
-        children: [{ value: "basic-light.twig", label: "Basic Light" }],
+        children: [{ value: "freeform-light.twig", label: "Freeform Light" }],
       },
     ],
     notificationTemplates: [{ value: "team.twig", label: "Team" }],
@@ -526,7 +528,7 @@ it("saves once and keeps the transition covered until the saved builder has hydr
   expect(vi.mocked(axios.post).mock.calls[0][1]).toMatchObject({
     name: "Wizard contact",
     storeData: false,
-    formattingTemplate: "basic-light.twig",
+    formattingTemplate: "freeform-light.twig",
     adminEnabled: false,
     confirmationEnabled: false,
   });

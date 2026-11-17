@@ -7,6 +7,7 @@ import {
   notificationTemplateMode,
   selectedNotificationEmails,
 } from "@lib/cp/notification-recipients";
+import { bindQuickExportFields } from "@lib/cp/quick-export";
 import { bindSpamReviewActions } from "@lib/cp/spam-review";
 import { bindSubmissionUndo } from "@lib/cp/submission-undo";
 
@@ -266,31 +267,22 @@ export async function openNativeQuickExport(api, trigger, isSpam) {
     url.searchParams.set("isSpam", String(isSpam));
     if (formId) url.searchParams.set("formId", formId);
     const { data } = await api.http.get(url.href);
-    const dialog = document.createElement("dialog");
-    dialog.className = "ff-native-export-dialog";
-    dialog.setAttribute("aria-labelledby", "ff-native-export-title");
-    dialog.innerHTML = data;
-    dialog.querySelector("h1").id = "ff-native-export-title";
-    // This trusted server fragment's legacy inline scripts aren't executed.
-    // Bind the form switch and lifecycle directly to the native dialog instead.
-    dialog.querySelectorAll("script").forEach((script) => {
+    const host = document.createElement("div");
+    host.style.display = "contents";
+    host.innerHTML = data;
+    host.querySelector("h1").id = "ff-native-export-title";
+    // Bind the server-rendered form inside Craft's native slideout.
+    host.querySelectorAll("script").forEach((script) => {
       script.remove();
     });
-    const form = dialog.querySelector("form");
+    const form = host.querySelector("form");
     form.action = api.getCpUrl("freeform/export/quick-export");
     const actionInput = form.querySelector('[name="action"]');
     actionInput?.remove();
     const selector = form.querySelector('select[name="form_id"]');
-    const updateFields = () =>
-      form.querySelectorAll(".form-field-list").forEach((list) => {
-        list.hidden = list.dataset.id !== selector.value;
-        list.querySelectorAll("input").forEach((input) => {
-          input.disabled = list.hidden;
-        });
-      });
-    selector.addEventListener("change", updateFields);
-    updateFields();
-    for (const input of dialog.querySelectorAll(".footer input.btn")) {
+    bindQuickExportFields(form);
+    let panel;
+    for (const input of host.querySelectorAll(".footer input.btn")) {
       const button = document.createElement("craft-button");
       button.setAttribute("type", "button");
       button.setAttribute(
@@ -301,23 +293,33 @@ export async function openNativeQuickExport(api, trigger, isSpam) {
       button.addEventListener("click", () =>
         input.classList.contains("submit")
           ? form.requestSubmit()
-          : dialog.close(),
+          : panel.close(),
       );
       input.replaceWith(button);
     }
-    dialog.addEventListener(
-      "close",
-      () => {
-        dialog.remove();
-        trigger.focus();
+    panel = new Craft.Slideout(host, {
+      autoOpen: false,
+      closeOnEsc: true,
+      containerAttributes: {
+        class: "ff-quick-export-slideout",
+        style: "padding: 0;",
       },
-      { once: true },
-    );
-    form.addEventListener("submit", () => {
-      setTimeout(() => dialog.close(), 0);
+      triggerElement: trigger,
     });
-    document.body.append(dialog);
-    dialog.showModal();
+    panel.outerContainer.setAttribute("role", "dialog");
+    panel.outerContainer.setAttribute("aria-modal", "true");
+    panel.outerContainer.setAttribute(
+      "aria-labelledby",
+      "ff-native-export-title",
+    );
+    panel.on("close", () => panel.destroy());
+    host
+      .querySelector("[data-export-close]")
+      ?.addEventListener("click", () => panel.close());
+    form.addEventListener("submit", () => {
+      setTimeout(() => panel.close(), 0);
+    });
+    panel.open();
     selector.focus();
   } finally {
     trigger.disabled = false;

@@ -68,7 +68,7 @@ class ActivityLogHandler extends AbstractHandler
                 Freeform::getInstance()->activity->record($event, \is_int($formId) && $formId > 0 ? $formId : null, \is_int($submissionId) && $submissionId > 0 ? $submissionId : null, $metadata, notifyErrors: false);
             }
         } catch (\Throwable) {
-            // Compatible with both Monolog record formats; Activity must never interrupt file logging.
+            // Compatible with both Monolog record formats; Activity must never interrupt form processing.
         }
 
         // Payloads and exception graphs are never serialized by the Activity bridge.

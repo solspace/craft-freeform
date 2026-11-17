@@ -22,27 +22,27 @@ class Date extends BaseCategory
     ])]
     public SelectItem $type;
 
-    #[Label('Initial value')]
+    #[Label('Initial Value')]
     public TextItem $initialValue;
 
-    #[Label('Force a locale')]
+    #[Label('Force a Locale')]
     public TextItem $locale;
 
-    #[Label('Date picker')]
+    #[Label('Date Picker')]
     #[SetDefaultValue('freeform')]
     #[OptionsGenerator(DatetimeField::PICKER_OPTIONS)]
     public SelectItem $picker;
 
-    #[Label('Time interval (minutes)')]
+    #[Label('Time Interval (Minutes)')]
     #[SetDefaultValue(30)]
     #[OptionsGenerator([1 => '1', 5 => '5', 10 => '10', 15 => '15', 30 => '30', 60 => '60'])]
     public SelectItem $minuteStep;
 
-    #[Label('Use date format as placeholder')]
+    #[Label('Use Date Format as Placeholder')]
     #[SetDefaultValue(true)]
     public BoolItem $formatAsPlaceholder;
 
-    #[Label('Date order')]
+    #[Label('Date Order')]
     #[SetDefaultValue('ymd')]
     #[OptionsGenerator([
         'ymd' => 'Year, Month, Day',
@@ -51,15 +51,15 @@ class Date extends BaseCategory
     ])]
     public SelectItem $dateOrder;
 
-    #[Label('Four digit year')]
+    #[Label('Four-Digit Year')]
     #[SetDefaultValue(true)]
     public BoolItem $date4DigitYear;
 
-    #[Label('Leading zero on date')]
+    #[Label('Leading Zero on Date')]
     #[SetDefaultValue(true)]
     public BoolItem $dateLeadingZero;
 
-    #[Label('Date separator')]
+    #[Label('Date Separator')]
     #[SetDefaultValue('-')]
     #[OptionsGenerator([
         ' ' => 'Space',
@@ -69,13 +69,13 @@ class Date extends BaseCategory
     ])]
     public SelectItem $dateSeparator;
 
-    #[Label('Minimum date')]
+    #[Label('Minimum Date')]
     public TextItem $minDate;
 
-    #[Label('Maximum date')]
+    #[Label('Maximum Date')]
     public TextItem $maxDate;
 
-    #[Label('24h clock')]
+    #[Label('24-Hour Clock')]
     #[SetDefaultValue(false)]
     public BoolItem $clock24h;
 
@@ -89,7 +89,7 @@ class Date extends BaseCategory
     ])]
     public SelectItem $clockSeparator;
 
-    #[Label('Separate AM/PM with a space')]
+    #[Label('Separate AM/PM with a Space')]
     #[SetDefaultValue(true)]
     public BoolItem $clockAMPMSeparate;
 
@@ -100,9 +100,12 @@ class Date extends BaseCategory
             $native = $config['nativeTypes']['value'] ?? false;
             $enabled = $config['datepicker']['value'] ?? true;
             $config['picker'] = [
-                'value' => $native ? 'browser' : ($enabled ? 'flatpickr' : 'none'),
+                'value' => $native ? 'browser' : ($enabled ? 'freeform' : 'none'),
                 'locked' => ($config['nativeTypes']['locked'] ?? false) || ($config['datepicker']['locked'] ?? false),
             ];
+        }
+        if (isset($config['picker']['value']) && !isset(DatetimeField::PICKER_OPTIONS[$config['picker']['value']])) {
+            $config['picker']['value'] = 'freeform';
         }
         parent::__construct($config);
     }

@@ -85,7 +85,7 @@ class SettingsServiceTest extends TestCase
         $plugin = $this->plugin();
         $plugin->setSettings([
             'pluginName' => 'Existing Name',
-            'formSubmitDisable' => 'false',
+            'autoScrollToErrors' => 'false',
             'defaults' => ['previewHtml' => false],
             'surveys' => ['highlightHighest' => false],
         ]);
@@ -96,7 +96,7 @@ class SettingsServiceTest extends TestCase
                 self::assertSame('plugins.freeform.settings', $path);
                 $saved = ProjectConfigHelper::unpackAssociativeArrays($value);
                 self::assertSame('Existing Name', $saved['pluginName']);
-                self::assertSame('1', $saved['formSubmitDisable']);
+                self::assertSame('1', $saved['autoScrollToErrors']);
                 self::assertSame(900, $saved['queuePingMinIntervalSeconds']);
                 self::assertFalse($saved['defaults']['previewHtml']);
                 self::assertSame(['highlightHighest' => false], $saved['surveys']);
@@ -110,7 +110,7 @@ class SettingsServiceTest extends TestCase
         app()->instance(ProjectConfig::class, $projectConfig);
 
         $service = new SettingsService();
-        self::assertTrue($service->saveSettings(['formSubmitDisable' => 'true', 'queuePingMinIntervalMinutes' => '15']));
+        self::assertTrue($service->saveSettings(['autoScrollToErrors' => 'true', 'queuePingMinIntervalMinutes' => '15']));
         self::assertSame($settings, $plugin->getSettings());
         self::assertSame($settings, $service->getSettingsModel());
         self::assertSame([], $settings->getErrors());

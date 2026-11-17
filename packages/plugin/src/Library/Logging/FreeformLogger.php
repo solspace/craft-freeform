@@ -52,54 +52,8 @@ class FreeformLogger
     public const FEATURE_BUNDLES = 'bundles';
     public const MIGRATION = 'Migration';
 
-    private static array $colorMap = [
-        self::FREEFORM => '#333333',
-        // NEW
-        self::INTEGRATION => '#333333',
-        self::EMAIL_MARKETING_INTEGRATION => '#333333',
-        self::CRM_INTEGRATION => '#333333',
-        self::ELEMENTS_INTEGRATION => '#333333',
-        self::CAPTCHAS_INTEGRATION => '#333333',
-        self::WEBHOOKS_INTEGRATION => '#333333',
-        // OLD
-        self::FORM => '#333333',
-        self::ADMIN_NOTIFICATION => '#333333',
-        self::CONDITIONAL_NOTIFICATION => '#333333',
-        self::EMAIL_NOTIFICATION => '#333333',
-        self::STRIPE => '#333333',
-        self::DASHBOARD => 'red',
-        self::MAILER => '#333333',
-        self::PAYMENT_GATEWAY => '#333333',
-        self::CONDITIONAL_RULE => '#333333',
-        self::ELEMENT_CONNECTION => '#333333',
-        self::PAYLOAD_FORWARDING => '#333333',
-        self::FEATURE_BUNDLES => '#333333',
-        self::MIGRATION => '#333333',
-    ];
-
-    private static array $levelColorMap = [
-        'DEBUG' => '#6c757d',
-        'INFO' => '#0284c7',
-        'NOTICE' => '#28a745',
-        'WARNING' => '#ffc107',
-        'ERROR' => '#dc3545',
-        'CRITICAL' => '#dc3545',
-        'ALERT' => '#dc3545',
-        'EMERGENCY' => '#dc3545',
-    ];
-
-    public static function getInstance(string $category, ?string $fileName = null, ?int $level = null): LoggerInterface
+    public static function getInstance(string $category, string $source = 'system'): LoggerInterface
     {
-        return LoggerFactory::getOrCreateFileLogger($category, self::getLogfilePath($fileName), $level);
-    }
-
-    public static function getLogfilePath(?string $fileName): string
-    {
-        return \Craft::$app->path->getLogPath().'/'.($fileName ?? 'freeform.log');
-    }
-
-    public static function getColor(string $level): string
-    {
-        return self::$levelColorMap[$level] ?? '#000000';
+        return LoggerFactory::getOrCreateLogger($category, $source);
     }
 }

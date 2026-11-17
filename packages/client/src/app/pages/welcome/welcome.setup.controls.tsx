@@ -147,8 +147,8 @@ export function DigestSchedule({
       </div>
       <p className="setup-note" aria-live="polite">
         {daily
-          ? translate("Every morning")
-          : translate("Every {day} morning", {
+          ? translate("Daily")
+          : translate("Every {day}", {
               day: translate(weekdays[Number(value)]?.[1] || "Monday"),
             })}
       </p>

@@ -70,20 +70,9 @@ trait OAuth2Trait
     public function getRedirectUri(): string
     {
         if ($this->isLegacy()) {
-            return $this->getLegacyRedirectUri();
+            return UrlHelper::cpUrl('freeform/oauth/authorize');
         }
 
         return $this->redirectUri;
-    }
-
-    /**
-     * This is a legacy method that returns the old redirect URI.
-     * It is used for compatibility with previous flow that expected a CP Firewalled Url.
-     *
-     * @deprecated will be removed in Freeform 6.0
-     */
-    private function getLegacyRedirectUri(): string
-    {
-        return UrlHelper::cpUrl('freeform/oauth/authorize');
     }
 }

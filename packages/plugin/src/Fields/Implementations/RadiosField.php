@@ -24,6 +24,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Interfaces\GroupedFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
@@ -34,7 +35,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
     iconPath: __DIR__.'/Icons/radios.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/radios.ejs',
 )]
-class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface, DefaultValueInterface
+class RadiosField extends BaseGeneratedOptionsField implements GroupedFieldInterface, OneLineInterface, DefaultValueInterface
 {
     use OneLineTrait;
 
@@ -55,7 +56,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
             [
                 'handle' => 'container',
                 'label' => 'Container',
-                'previewTag' => 'div',
+                'previewTag' => 'fieldset',
             ],
             [
                 'handle' => 'input',
@@ -70,7 +71,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
             [
                 'handle' => 'label',
                 'label' => 'Container Label',
-                'previewTag' => 'label',
+                'previewTag' => 'legend',
             ],
             [
                 'handle' => 'instructions',
@@ -142,7 +143,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
 
             $output .= Html::tag(
                 $labelAttributes->getTag('label'),
-                $inputTag.$option->getLabel(),
+                $inputTag.$this->translateOptionLabel($option),
                 $labelAttributes->toHtmlTagArray($twigVariables),
             );
         }

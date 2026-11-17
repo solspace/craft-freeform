@@ -1,5 +1,6 @@
 {% extends 'freeform/_layouts/settings' %}
 {% import '_includes/forms' as forms %}
+{% import 'freeform/_components/boolean-menu' as booleanMenu %}
 {% set title = 'Content Integrations'|t('freeform') %}
 {% set crumbs = [{label: craft.freeform.name, url: url('freeform')}, {label: 'Settings'|t('freeform'), url: url('freeform/settings')}] %}
 
@@ -30,8 +31,7 @@
     {{ redirectInput('freeform/settings/content-integrations') }}
     {{ csrfInput() }}
 
-    <section class="ff-content-section" aria-labelledby="ff-content-tools-heading">
-        <h2 id="ff-content-tools-heading" class="ff-content-section-heading">{{ 'Content tools'|t('freeform') }}</h2>
+    <section class="ff-content-section" aria-label="{{ 'Content tools'|t('freeform') }}">
         <p class="light ff-content-section-description">{{ 'Turn off an integration to prevent new form selections. Existing content will still render. Manage editor toolbars in each editor’s settings.'|t('freeform') }}</p>
         <div class="ff-external-integrations" id="content-integrations-list">
             <div class="ff-external-columns">
@@ -90,6 +90,18 @@
             <p class="light">{{ 'Content integrations require Craft 6.'|t('freeform') }}</p>
         {% endif %}
     </section>
+
+    <div class="ff-content-section">
+        {{ booleanMenu.field({
+            includeEnvVars: true,
+            label: "Limit Form Selection by User Permissions"|t('freeform'),
+            instructions: "Only show forms the current user is permitted to manage when choosing a Freeform form in entries and other elements."|t('freeform'),
+            name: "settings[formFieldShowOnlyAllowedForms]",
+            value: settings.formFieldShowOnlyAllowedForms,
+            errors: settings.errors().get("formFieldShowOnlyAllowedForms"),
+            disabled: readOnly,
+        }) }}
+    </div>
 
     <section class="ff-content-section" aria-labelledby="ff-field-container-heading">
         <h2 id="ff-field-container-heading" class="ff-content-section-heading ff-field-container-heading">

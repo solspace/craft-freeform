@@ -14,7 +14,7 @@
     <div class="buttons ff-activity-actions">
         {% if canConfigure %}<a class="btn" href="{{ cpUrl('freeform/settings/activity') }}"><span class="inline-flex"><span class="cp-icon" data-icon="settings" aria-hidden="true"></span><span class="label">{{ 'Configure Activity'|t('freeform') }}</span></span></a>{% endif %}
         <a class="btn" href="{{ craft.app.request.url }}"><span class="inline-flex"><span class="cp-icon" data-icon="refresh" aria-hidden="true"></span><span class="label">{{ 'Refresh'|t('freeform') }}</span></span></a>
-        {% if canManage and throughId and not unavailable %}<form method="post" action="{{ actionUrl('freeform/activity/clear') }}" class="ff-activity-clear">{{ csrfInput() }}{{ hiddenInput('throughId', throughId) }}<button class="btn submit" type="submit" aria-haspopup="dialog" aria-controls="activity-clear-confirmation"><span class="inline-flex"><span class="cp-icon" data-icon="trash" aria-hidden="true"></span><span class="label">{{ 'Clear activity history'|t('freeform') }}</span></span></button></form>{% endif %}
+        {% if canManage and throughId and not unavailable %}<form method="post" action="{{ actionUrl('freeform/activity/clear') }}" class="ff-activity-clear">{{ csrfInput() }}{{ hiddenInput('throughId', throughId) }}<button class="btn" type="submit" aria-haspopup="dialog" aria-controls="activity-clear-confirmation"><span class="inline-flex"><span class="cp-icon" data-icon="trash" aria-hidden="true"></span><span class="label">{{ 'Clear activity history'|t('freeform') }}</span></span></button></form>{% endif %}
     </div>
 {% endblock %}
 
@@ -28,11 +28,11 @@
     <div class="ff-activity-toolbar-heading">
     <form method="get" action="{{ cpUrl('freeform/activity') }}" class="ff-activity-view-form">
         {% for param,value in filters %}{% if param != 'view' %}{{ hiddenInput(param, value, {data:{'activity-view-filter':true}}) }}{% endif %}{% endfor %}
-        <div id="activity-view" class="btngroup btngroup--exclusive" role="group" aria-label="{{ 'Activity view'|t('freeform') }}">
+        <craft-button-group id="activity-view" role="group" aria-label="{{ 'Activity view'|t('freeform') }}">
             {% for value,label in {submissions:'By submission', events:'Individual events'} %}
                 <button type="submit" name="view" value="{{ value }}" class="btn {{ activityView == value ? 'active' }}" aria-pressed="{{ activityView == value ? 'true' : 'false' }}">{{ label|t('freeform') }}</button>
             {% endfor %}
-        </div>
+        </craft-button-group>
         <span class="spinner hidden" data-activity-loading aria-hidden="true"></span>
     </form>
         <p class="ff-activity-recording-summary"><span class="ff-activity-recording-dot {{ not activityEnabled ? 'is-paused' }}" aria-hidden="true"></span><span>{{ activityEnabled ? '{mode} recording'|t('freeform', {mode:settings.activityMode|capitalize|t('freeform')}) : 'Recording paused'|t('freeform') }}</span><span class="ff-activity-retention">{{ 'Kept for {days} days'|t('freeform', {days:settings.activityRetentionDays}) }}</span><span class="ff-activity-privacy-summary" title="{{ 'Diagnostic context excludes form answers and message bodies. Email addresses and recognized keys are masked. Sanitization is best effort.'|t('freeform') }}"><span class="cp-icon" data-icon="secure" aria-hidden="true"></span><span>{{ 'Form answers aren’t recorded'|t('freeform') }}</span></span></p>

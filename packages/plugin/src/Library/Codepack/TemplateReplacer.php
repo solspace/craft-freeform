@@ -47,7 +47,7 @@ class TemplateReplacer
         $dir = opendir($source);
 
         while (($file = readdir($dir)) !== false) {
-            if (str_starts_with($file, '.') || '_tailwind.css' === $file) {
+            if (str_starts_with($file, '.')) {
                 continue;
             }
 
@@ -84,6 +84,11 @@ class TemplateReplacer
             ],
             $content,
         );
+
+        foreach (glob(\dirname($this->sourceDir).'/_*.twig') ?: [] as $sharedTemplate) {
+            $fileName = basename($sharedTemplate);
+            $modifiedContent = str_replace('freeform/_templates/formatting/'.$fileName, $targetTemplatePath.'/'.$fileName, $modifiedContent);
+        }
 
         $modifiedContent = preg_replace(
             '/{% do view\.registerAssetBundle\([^%]+\) %}/',

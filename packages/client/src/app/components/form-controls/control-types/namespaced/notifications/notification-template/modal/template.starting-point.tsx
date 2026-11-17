@@ -1,4 +1,5 @@
 import { useModal } from "@components/modals/modal.context";
+import { dropdownControl } from "@ff-client/styles/craft6";
 import translate from "@ff-client/utils/translations";
 import { useId, useState } from "react";
 import styled from "styled-components";
@@ -76,19 +77,17 @@ export function TemplateStartingPoint({ defaults, value, onChange }: Props) {
   return (
     <Picker>
       <label htmlFor={id}>{translate("Start from")}</label>
-      <div className="select">
-        <select
-          id={id}
-          value={selected}
-          onChange={(event) => choose(event.target.value)}
-        >
-          {options.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <StyledSelect
+        id={id}
+        value={selected}
+        onChange={(event) => choose(event.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option.id} value={option.id}>
+            {option.name}
+          </option>
+        ))}
+      </StyledSelect>
     </Picker>
   );
 }
@@ -101,5 +100,12 @@ const Picker = styled.div`
   margin-bottom: 16px;
 
   > label { font-weight: 700; }
-  select { max-width: 100%; }
+`;
+
+const StyledSelect = styled.select`
+  ${dropdownControl};
+  width: min(100%, 32rem);
+  max-width: 100%;
+  padding-inline: var(--c-input-spacing-inline);
+  padding-block: var(--c-input-spacing-block, 5px);
 `;

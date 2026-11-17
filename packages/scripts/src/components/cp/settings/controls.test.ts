@@ -30,20 +30,52 @@ describe("Craft 6 settings controls", () => {
     expect(target.classList.contains("hidden")).toBe(true);
   });
 
-  it("clears the purge age when the native switch turns off before its hidden input updates", () => {
+  it("uses Never as the disabled retention value and preserves the selected forms", async () => {
     document.body.innerHTML =
-      '<craft-switch><craft-switch-button checked></craft-switch-button><input slot="hidden-input" name="purge-toggle" value="1"></craft-switch><select id="purge-value"><option value="0">Disabled</option><option value="30" selected>30 days</option></select>';
+      '<form><div data-freeform-retention-setting><select name="settings[purgableSubmissionAgeInDays]"><option value="0">Never</option><option value="14" selected>14 days</option></select><div data-freeform-retention-details><input type="checkbox" name="settings[purgableFormIds][]" value="4" checked><span>Deletion warning</span></div></div></form>';
     initializeSettingsControls();
-    const button = document.querySelector("craft-switch-button")!;
-    Object.assign(button, { checked: false });
-    button.dispatchEvent(new Event("change", { bubbles: true }));
-    expect(
-      document.querySelector<HTMLSelectElement>("#purge-value")?.value,
-    ).toBe("0");
-    expect(
-      document.querySelector<HTMLInputElement>('input[name="purge-toggle"]')
-        ?.value,
-    ).toBe("1");
+    const select = document.querySelector<HTMLSelectElement>("select")!;
+    const details = document.querySelector<HTMLElement>(
+      "[data-freeform-retention-details]",
+    )!;
+    expect(details.hidden).toBe(false);
+    select.value = "0";
+    select.dispatchEvent(new Event("change"));
+    await Promise.resolve();
+    expect(details.hidden).toBe(true);
+    const saved = new FormData(document.querySelector("form")!);
+    expect(saved.get("settings[purgableSubmissionAgeInDays]")).toBe("0");
+    expect(saved.getAll("settings[purgableFormIds][]")).toEqual(["4"]);
+    select.value = "14";
+    select.dispatchEvent(new Event("change"));
+    await Promise.resolve();
+    expect(details.hidden).toBe(false);
+  });
+
+  it("shows a single deletion warning only for a changed active retention value", async () => {
+    document.body.innerHTML =
+      '<div data-freeform-retention-setting><craft-select><select><option value="0">Never</option><option value="14" selected>14 days</option><option value="30">30 days</option></select></craft-select><div data-freeform-retention-details><div data-freeform-retention-warning hidden>Permanent deletion</div></div></div>';
+    initializeSettingsControls();
+    const select = document.querySelector<HTMLSelectElement>("select")!;
+    const warning = document.querySelector<HTMLElement>(
+      "[data-freeform-retention-warning]",
+    )!;
+    expect(warning.hidden).toBe(true);
+    for (const [value, visible] of [
+      ["30", true],
+      ["30", true],
+      ["14", false],
+      ["0", false],
+      ["30", true],
+    ] as const) {
+      select.value = value;
+      select.dispatchEvent(new Event("change"));
+      await Promise.resolve();
+      expect(warning.hidden).toBe(!visible);
+      expect(
+        document.querySelectorAll("[data-freeform-retention-warning]"),
+      ).toHaveLength(1);
+    }
   });
 
   it("reads the native builder switch rather than looking for inputs inside its button", () => {
@@ -65,10 +97,10 @@ describe("Craft 6 settings controls", () => {
 
   it("places warnings in the native field slot without duplicating or removing other warnings", () => {
     document.body.innerHTML =
-      '<div id="logging-level-warning" hidden>Verbose logging uses more disk space.</div><craft-field class="field"><div slot="input"><select name="settings[loggingLevel]"><option value="info" selected>Info</option><option value="debug">Debug</option><option value="error">Error</option></select></div><span slot="warning">Existing warning</span></craft-field>';
+      '<div id="script-insert-warning" hidden>Load scripts manually.</div><craft-field class="field"><div slot="input"><select name="settings[scriptInsertLocation]"><option value="manual" selected>Manual</option><option value="footer">Footer</option></select></div><span slot="warning">Existing warning</span></craft-field>';
     initializeSettingsControls();
     const select = document.querySelector("select")!;
-    select.value = "debug";
+    select.value = "manual";
     select.dispatchEvent(new Event("change"));
     expect(
       document.querySelectorAll("[data-freeform-setting-warning]"),
@@ -80,8 +112,8 @@ describe("Craft 6 settings controls", () => {
     ).toBe("warning");
     expect(
       document.querySelector("[data-freeform-setting-warning]")?.textContent,
-    ).toBe("Verbose logging uses more disk space.");
-    select.value = "error";
+    ).toBe("Load scripts manually.");
+    select.value = "footer";
     select.dispatchEvent(new Event("change"));
     expect(
       document.querySelector("[data-freeform-setting-warning]"),

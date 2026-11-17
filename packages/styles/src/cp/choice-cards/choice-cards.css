@@ -10,6 +10,28 @@
   max-width: 800px;
 }
 
+.ff-badge-choices {
+  max-width: 1070px;
+  container-type: inline-size;
+}
+.ff-choice-cards[data-columns="4"] {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.ff-choice-cards[data-columns="4"] > .ff-choice-card {
+  width: auto;
+}
+@container (max-width: 700px) {
+  .ff-choice-cards[data-columns="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (max-width: 400px) {
+  .ff-choice-cards[data-columns="4"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .ff-choice-cards:has(.ff-recommended-badge) {
   padding-block-start: 8px;
 }

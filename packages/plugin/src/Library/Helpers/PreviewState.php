@@ -89,9 +89,9 @@ class PreviewState
     public static function isDark(?string $template, bool $custom): bool
     {
         return !$custom && \in_array($template, [
-            'basic-dark/index.twig', 'bootstrap-5-dark/index.twig',
-            'tailwind-3-dark/index.twig', 'tailwind-4-dark/index.twig',
-            'daisyui-5-dark/index.twig', 'conversational/index.twig',
+            'freeform-dark/index.twig', 'bootstrap-5-dark/index.twig',
+            'tailwind-4-dark/index.twig',
+            'daisyui-5-dark/index.twig',
         ], true);
     }
 

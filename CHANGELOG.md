@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 6.0.0-beta.7 - Unreleased
+## 6.0.0-beta.7 - 2026-11-17
 
 ### Added
 - Added optional typed signatures in regular, React, and Vue forms. Enable **Allow Typed Signatures** in the field settings to offer typing alongside drawing.

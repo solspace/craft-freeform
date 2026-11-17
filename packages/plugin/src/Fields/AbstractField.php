@@ -809,7 +809,7 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
 
         Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
 
-        /** @var FieldAttributesCollection $attributes */
+        // @var FieldAttributesCollection $attributes
         return $event->getAttributes();
     }
 }

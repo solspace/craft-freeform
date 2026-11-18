@@ -39,20 +39,7 @@ export const DarkModeTip = () => {
       className="ff-dark-mode-tip"
       aria-label={translate("Prefer a darker workspace?")}
     >
-      <span className="ff-dark-mode-tip-icon" aria-hidden="true">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z" />
-        </svg>
-      </span>
+      <span className="ff-dark-mode-tip-icon" aria-hidden="true" />
       <div className="ff-dark-mode-tip-copy">
         <h3>{translate("Prefer a darker workspace?")}</h3>
         <p>

@@ -4948,7 +4948,6 @@ return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php'
     'Export Profile with ID {id} not found' => 'Exportprofiel met ID {id} niet gevonden',
     'File name' => 'Bestandsnaam',
     'File templates are disabled' => 'Bestandssjablonen zijn uitgeschakeld',
-    'Form not found.' => 'Formulier niet gevonden.',
     'Form not found' => 'Formulier niet gevonden',
     'Form with ID {id} not found' => 'Formulier met ID {id} niet gevonden',
     'Form with handle {handle} not found' => 'Formulier met handle {handle} niet gevonden',

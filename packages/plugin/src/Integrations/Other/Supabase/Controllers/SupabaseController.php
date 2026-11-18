@@ -65,7 +65,7 @@ class SupabaseController extends BaseApiController
                 throw new ForbiddenHttpException('User is not permitted to manage this form.');
             }
             if (!$this->getFormsService()->getFormById($formId)) {
-                throw new NotFoundHttpException('Form not found.');
+                throw new NotFoundHttpException(Freeform::t('Form not found'));
             }
         } else {
             // New forms do not yet have a persisted numeric ID.

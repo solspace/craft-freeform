@@ -4945,7 +4945,6 @@ return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php'
     'Export Profile with ID {id} not found' => 'Exportprofil mit ID {id} nicht gefunden',
     'File name' => 'Dateiname',
     'File templates are disabled' => 'Dateivorlagen sind deaktiviert',
-    'Form not found.' => 'Formular nicht gefunden.',
     'Form not found' => 'Formular nicht gefunden',
     'Form with ID {id} not found' => 'Formular mit ID {id} nicht gefunden',
     'Form with handle {handle} not found' => 'Formular mit Handle {handle} nicht gefunden',

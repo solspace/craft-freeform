@@ -223,7 +223,7 @@ class PdfTemplatesController extends BaseController
 
             $form = $this->getFormsService()->getFormById($formId, $site?->handle);
             if (!$form) {
-                throw new NotFoundHttpException(Freeform::t('Form not found.'));
+                throw new NotFoundHttpException(Freeform::t('Form not found'));
             }
             $form->valuesFromSubmission($submission);
             $form->setSubmission($submission);

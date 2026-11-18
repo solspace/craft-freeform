@@ -4958,6 +4958,7 @@ return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php'
     'File name' => 'File name',
     'File templates are disabled' => 'File templates are disabled',
     'Form not found.' => 'Form not found.',
+    'Form not found' => 'Form not found',
     'Form with ID {id} not found' => 'Form with ID {id} not found',
     'Form with handle {handle} not found' => 'Form with handle {handle} not found',
     'Freeform Templates' => 'Freeform Templates',

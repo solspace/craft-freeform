@@ -10,9 +10,9 @@ use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class FileUploadController extends BaseController
@@ -167,10 +167,12 @@ class FileUploadController extends BaseController
         $request = \Craft::$app->request;
 
         $formId = SessionContext::getPostedFormId();
-        $form = $this->getFormsService()->getFormById($formId);
+        $form = null === $formId ? null : $this->getFormsService()->getFormById($formId);
         if (!$form) {
-            throw new FreeformException(
-                \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
+            throw new NotFoundHttpException(
+                null === $formId
+                    ? \Craft::t('freeform', 'Form not found')
+                    : \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
             );
         }
 

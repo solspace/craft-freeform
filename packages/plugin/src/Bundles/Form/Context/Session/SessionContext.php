@@ -328,6 +328,10 @@ class SessionContext
         }
 
         $hash = RequestHelper::post(self::KEY_HASH, '');
+        if (!\is_string($hash)) {
+            return [null, null, null];
+        }
+
         $hash = htmlspecialchars($hash, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
 
         $parts = explode('-', $hash);

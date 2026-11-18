@@ -4946,6 +4946,7 @@ return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php'
     'File name' => 'Nome del file',
     'File templates are disabled' => 'I modelli su file sono disattivati',
     'Form not found.' => 'Modulo non trovato.',
+    'Form not found' => 'Modulo non trovato',
     'Form with ID {id} not found' => 'Modulo con ID {id} non trovato',
     'Form with handle {handle} not found' => 'Modulo con handle {handle} non trovato',
     'Freeform Templates' => 'Modelli Freeform',

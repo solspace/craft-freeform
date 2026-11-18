@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed submission, Quick Save, and file upload requests returning a server error when the form hash is missing or invalid. [#2713](https://github.com/solspace/craft-freeform/issues/2713)
+
 ## 5.18.4 - 2026-11-16
 
 ### Added

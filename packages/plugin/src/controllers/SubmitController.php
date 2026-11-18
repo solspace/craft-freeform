@@ -19,7 +19,6 @@ use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\SavedFormRecord;
@@ -200,19 +199,20 @@ class SubmitController extends BaseController
         $isAjaxRequest = $request->getIsAjax();
 
         $formId = SessionContext::getPostedFormId();
-        $uniqueId = SessionContext::getPostedFormUniqueId();
-        $site = SessionContext::getPostedSiteHandle();
-
-        if (!$site) {
-            $site = SitesHelper::getFrontendSiteHandle();
+        $form = null;
+        if (null !== $formId) {
+            $uniqueId = SessionContext::getPostedFormUniqueId();
+            $site = SessionContext::getPostedSiteHandle() ?: SitesHelper::getFrontendSiteHandle();
+            $form = $this->getFormsService()->getFormById($formId, $site, $uniqueId);
         }
 
-        $form = $this->getFormsService()->getFormById($formId, $site, $uniqueId);
         if (!$form) {
-            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
+            $message = null === $formId
+                ? \Craft::t('freeform', 'Form not found')
+                : \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
 
             if (!$isAjaxRequest) {
-                throw new FreeformException($message);
+                throw new NotFoundHttpException($message);
             }
 
             $response = $this->asJson(['success' => false, 'message' => $message]);

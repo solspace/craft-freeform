@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Added a `--form` filter by form handle or ID for the submissions and spam purge commands and a confirmed `--all` option for submissions, spam, and unfinalized uploads.
 - Added an option in General Settings and Limited Users profiles to hide starting points in Quick Setup and always start with a blank form.
 
 ### Fixed

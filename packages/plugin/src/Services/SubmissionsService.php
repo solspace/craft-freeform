@@ -504,48 +504,27 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return new Markup($output, 'UTF-8');
     }
 
+    public function countPurgeableSubmissions(?array $formIds = null): int
+    {
+        $query = $this->getPurgeQuery(null, $formIds, true);
+
+        return (int) $query?->skipContent(true)->count();
+    }
+
     /**
-     * Removes all old submissions according to the submission age set in settings.
+     * Removes submissions older than the specified age, or of any age when explicitly requested.
      *
      * @return array [submissions purged, assets purged]
      */
-    public function purgeSubmissions(?int $age = null, ?array $formIds = null): array
+    public function purgeSubmissions(?int $age = null, ?array $formIds = null, bool $all = false): array
     {
-        if (!$this instanceof SpamSubmissionsService) {
-            if (!Freeform::getInstance()->isPro()) {
-                return [0, 0];
-            }
-        }
-
-        if (null === $age || $age <= 0) {
+        $query = $this->getPurgeQuery($age, $formIds, $all);
+        if (!$query) {
             return [0, 0];
         }
 
-        $date = new \DateTime("-{$age} days");
-        $date->setTimezone(new \DateTimeZone('UTC'));
-
         $deletedSubmissions = 0;
         $deletedAssets = 0;
-
-        $query = $this
-            ->getFindQuery()
-            ->trashed(null)
-            ->andWhere(
-                Db::parseDateParam(
-                    Db::rawTableShortName(Submission::TABLE.'.[[dateCreated]]'),
-                    $date,
-                    '<',
-                )
-            )
-        ;
-
-        if (null !== $formIds) {
-            $formIds = array_map('intval', $formIds);
-            $formIds = array_unique($formIds);
-            $formIds = array_filter($formIds);
-
-            $query->andWhere(['in', 'formId', $formIds]);
-        }
 
         foreach ($query->batch() as $results) {
             $assetIds = [];
@@ -594,6 +573,46 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 "{$elementTable}.[[dateDeleted]]" => null,
             ])
         ;
+    }
+
+    private function getPurgeQuery(?int $age, ?array $formIds, bool $all): ?SubmissionQuery
+    {
+        if (!$this instanceof SpamSubmissionsService && !Freeform::getInstance()->isPro()) {
+            return null;
+        }
+
+        if (!$all && (null === $age || $age <= 0)) {
+            return null;
+        }
+
+        $query = $this->getFindQuery()->trashed(null);
+        if ($all) {
+            $query->site('*')->unique()->status(null);
+        } else {
+            $date = new \DateTime("-{$age} days");
+            $date->setTimezone(new \DateTimeZone('UTC'));
+            $query->andWhere(
+                Db::parseDateParam(
+                    Db::rawTableShortName(Submission::TABLE.'.[[dateCreated]]'),
+                    $date,
+                    '<',
+                )
+            );
+        }
+
+        if (null !== $formIds) {
+            $formIds = array_map('intval', $formIds);
+            $formIds = array_unique($formIds);
+            $formIds = array_filter($formIds);
+
+            if (!$formIds) {
+                return null;
+            }
+
+            $query->formId(array_values($formIds));
+        }
+
+        return $query;
     }
 
     private function deleteSubmissions(ElementQueryInterface $query, bool $bypassPermissionCheck, bool $hardDelete, bool $recordUndo): bool

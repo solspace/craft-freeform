@@ -10,97 +10,90 @@ use yii\helpers\Console;
 
 class PurgeController extends Controller
 {
-    /**
-     * @var int the age of submissions in days, which should be purged
-     */
+    /** @var int the minimum age of submissions in days */
     public $ageInDays;
 
-    /**
-     * @var int the age of unfinalized assets in minutes
-     */
+    /** @var int the minimum age of unfinalized assets in minutes */
     public $ageInMinutes;
+
+    /** @var null|int|string limit the purge to this form handle or ID */
+    public int|string|null $form = null;
+
+    /** @var bool purge records of any age after confirmation */
+    public bool|string|null $all = null;
 
     public function options($actionID): array
     {
-        if (\in_array($actionID, ['submissions', 'spam'], true)) {
-            return ['ageInDays'];
-        }
+        $options = match ($actionID) {
+            'submissions', 'spam' => ['ageInDays', 'form', 'all'],
+            'unfinalized-assets' => ['ageInMinutes', 'all'],
+            default => [],
+        };
 
-        if ('unfinalized-assets' === $actionID) {
-            return ['ageInMinutes'];
-        }
-
-        return [];
+        return array_merge(parent::options($actionID), $options);
     }
 
-    public function optionAliases()
+    public function optionAliases(): array
     {
-        return [
+        return array_merge(parent::optionAliases(), [
             'd' => 'ageInDays',
             'm' => 'ageInMinutes',
-        ];
+            'f' => 'form',
+        ]);
     }
 
     /**
-     * Removes old submissions based on the specified age parameter.
+     * Permanently deletes regular submissions and their associated uploads.
      */
     public function actionSubmissions(): int
     {
-        try {
-            $age = $this->getDays();
-        } catch (InvalidArgumentException $e) {
-            return ExitCode::USAGE;
-        }
-
-        $ageYellow = $this->ansiFormat($age, Console::FG_YELLOW);
-        $string = $this->ansiFormat('days old...', Console::FG_BLUE);
-        $this->stdout("Purging submissions which are at least {$ageYellow} {$string}\n\n", Console::FG_BLUE);
-
-        [$submissions, $assets] = Freeform::getInstance()->submissions->purgeSubmissions($age);
-        $this->echoSubmissionCount($submissions);
-        $this->echoAssetCount($assets);
-
-        return ExitCode::OK;
+        return $this->purgeSubmissions(false);
     }
 
     /**
-     * Removes old spam entries based on the specified age parameter.
+     * Permanently deletes spam submissions and their associated uploads.
      */
     public function actionSpam(): int
     {
-        try {
-            $age = $this->getDays();
-        } catch (InvalidArgumentException $e) {
-            return ExitCode::USAGE;
-        }
-
-        $ageYellow = $this->ansiFormat($age, Console::FG_YELLOW);
-        $string = $this->ansiFormat('days old...', Console::FG_BLUE);
-        $this->stdout("Purging spam submissions which are at least {$ageYellow} {$string}\n\n", Console::FG_BLUE);
-
-        [$submissions, $assets] = Freeform::getInstance()->spamSubmissions->purgeSubmissions($age);
-        $this->echoSubmissionCount($submissions);
-        $this->echoAssetCount($assets);
-
-        return ExitCode::OK;
+        return $this->purgeSubmissions(true);
     }
 
     /**
-     * Removes any unfinalized assets based on the specified age parameter.
+     * Permanently deletes Freeform's unfinalized uploads.
      */
     public function actionUnfinalizedAssets(): int
     {
         try {
-            $age = $this->getMinutes();
+            $age = $this->getAge($this->ageInMinutes, '--age-in-minutes');
         } catch (InvalidArgumentException $e) {
+            $this->stderr($e->getMessage()."\n", Console::FG_RED);
+
             return ExitCode::USAGE;
         }
 
-        $ageYellow = $this->ansiFormat($age, Console::FG_YELLOW);
-        $string = $this->ansiFormat('minutes old...', Console::FG_BLUE);
-        $this->stdout("Purging unfinalized assets which are at least {$ageYellow} {$string}\n\n", Console::FG_BLUE);
+        $purgeAll = null === $age;
+        if ($purgeAll && !$this->canConfirmPurge()) {
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
 
-        $assets = Freeform::getInstance()->files->cleanUpUnfinalizedAssets($age);
+        $files = Freeform::getInstance()->files;
+        if ($purgeAll) {
+            $count = $files->countUnfinalizedAssets();
+            if (0 === $count) {
+                $this->stdout("No unfinalized Freeform uploads found.\n");
+
+                return ExitCode::OK;
+            }
+
+            $uploads = 1 === $count ? 'upload' : 'uploads';
+            if (!$this->confirmPurge(number_format($count)." unfinalized Freeform {$uploads} across the site")) {
+                return ExitCode::UNSPECIFIED_ERROR;
+            }
+        } else {
+            $this->stdout("Purging unfinalized uploads older than {$age} minutes...\n\n", Console::FG_BLUE);
+        }
+
+        $assets = $files->cleanUpUnfinalizedAssets($age, $purgeAll);
         $this->echoAssetCount($assets);
 
         return ExitCode::OK;
@@ -116,10 +109,87 @@ class PurgeController extends Controller
         return ExitCode::OK;
     }
 
-    private function echoSubmissionCount(int $count): void
+    private function purgeSubmissions(bool $spam): int
     {
-        $count = $this->ansiFormat($count, Console::FG_YELLOW);
+        $type = $spam ? 'spam submissions' : 'submissions';
+        $scope = 'across all forms';
+        $formIds = null;
+
+        try {
+            $age = $this->getAge($this->ageInDays, '--age-in-days');
+            $freeform = Freeform::getInstance();
+
+            if (null !== $this->form) {
+                $identifier = (string) $this->form;
+                $form = ctype_digit($identifier)
+                    ? $freeform->forms->getFormById((int) $identifier)
+                    : $freeform->forms->getFormByHandle($identifier);
+                if (!$form?->getId()) {
+                    throw new InvalidArgumentException('No form found. Specify a valid form handle or ID with --form.');
+                }
+
+                $formIds = [$form->getId()];
+                $scope = \sprintf('for form "%s" (ID %d)', $form->getHandle(), $form->getId());
+            }
+        } catch (InvalidArgumentException $e) {
+            $this->stderr($e->getMessage()."\n", Console::FG_RED);
+
+            return ExitCode::USAGE;
+        }
+
+        $purgeAll = null === $age;
+        if ($purgeAll && !$this->canConfirmPurge()) {
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+
+        $service = $spam ? $freeform->spamSubmissions : $freeform->submissions;
+        if ($purgeAll) {
+            $count = $service->countPurgeableSubmissions($formIds);
+            if (0 === $count) {
+                $this->stdout("No matching {$type} found {$scope}.\n");
+
+                return ExitCode::OK;
+            }
+
+            $submission = $spam ? 'spam submission' : 'submission';
+            $recordType = 1 === $count ? $submission : $type;
+            if (!$this->confirmPurge(number_format($count)." {$recordType} {$scope} and any associated uploads")) {
+                return ExitCode::UNSPECIFIED_ERROR;
+            }
+        } else {
+            $this->stdout("Purging {$type} older than {$age} days {$scope}...\n\n", Console::FG_BLUE);
+        }
+
+        [$submissions, $assets] = $service->purgeSubmissions($age, $formIds, $purgeAll);
+
+        $count = $this->ansiFormat($submissions, Console::FG_YELLOW);
         $this->stdout("Purged {$count} submissions\n", Console::FG_GREEN);
+        $this->echoAssetCount($assets);
+
+        return ExitCode::OK;
+    }
+
+    private function canConfirmPurge(): bool
+    {
+        if ($this->interactive) {
+            return true;
+        }
+
+        $this->stderr("--all requires interactive confirmation.\n", Console::FG_RED);
+
+        return false;
+    }
+
+    private function confirmPurge(string $scope): bool
+    {
+        $this->stdout("WARNING: You're about to permanently delete {$scope}.\n", Console::FG_RED, Console::BOLD);
+        if (!$this->confirm('Continue?')) {
+            $this->stdout("Purge cancelled.\n");
+
+            return false;
+        }
+
+        return true;
     }
 
     private function echoAssetCount(int $count): void
@@ -128,47 +198,25 @@ class PurgeController extends Controller
         $this->stdout("Purged {$count} assets\n", Console::FG_GREEN);
     }
 
-    private function getDays(): int
+    private function getAge(mixed $age, string $option): ?int
     {
-        $days = $this->ageInDays;
-        if (!is_numeric($days)) {
-            $this->stderr("--age-in-days [-d] parameter not specified or is empty\n", Console::FG_RED);
-
-            throw new InvalidArgumentException();
+        $purgeAll = filter_var($this->all, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE);
+        if (null === $purgeAll) {
+            throw new InvalidArgumentException('--all must be a boolean value.');
         }
 
-        $days = (int) $days;
-        if ($days <= 0) {
-            $this->stderr(
-                \sprintf("--age-in-days [-d] must be greater than 0. You specified %d\n", $this->ageInDays),
-                Console::FG_RED
-            );
+        if ($purgeAll) {
+            if (null !== $age) {
+                throw new InvalidArgumentException("Use either {$option} or --all.");
+            }
 
-            throw new InvalidArgumentException();
+            return null;
         }
 
-        return $days;
-    }
-
-    private function getMinutes(): int
-    {
-        $minutes = $this->ageInMinutes;
-        if (!is_numeric($minutes)) {
-            $this->stderr("--age-in-minutes [-m] parameter not specified or is empty\n", Console::FG_RED);
-
-            throw new InvalidArgumentException();
+        if (!is_numeric($age) || (int) $age <= 0) {
+            throw new InvalidArgumentException("Specify a positive age with {$option}, or use --all to purge records of any age.");
         }
 
-        $minutes = (int) $minutes;
-        if ($minutes <= 0) {
-            $this->stderr(
-                \sprintf("--age-in-minutes [-m] must be greater than 0. You specified %d\n", $this->ageInMinutes),
-                Console::FG_RED
-            );
-
-            throw new InvalidArgumentException();
-        }
-
-        return $minutes;
+        return (int) $age;
     }
 }

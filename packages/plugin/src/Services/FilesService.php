@@ -486,17 +486,25 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $record->save(false);
     }
 
-    /**
-     * Remove all unfinalized assets which are older than the TTL
-     * specified in settings.
-     */
-    public function cleanUpUnfinalizedAssets(int $ageInMinutes): int
+    public function countUnfinalizedAssets(): int
     {
         if (!\Craft::$app->db->tableExists(UnfinalizedFileRecord::TABLE)) {
             return 0;
         }
 
-        if ($ageInMinutes <= 0) {
+        return (int) $this->getUnfinalizedAssetQuery()->count();
+    }
+
+    /**
+     * Removes unfinalized assets older than the specified age, or of any age when explicitly requested.
+     */
+    public function cleanUpUnfinalizedAssets(?int $ageInMinutes, bool $all = false): int
+    {
+        if (!\Craft::$app->db->tableExists(UnfinalizedFileRecord::TABLE)) {
+            return 0;
+        }
+
+        if (!$all && (null === $ageInMinutes || $ageInMinutes <= 0)) {
             return 0;
         }
 
@@ -505,17 +513,14 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $deletedAssets = 0;
         if ($mutex->acquire(self::CLEANUP_CACHE_KEY, 30)) {
             try {
-                $date = new \DateTime("-{$ageInMinutes} minutes");
-                $date->setTimezone(new \DateTimeZone('UTC'));
+                $query = $this->getUnfinalizedAssetQuery();
+                if (!$all) {
+                    $date = new \DateTime("-{$ageInMinutes} minutes");
+                    $date->setTimezone(new \DateTimeZone('UTC'));
+                    $query->where(['<', '[[dateCreated]]', Db::prepareDateForDb($date)]);
+                }
 
-                $assetIds = (new Query())
-                    ->select(['assetId'])
-                    ->from(UnfinalizedFileRecord::TABLE)
-                    ->where(['<', '{{%freeform_unfinalized_files}}.[[dateCreated]]', Db::prepareDateForDb($date)])
-                    ->column()
-                ;
-
-                foreach ($assetIds as $assetId) {
+                foreach ($query->column() as $assetId) {
                     try {
                         $isDeleted = \Craft::$app
                             ->getElements()
@@ -689,6 +694,11 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 }
             }
         }
+    }
+
+    private function getUnfinalizedAssetQuery(): Query
+    {
+        return (new Query())->select(['assetId'])->from(UnfinalizedFileRecord::TABLE);
     }
 
     private function saveUploadedFileToFolder(

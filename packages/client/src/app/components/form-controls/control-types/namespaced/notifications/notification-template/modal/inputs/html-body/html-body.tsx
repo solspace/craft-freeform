@@ -55,6 +55,7 @@ export const HtmlBodyInput: FC<InputControl> = (props) => {
             menubar: false,
             statusbar: true,
             promotion: false,
+            convert_urls: false,
             content_css: stylesPath,
             setup: setupNotificationEditorAppearance,
             store,

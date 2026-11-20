@@ -27,13 +27,16 @@ class CaptchasBundle extends FeatureBundle
     public const KEY_CAPTCHA_PROPERTIES = 'captchas';
     public const KEY_CAPTCHA_PROPERTY_STACK = 'captchaPropertyStack';
 
-    private array $renderedManually = [];
+    /** @var \WeakMap<Form, true> */
+    private \WeakMap $renderedManually;
 
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
         private SettingsService $settingsService,
         private FormMonitorProvider $formMonitorProvider,
     ) {
+        $this->renderedManually = new \WeakMap();
+
         Event::on(
             Form::class,
             Form::EVENT_RENDER_CAPTCHAS,
@@ -80,17 +83,17 @@ class CaptchasBundle extends FeatureBundle
     public function renderCaptchaManually(RenderTagEvent $event): void
     {
         if ($this->attachHtmlElement($event)) {
-            $this->renderedManually[] = spl_object_hash($event->getForm());
+            $this->renderedManually[$event->getForm()] = true;
         }
     }
 
     public function attachHtmlElement(RenderTagEvent $event): bool
     {
-        if (isset($this->renderedManually[spl_object_hash($event->getForm())])) {
+        $form = $event->getForm();
+        if (isset($this->renderedManually[$form])) {
             return false;
         }
 
-        $form = $event->getForm();
         if (!$form->isLastPage()) {
             return false;
         }

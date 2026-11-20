@@ -13,6 +13,7 @@
 ## Commit messages
 
 - Always use Conventional Commit prefixes, such as `fix:`, `feat:`, `chore:`, `docs:`, `refactor:`, or `test:`. Choose the prefix that describes the change.
+- For every fix tied to a GitHub issue, include the issue number in the commit prefix using `fix(#1234):`.
 
 ## Generated client assets
 

@@ -8,13 +8,13 @@ import type { WizardOptions } from "./wizard/wizard.types";
 export function StartingPointPicker({
   value,
   presets,
-  loading,
+  loading = false,
   disabled,
   onChange,
 }: {
   value: string;
   presets: WizardOptions["presets"];
-  loading: boolean;
+  loading?: boolean;
   disabled: boolean;
   onChange: (value: string) => void;
 }) {

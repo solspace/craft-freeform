@@ -51,13 +51,18 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
   const { data, isFetching } = useFetchFormModalType();
   const {
     data: startingPoints,
-    isLoading: loadingStartingPoints,
     isError: startingPointsError,
     refetch: reloadStartingPoints,
   } = useFormStartingPoints();
-  const selectedPreset = startingPoints?.presets.find(
-    (preset) => preset.id === startingPoint,
-  );
+  const canUseStartingPoints =
+    startingPoints?.canUseQuickSetupStartingPoints !== false;
+  const selectedPreset = canUseStartingPoints
+    ? startingPoints?.presets.find((preset) => preset.id === startingPoint)
+    : undefined;
+  const showStartingPoints =
+    canUseStartingPoints &&
+    (startingPoint !== "" ||
+      startingPoints?.presets.some((preset) => preset.id !== "other"));
 
   useEffect(() => {
     if (data && !initialized.current) {
@@ -127,7 +132,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
       setErrors({ name: [translate("Enter a name for your form.")] });
       return;
     }
-    if (startingPoint && !selectedPreset) {
+    if (canUseStartingPoints && startingPoint && !selectedPreset) {
       setSubmitError(translate("Choose an available starting point."));
       return;
     }
@@ -179,7 +184,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
         if (request.current.fingerprint !== fingerprint)
           request.current = { fingerprint, token: crypto.randomUUID() };
         ({ data: form } = await axios.post<Pick<Form, "id">>(
-          "/api/forms/wizard/create",
+          "/api/forms/wizard/create-starting-point",
           { ...draft, requestToken: request.current.token },
         ));
       } else {
@@ -223,14 +228,15 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
           {!data && isFetching && <FormModalLoading />}
           {data && (
             <>
-              <StartingPointPicker
-                value={startingPoint}
-                presets={startingPoints?.presets ?? []}
-                loading={loadingStartingPoints}
-                disabled={isSaving}
-                onChange={chooseStartingPoint}
-              />
-              {startingPointsError && (
+              {showStartingPoints && (
+                <StartingPointPicker
+                  value={startingPoint}
+                  presets={startingPoints?.presets ?? []}
+                  disabled={isSaving}
+                  onChange={chooseStartingPoint}
+                />
+              )}
+              {canUseStartingPoints && startingPointsError && (
                 <p role="status">
                   {translate(
                     "Starting points could not be loaded. You can still create a blank form.",

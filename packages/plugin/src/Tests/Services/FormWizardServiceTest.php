@@ -19,10 +19,12 @@ use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\DataObjects\FormWizard\PresetCatalog;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FormWizardNotificationService;
 use Solspace\Freeform\Services\FormWizardService;
+use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
 #[CoversClass(FormWizardService::class)]
@@ -84,6 +86,51 @@ class FormWizardServiceTest extends TestCase
         self::assertNotEmpty($quote['startDate']['instructions']);
         self::assertArrayNotHasKey('attachment', $quote);
         self::assertSame('phone', array_column(array_column($pro, null, 'id')['quote']['fields'], null, 'key')['phone']['type']);
+    }
+
+    #[TestWith([['rating']])]
+    #[TestWith([['rating', 'radios']])]
+    #[TestWith([['radios'], ['rating']])]
+    public function testStartingPointsWithRestrictedFieldsAreExcluded(array $restricted, array $unavailable = []): void
+    {
+        $available = array_diff(array_keys(PresetCatalog::TYPES), $restricted, $unavailable);
+        $presets = (new PresetCatalog())->getPresets($available, $restricted);
+        $ids = array_column($presets, 'id');
+
+        self::assertNotContains('feedback', $ids);
+        self::assertNotContains('testimonial', $ids);
+        self::assertContains('newsletter', $ids);
+    }
+
+    public function testStartingPointsRequireAtLeastOneAvailableField(): void
+    {
+        self::assertSame([], (new PresetCatalog())->getPresets([]));
+    }
+
+    #[TestWith([true, true, true])]
+    #[TestWith([true, false, false])]
+    #[TestWith([false, true, false])]
+    public function testQuickSetupStartingPointsRequireBothSettings(bool $allowedByDefault, bool $allowedForUser, bool $expected): void
+    {
+        $settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
+        $settings->allowQuickSetupStartingPoints = $allowedByDefault;
+        $pluginSettings = $this->createMock(SettingsService::class);
+        $pluginSettings->expects(self::once())->method('getSettingsModel')->willReturn($settings);
+        $limitations = $this->createMock(LimitedUserChecker::class);
+        $limitations->method('can')->with('layout.quickSetupStartingPoints')->willReturn($allowedForUser);
+
+        self::assertSame($expected, $this->service(pluginSettings: $pluginSettings, limitations: $limitations)->canUseQuickSetupStartingPoints());
+    }
+
+    public function testPayloadRejectsAStartingPointThatIsNoLongerAvailable(): void
+    {
+        $available = array_diff(array_keys(PresetCatalog::TYPES), ['rating']);
+        $presets = (new PresetCatalog())->getPresets($available, ['rating']);
+        $service = $this->service(availableTypes: $available, extraOptions: ['presets' => $presets]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Choose an available starting point.');
+        $service->payload($this->input());
     }
 
     #[TestWith(['newsletter', 'topics', 'checkboxes'])]
@@ -506,7 +553,7 @@ class FormWizardServiceTest extends TestCase
         return ['purpose' => 'feedback', 'name' => 'Customer feedback', 'siteIds' => [1], 'fields' => array_values(array_filter($preset['fields'], static fn ($field) => \in_array($field['key'], ['firstName', 'lastName', 'rating', 'positive'], true)))];
     }
 
-    private function service(bool $canNotify = false, array $editable = [], bool $sitesEnabled = true, bool $canCreate = false, ?FormWizardNotificationService $templates = null, array $availableTypes = ['text', 'email', 'textarea', 'radios'], array $extraOptions = []): FormWizardService
+    private function service(bool $canNotify = false, array $editable = [], bool $sitesEnabled = true, bool $canCreate = false, ?FormWizardNotificationService $templates = null, array $availableTypes = ['text', 'email', 'textarea', 'radios'], array $extraOptions = [], ?SettingsService $pluginSettings = null, ?LimitedUserChecker $limitations = null): FormWizardService
     {
         $properties = $this->createMock(PropertyProvider::class);
         $properties->method('getEditableProperties')->willReturnCallback(function (string $class) {
@@ -530,8 +577,8 @@ class FormWizardServiceTest extends TestCase
         });
         $service = $this->getMockBuilder(FormWizardService::class)->setConstructorArgs([
             $properties, $this->createMock(SettingsProvider::class), $this->createMock(FieldTypesProvider::class),
-            $this->createMock(LimitedUserChecker::class), $templates ?? $this->createMock(FormWizardNotificationService::class),
-            $this->createMock(FormsService::class), $this->createMock(TranslationProvider::class), new PresetCatalog(),
+            $limitations ?? $this->createMock(LimitedUserChecker::class), $templates ?? $this->createMock(FormWizardNotificationService::class),
+            $this->createMock(FormsService::class), $this->createMock(TranslationProvider::class), new PresetCatalog(), $pluginSettings ?? $this->createMock(SettingsService::class),
         ])->onlyMethods(['options'])->getMock();
         $service->method('options')->willReturn(array_replace([
             'fieldTypes' => array_map(static fn ($type) => ['value' => $type], $availableTypes),

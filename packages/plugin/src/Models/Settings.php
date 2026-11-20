@@ -102,6 +102,7 @@ class Settings extends Model
 
     public string $defaultView = Freeform::VIEW_FORMS;
     public array|string $formCreationOptions = self::FORM_CREATION_OPTIONS;
+    public bool $allowQuickSetupStartingPoints = true;
     public string $defaultAiIntegration = '';
 
     /** '*' allows all volumes, 'none' allows none, and arrays contain volume handles. */
@@ -240,6 +241,7 @@ class Settings extends Model
         if (isset($config['allowedUploadVolumes']) && \in_array($config['allowedUploadVolumes'], ['', []], true)) {
             $config['allowedUploadVolumes'] = 'none';
         }
+        $config = $this->normalizeQuickSetupStartingPoints($config);
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);
 
@@ -280,6 +282,7 @@ class Settings extends Model
         if (isset($values['allowedUploadVolumes']) && \in_array($values['allowedUploadVolumes'], ['', []], true)) {
             $values['allowedUploadVolumes'] = 'none';
         }
+        $values = $this->normalizeQuickSetupStartingPoints($values);
         if (\array_key_exists('defaults', $values)) {
             $values['defaults'] = new Defaults($values['defaults']);
         }
@@ -584,6 +587,16 @@ class Settings extends Model
      * renders with no selected option and the browser submits the first one ('1'),
      * silently enabling the setting on the next save. Store '1' / '0' instead.
      */
+    private function normalizeQuickSetupStartingPoints(array $values): array
+    {
+        $value = $values['allowQuickSetupStartingPoints'] ?? $values['defaults']['allowQuickSetupStartingPoints'] ?? null;
+        if (null !== $value) {
+            $values['allowQuickSetupStartingPoints'] = BooleanHelper::normalize($value);
+        }
+
+        return $values;
+    }
+
     private function normalizeBooleanStrings(): void
     {
         static $booleanProperties = null;

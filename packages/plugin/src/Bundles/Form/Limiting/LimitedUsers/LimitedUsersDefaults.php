@@ -50,6 +50,7 @@ class LimitedUsersDefaults
         return [
             (new Group('layout', 'Layout'))
                 ->setChildren([
+                    new Boolean('quickSetupStartingPoints', 'Allow Starting Points in Quick Setup', true),
                     new Boolean('multiPageForms', 'Add Pages to Forms', true),
                     (new Toggles('fieldTypes', 'Allowed Field Types'))
                         ->setValues([

@@ -73,6 +73,27 @@
         errors: settings.errors("formCreationOptions"),
         disabled: readOnly,
     }) }}
+
+    <div class="field smart-switch">
+        <div>
+            {{ forms.lightswitch({
+                name: 'settings[allowQuickSetupStartingPoints]',
+                on: settings.allowQuickSetupStartingPoints,
+                disabled: readOnly,
+                labelledBy: 'quick-setup-starting-points-label',
+                describedBy: 'quick-setup-starting-points-instructions',
+            }) }}
+        </div>
+        <div>
+            {{ forms.field({
+                label: 'Allow Starting Points in Quick Setup'|t('freeform'),
+                labelId: 'quick-setup-starting-points-label',
+                instructions: 'Turn this off to hide the Starting Point picker and always start Quick Setup with a blank form.'|t('freeform'),
+                instructionsId: 'quick-setup-starting-points-instructions',
+            }) }}
+        </div>
+    </div>
+
     {% if craft.freeform.pro %}
         {% set aiOptions = [{value: '', label: "No default — choose when creating a form"|t('freeform')}] %}
         {% set defaultAiAvailable = false %}

@@ -24,6 +24,7 @@ class FormWizardControllerTest extends TestCase
     #[TestWith(['actionOptions'])]
     #[TestWith(['actionPreview'])]
     #[TestWith(['actionCreate'])]
+    #[TestWith(['actionCreateStartingPoint'])]
     public function testAllWizardEndpointsRequireTheControlPanel(string $action): void
     {
         $request = $this->createMock(Request::class);
@@ -37,6 +38,7 @@ class FormWizardControllerTest extends TestCase
 
     #[TestWith(['actionPreview'])]
     #[TestWith(['actionCreate'])]
+    #[TestWith(['actionCreateStartingPoint'])]
     public function testCreationAndPreviewRequirePost(string $action): void
     {
         $request = $this->createMock(Request::class);
@@ -62,7 +64,10 @@ class FormWizardControllerTest extends TestCase
         self::assertFalse($form->isSubmittedSuccessfully());
     }
 
-    public function testRetryingTheSameRequestReturnsTheSavedFormWithoutCreatingAnother(): void
+    #[TestWith(['actionCreate', false, true])]
+    #[TestWith(['actionCreateStartingPoint', true, true])]
+    #[TestWith(['actionCreateStartingPoint', false, false])]
+    public function testCreatingAndRetryingRespectsStartingPointSettings(string $action, bool $allowed, bool $shouldCreate): void
     {
         $previousApp = \Craft::$app;
         $previousContainer = \Craft::$container;
@@ -77,7 +82,8 @@ class FormWizardControllerTest extends TestCase
         $form->method('getId')->willReturn(42);
         $form->method('getHandle')->willReturn('wizardForm');
         $service = $this->createMock(FormWizardService::class);
-        $service->expects(self::once())->method('create')->willReturn($form);
+        $service->method('canUseQuickSetupStartingPoints')->willReturn($allowed);
+        $service->expects($shouldCreate ? self::once() : self::never())->method('create')->willReturn($form);
         $forms = $this->createMock(FormsService::class);
         $forms->method('getFormById')->with(42)->willReturn($form);
         $controller = $this->getMockBuilder(WizardController::class)->disableOriginalConstructor()->onlyMethods(['getFormsService'])->getMock();
@@ -141,10 +147,15 @@ class FormWizardControllerTest extends TestCase
         };
 
         try {
-            PermissionHelper::asAuthenticatedUser(static function () use ($controller) {
+            PermissionHelper::asAuthenticatedUser(static function () use ($controller, $action, $shouldCreate) {
                 for ($attempt = 0; $attempt < 2; ++$attempt) {
-                    $response = $controller->actionCreate();
-                    self::assertSame(['id' => 42, 'handle' => 'wizardForm'], $response->data);
+                    $response = $controller->{$action}();
+                    if ($shouldCreate) {
+                        self::assertSame(['id' => 42, 'handle' => 'wizardForm'], $response->data);
+                    } else {
+                        self::assertSame(400, $response->statusCode);
+                        self::assertSame(['message' => 'Starting points are disabled in Quick Setup. Create a blank form.'], $response->data);
+                    }
                 }
             }, [Freeform::PERMISSION_FORMS_CREATE]);
         } finally {

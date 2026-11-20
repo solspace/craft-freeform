@@ -5,6 +5,7 @@
       "label": "Content Editor",
       "description": "Edit existing field content and choices, with advanced tools hidden.",
       "permissions": [
+        "layout.quickSetupStartingPoints",
         "layout.options.custom",
         "layout.options.predefined",
         "preview.tab"
@@ -30,6 +31,7 @@
       "label": "Simplified Building",
       "description": "Build simple forms with essential fields, custom choices, and admin notifications.",
       "permissions": [
+        "layout.quickSetupStartingPoints",
         "layout.fields",
         "layout.fields.clone",
         "layout.options.custom",
@@ -65,6 +67,7 @@
       "label": "Advanced Building",
       "description": "Build with all field types, notifications, rules, and everyday settings.",
       "permissions": [
+        "layout.quickSetupStartingPoints",
         "layout.options.custom",
         "layout.options.predefined",
         "preview.tab",

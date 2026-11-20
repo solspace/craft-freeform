@@ -37,7 +37,7 @@ class PresetCatalog
     ];
 
     /** Resolve the complete presets against registered, permitted field types. */
-    public function getPresets(array $available): array
+    public function getPresets(array $available, array $restricted = []): array
     {
         $person = [
             ['text', 'First name', 'firstName', 'half', true],
@@ -162,12 +162,19 @@ class PresetCatalog
             foreach ($definitions as $definition) {
                 [$type, $fieldLabel, $key, $width] = $definition;
                 $original = $type;
+                // Edition fallbacks apply only when the original field type is absent from the registry.
+                if (\in_array($original, $restricted, true)) {
+                    continue 2;
+                }
                 if (!\in_array($type, $available, true)) {
                     $type = match ($type) {
                         'phone', 'website', 'datetime' => 'text',
                         'rating' => 'radios',
                         default => null,
                     };
+                }
+                if (\in_array($type, $restricted, true)) {
+                    continue 2;
                 }
                 if (!$type || !\in_array($type, $available, true)) {
                     continue;
@@ -183,7 +190,9 @@ class PresetCatalog
                     'adapted' => $original !== $type,
                 ];
             }
-            $result[] = ['id' => $id, 'icon' => self::ICONS[$id], 'label' => Freeform::t($label), 'description' => Freeform::t($description), 'formDescription' => Freeform::t($formDescriptions[$id]), 'fields' => $fields];
+            if ($fields) {
+                $result[] = ['id' => $id, 'icon' => self::ICONS[$id], 'label' => Freeform::t($label), 'description' => Freeform::t($description), 'formDescription' => Freeform::t($formDescriptions[$id]), 'fields' => $fields];
+            }
         }
 
         return $result;

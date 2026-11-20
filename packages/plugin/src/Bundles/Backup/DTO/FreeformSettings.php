@@ -13,6 +13,7 @@ class FreeformSettings
     public ?string $successTemplateDirectory = null;
     public ?string $defaultView = null;
     public ?array $formCreationOptions = null;
+    public ?bool $allowQuickSetupStartingPoints = null;
     public ?string $defaultAiIntegration = null;
     public array|string|null $allowedUploadVolumes = null;
     public ?bool $removeNewlines = null;

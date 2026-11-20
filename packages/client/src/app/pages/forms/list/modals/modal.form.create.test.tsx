@@ -9,6 +9,7 @@ const fixture = vi.hoisted(() => ({
   navigate: vi.fn(),
   currentSite: { id: 2 },
   optionsError: false,
+  allowStartingPoints: true,
   fields: [
     {
       key: "email",
@@ -60,6 +61,7 @@ vi.mock("./modal.form.queries", () => ({
     data: fixture.optionsError
       ? undefined
       : {
+          canUseQuickSetupStartingPoints: fixture.allowStartingPoints,
           defaults: {
             formattingTemplate: "light.twig",
             storeData: true,
@@ -199,6 +201,7 @@ beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.clearAllMocks();
   fixture.optionsError = false;
+  fixture.allowStartingPoints = true;
   vi.mocked(axios.post).mockResolvedValue({ data: { id: 42 } });
   host = document.createElement("div");
   document.body.append(host);
@@ -243,6 +246,24 @@ it("keeps blank creation on the regular endpoint", async () => {
   expect(fixture.close).toHaveBeenCalledOnce();
 });
 
+it.each([false, true])(
+  "uses blank creation when starting points are disabled (selected before disabling: %s)",
+  async (selectBeforeDisabling) => {
+    if (selectBeforeDisabling) select("contact");
+    fixture.allowStartingPoints = false;
+    act(() => root.render(<CreateFormModal closeModal={fixture.close} />));
+    expect(
+      host.querySelector('[aria-label="Starting point choices"]'),
+    ).toBeNull();
+    input("name", "Empty form");
+    await act(async () => create().click());
+    expect(axios.post).toHaveBeenCalledExactlyOnceWith(
+      "/api/forms/modal",
+      expect.objectContaining({ name: "Empty form" }),
+    );
+  },
+);
+
 it("creates a blank Page form when that type is selected", async () => {
   input("name", "Landing page");
   selectType("Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page");
@@ -263,7 +284,7 @@ it("creates samples with their original fields and the selected modal settings",
   await act(async () => create().click());
   expect(axios.post).toHaveBeenCalledOnce();
   expect(axios.post).toHaveBeenCalledWith(
-    "/api/forms/wizard/create",
+    "/api/forms/wizard/create-starting-point",
     expect.objectContaining({
       purpose: "contact",
       name: "Contact",

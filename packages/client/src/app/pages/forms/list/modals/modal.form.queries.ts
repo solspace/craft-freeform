@@ -44,5 +44,6 @@ export const useFormStartingPoints = () =>
     queryFn: () =>
       axios.get<WizardOptions>("/api/forms/wizard").then(({ data }) => data),
     staleTime: 60_000,
+    refetchOnMount: "always",
     retry: 1,
   });

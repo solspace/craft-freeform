@@ -51,6 +51,7 @@ return [
     'freeform/api/forms/creation-availability' => 'freeform/api/forms/creation-availability',
     'freeform/api/forms/wizard' => 'freeform/api/forms/wizard/options',
     'freeform/api/forms/wizard/create' => 'freeform/api/forms/wizard/create',
+    'freeform/api/forms/wizard/create-starting-point' => 'freeform/api/forms/wizard/create-starting-point',
     'freeform/api/forms/wizard/preview' => 'freeform/api/forms/wizard/preview',
     'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',

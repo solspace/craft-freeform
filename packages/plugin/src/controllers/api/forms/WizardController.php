@@ -36,6 +36,16 @@ class WizardController extends BaseApiController
 
     public function actionCreate(): Response
     {
+        return $this->create();
+    }
+
+    public function actionCreateStartingPoint(): Response
+    {
+        return $this->create(quickSetup: true);
+    }
+
+    private function create(bool $quickSetup = false): Response
+    {
         $this->requirePostRequest();
         $this->guard();
         // A retry after a lost response must not create a second form.
@@ -55,7 +65,12 @@ class WizardController extends BaseApiController
         try {
             $id = \Craft::$app->cache->get($key);
             if (!$id) {
-                $form = \Craft::$container->get(FormWizardService::class)->create($this->request->getBodyParams());
+                $service = \Craft::$container->get(FormWizardService::class);
+                if ($quickSetup && !$service->canUseQuickSetupStartingPoints()) {
+                    throw new \InvalidArgumentException(Freeform::t('Starting points are disabled in Quick Setup. Create a blank form.'));
+                }
+
+                $form = $service->create($this->request->getBodyParams());
                 $id = $form->getId();
                 \Craft::$app->cache->set($key, $id, 3600);
             }

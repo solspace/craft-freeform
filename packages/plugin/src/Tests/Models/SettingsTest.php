@@ -78,6 +78,17 @@ class SettingsTest extends TestCase
         }
     }
 
+    public function testQuickSetupStartingPointsCanBeTurnedOffAndSurviveOtherSettingsSaves(): void
+    {
+        $settings = $this->normalize([]);
+        self::assertTrue($settings->allowQuickSetupStartingPoints);
+        $settings->setAttributes(['allowQuickSetupStartingPoints' => ''], false);
+        $settings->setAttributes(['formCreationOptions' => ['blank']], false);
+        self::assertFalse($settings->allowQuickSetupStartingPoints);
+        $settings->setAttributes(['allowQuickSetupStartingPoints' => '1'], false);
+        self::assertTrue($settings->allowQuickSetupStartingPoints);
+    }
+
     public function testDefaultBooleanStringsAreNormalized(): void
     {
         $settings = $this->normalize([]);

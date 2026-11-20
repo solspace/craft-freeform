@@ -37,14 +37,27 @@ class FormWizardService
         private FormsService $forms,
         private TranslationProvider $translations,
         private PresetCatalog $catalog,
+        private SettingsService $pluginSettings,
     ) {}
+
+    public function canUseQuickSetupStartingPoints(): bool
+    {
+        return $this->pluginSettings->getSettingsModel()->allowQuickSetupStartingPoints
+            && $this->limitations->can('layout.quickSetupStartingPoints');
+    }
 
     public function options(): array
     {
         $available = [];
+        $restricted = [];
         foreach ($this->types->getTypes() as $type) {
             $short = array_search($type->typeClass, PresetCatalog::TYPES, true);
-            if (false === $short || !$type->visible) {
+            if (false === $short) {
+                continue;
+            }
+            if (!$type->visible) {
+                $restricted[] = $short;
+
                 continue;
             }
             if ('file' === $short && !$this->uploadSource()) {
@@ -93,7 +106,8 @@ class FormWizardService
 
         return [
             'sitesEnabled' => SitesHelper::isEnabled(),
-            'presets' => $this->catalog->getPresets(array_column($available, 'value')),
+            'canUseQuickSetupStartingPoints' => $this->canUseQuickSetupStartingPoints(),
+            'presets' => $this->catalog->getPresets(array_column($available, 'value'), $restricted),
             'fieldTypes' => $available,
             'fieldLimit' => Freeform::getInstance()->edition()->is(Freeform::EDITION_EXPRESS) ? 20 : 100,
             'editableSettings' => $editable,
@@ -150,7 +164,7 @@ class FormWizardService
         $purpose = $this->text($input['purpose'] ?? '', 40);
         $preset = array_column($options['presets'], null, 'id')[$purpose] ?? null;
         if (!$preset) {
-            throw new \InvalidArgumentException(Freeform::t('Choose a purpose for your form.'));
+            throw new \InvalidArgumentException(Freeform::t('' === $purpose ? 'Choose a purpose for your form.' : 'Choose an available starting point.'));
         }
         $definitions = array_column($preset['fields'], null, 'key');
         $fields = $input['fields'] ?? [];

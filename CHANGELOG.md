@@ -3,12 +3,15 @@
 ## Unreleased
 
 ### Added
-- Added a `--form` filter by form handle or ID for the submissions and spam purge commands and a confirmed `--all` option for submissions, spam, and unfinalized uploads.
-- Added an option in General Settings and Limited Users profiles to hide starting points in Quick Setup and always start with a blank form.
+- Added a `--form` filter by handle or ID for submission and spam purges. The interactive `--all` option purges submissions, spam, or unfinalized uploads of any age.
+- Added an option in General Settings and Limited Users profiles to start Quick Setup with a blank form.
 
 ### Fixed
-- Fixed Quick Setup and Guided Setup showing form starting points that use field types disabled for a Limited Users group. [#2710](https://github.com/solspace/craft-freeform/discussions/2710#discussioncomment-19761081)
-- Fixed submission, Quick Save, and file upload requests returning a server error when the form hash is missing or invalid. [#2713](https://github.com/solspace/craft-freeform/issues/2713)
+- Form managers can now create and edit form-specific notification templates on sites they can edit without access to global Email Templates.
+- Fixed notification template links being rewritten by the editor. Twig errors now identify the affected template field.
+- Fixed Quick Setup and Guided Setup offering starting points with field types disabled for a Limited Users profile. [#2710](https://github.com/solspace/craft-freeform/discussions/2710#discussioncomment-19761081)
+- Fixed server errors during submission, Quick Save, or file uploads when the form hash is missing or invalid. [#2713](https://github.com/solspace/craft-freeform/issues/2713)
+- Fixed manually rendered CAPTCHAs appearing twice. [#2714](https://github.com/solspace/craft-freeform/issues/2714)
 
 ## 5.18.4 - 2026-11-16
 

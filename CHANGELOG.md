@@ -1,9 +1,9 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.18.5 - 2026-11-23
 
 ### Added
-- Added a `--form` filter by handle or ID for submission and spam purges. The interactive `--all` option purges submissions, spam, or unfinalized uploads of any age.
+- Added a `--form` filter by handle or ID for submission and spam purge console commands. The interactive `--all` option purges submissions, spam, or unfinalized uploads of any age.
 - Added an option in General Settings and Limited Users profiles to start Quick Setup with a blank form.
 
 ### Fixed

@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
-  "description": "The most flexible and user-friendly form building plugin!",
-  "version": "5.18.4",
+  "description": "Client-friendly form builder with email notifications and submissions.",
+  "version": "5.18.5",
   "type": "craft-plugin",
   "authors": [
     {

@@ -8,15 +8,15 @@ export function attachProfileFormats(container: HTMLElement): void {
   );
   const update = () => {
     const selected = fileType.value;
-    const options = formats[profile.value] || {};
+    const options = Object.entries(formats[profile.value] || {});
     fileType.options.length = 0;
     fileType.add(
       new Option(container.dataset.exportFormatPlaceholder || "", ""),
     );
-    for (const [value, label] of Object.entries(options)) {
+    for (const [value, label] of options) {
       fileType.add(new Option(label, value));
     }
-    fileType.value = Object.prototype.hasOwnProperty.call(options, selected)
+    fileType.value = options.some(([value]) => value === selected)
       ? selected
       : "";
   };

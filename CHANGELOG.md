@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.18.6 - 2026-11-23
 
 ### Fixed
 - Approving spam now refreshes the Spam and Submissions caches without flushing the entire Craft application cache.

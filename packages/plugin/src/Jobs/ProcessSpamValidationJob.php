@@ -57,10 +57,9 @@ class ProcessSpamValidationJob extends BaseJob implements AiFieldsJobInterface
         if ($form->isMarkedAsSpam()) {
             $freeform->get('activity')->recordForForm('spam', $form, SpamChecks::metadata($form->getSpamReasons()));
             $submission->isSpam = true;
-            $spamEvent = new SubmitEvent($form, $submission);
-            $spamControl->persistSpamReasons($spamEvent);
-
-            \Craft::$app->elements->saveElement($submission, false, false, true);
+            if (\Craft::$app->getElements()->saveElement($submission, false, false, true)) {
+                $spamControl->persistSpamReasons(new SubmitEvent($form, $submission));
+            }
 
             if (!$originalIsSpam) {
                 $form->removeMarkedAsSpam();

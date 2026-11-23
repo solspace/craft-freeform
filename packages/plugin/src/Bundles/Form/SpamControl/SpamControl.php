@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl;
 
+use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
@@ -70,6 +71,9 @@ class SpamControl extends FeatureBundle
             $record->reasonValue = $reason['value'];
             $record->save();
         }
+
+        // Craft saves these as Submission elements, but the Spam index queries SpamSubmission.
+        \Craft::$app->getElements()->invalidateCachesForElementType(SpamSubmission::class);
     }
 
     public function handleFormReset(ResetEvent $event): void

@@ -1,19 +1,26 @@
-# Solspace Freeform plugin for Craft CMS 5.x
-
-Freeform is the most flexible and user-friendly form building plugin!
+# Solspace Freeform for Craft CMS
 
 ![Freeform icon](packages/plugin/src/icon.svg)
 
-## Overview
+Freeform is a form builder for Craft CMS. Create forms in the control panel, manage submissions and email notifications, and render forms with Twig or a headless frontend.
 
-Freeform is a super flexible form-building tool that’s perfect for whatever project you’re working on! Its easy-to-use builder makes creating forms a piece of cake. Plus, it works great with your go-to CRMs and email marketing tools.
+- Build contact forms and multi-page workflows with a drag-and-drop builder and conditional rules.
+- Configure email notifications and spam protection, then view, edit, or export submissions.
+- Connect forms to CRMs, email marketing tools, payment providers, and webhooks.
 
-## Helpful Links
+Features vary by edition. [Compare Express, Lite, and Pro](https://docs.solspace.com/craft/freeform/v5/guides/compare-editions/).
 
-- [Buy Freeform at the Plugin Store](https://plugins.craftcms.com/freeform)
-- [Freeform Documentation](https://docs.solspace.com/craft/freeform/v5/)
-- [Report an Issue](https://github.com/solspace/craft-freeform/issues)
-- [Feature Requests](https://github.com/solspace/craft-freeform/discussions)
-- [Ask a Question](https://github.com/solspace/craft-freeform/discussions)
-- [Private Support Ticket](https://docs.solspace.com/support/)
+## Getting started
+
+Freeform 5 supports Craft CMS 5.9+ and 4.17+. For requirements and setup instructions, see [Installing and updating](https://docs.solspace.com/craft/freeform/v5/setup/installing-updating/).
+
+- [Craft Plugin Store](https://plugins.craftcms.com/freeform)
+- [Freeform 5 documentation](https://docs.solspace.com/craft/freeform/v5/)
+- [Changelog](CHANGELOG.md)
+
+## Support
+
+- [Report a bug on GitHub](https://github.com/solspace/craft-freeform/issues)
+- [Ask a question or request a feature on GitHub Discussions](https://github.com/solspace/craft-freeform/discussions)
+- [Open a private support ticket](https://docs.solspace.com/support/)
 - [Craft Stack Exchange](https://craftcms.stackexchange.com/questions/tagged/solspace)

@@ -49,7 +49,10 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
             \Craft::$app->getSearch()->indexElementAttributes($submission);
         }
 
-        \Craft::$app->cache->flush();
+        // Craft saved the element as SpamSubmission before its type changed.
+        $elements = \Craft::$app->getElements();
+        $elements->invalidateCachesForElementType(SpamSubmission::class);
+        $elements->invalidateCachesForElementType(Submission::class);
 
         $integrationsQueue = Freeform::getInstance()->integrationsQueue;
 

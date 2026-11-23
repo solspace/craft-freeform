@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Elements\SpamSubmission;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Freeform;
@@ -17,6 +18,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\SubmissionsService;
 use yii\caching\ArrayCache;
+use yii\caching\TagDependency;
 
 #[CoversClass(SpamSubmissionsService::class)]
 class SpamSubmissionsServiceTest extends TestCase
@@ -36,7 +38,7 @@ class SpamSubmissionsServiceTest extends TestCase
         $submission->isSpam = true;
         $submission->method('getForm')->willReturn($form);
 
-        $elements = $this->createMock(Elements::class);
+        $elements = $this->getMockBuilder(Elements::class)->disableOriginalConstructor()->onlyMethods(['saveElement'])->getMock();
         $elements->expects(self::once())->method('saveElement')
             ->with($submission, false, false, false)
             ->willReturn(true)
@@ -54,16 +56,16 @@ class SpamSubmissionsServiceTest extends TestCase
                 return true;
             })
         ;
-        $cache = $this->getMockBuilder(ArrayCache::class)->onlyMethods(['flush'])->getMock();
-        $cache->expects(self::once())->method('flush')->willReturnCallback(static function () use ($updateSearchIndexes, &$indexed) {
-            self::assertSame($updateSearchIndexes, $indexed, 'Clear cached search results after indexing.');
-
-            return true;
-        });
+        $cache = new ArrayCache();
+        $cache->set('unrelated', 'warm');
         $postProcessing = $this->createMock(SubmissionsService::class);
         $postProcessing->expects(self::once())->method('postProcessSubmission')->with($form, $submission)
-            ->willReturnCallback(static function () use ($updateSearchIndexes, &$indexed) {
+            ->willReturnCallback(static function () use ($updateSearchIndexes, &$indexed, $cache) {
                 self::assertSame($updateSearchIndexes, $indexed);
+                self::assertFalse($cache->get('spam-list'));
+                self::assertFalse($cache->get('submission-list'));
+                self::assertFalse($cache->get('submission-search'));
+                self::assertSame('warm', $cache->get('unrelated'));
             })
         ;
         $queue = $this->createMock(IntegrationsQueueService::class);
@@ -82,9 +84,23 @@ class SpamSubmissionsServiceTest extends TestCase
             {
                 return $this->search;
             }
+
+            public function getElements(): Elements
+            {
+                return $this->elements;
+            }
+
+            public function getCache(): ArrayCache
+            {
+                return $this->cache;
+            }
         };
 
         try {
+            $cache->set('spam-list', [123], 0, new TagDependency(['tags' => 'element::'.SpamSubmission::class]));
+            $cache->set('submission-list', [], 0, new TagDependency(['tags' => 'element::'.Submission::class]));
+            $cache->set('submission-search', [], 0, new TagDependency(['tags' => ['element::'.Submission::class, 'element-search-query::'.Submission::class]]));
+
             $settings = $this->createMock(SettingsService::class);
             $settings->method('isUpdateSearchIndexes')->willReturn($updateSearchIndexes);
             $service = $this->getMockBuilder(SpamSubmissionsService::class)->onlyMethods(['getSettingsService', 'convertToSubmission'])->getMock();

@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\controllers\api;
 
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsPostedContentProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
@@ -25,11 +26,15 @@ use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\SettingsService;
 use Symfony\Component\Serializer\Serializer;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class NotificationsController extends BaseApiController
@@ -45,16 +50,22 @@ class NotificationsController extends BaseApiController
         private HtmlTemplateParser $htmlTemplateParser,
         private FormsService $formsService,
         private NotificationsPostedContentProvider $postedContentProvider,
+        private LimitedUserChecker $limitedUserChecker,
     ) {
         parent::__construct($id, $module, $config);
     }
 
     public function actionGetOneTemplate(mixed $id = null): Response
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+        $this->requireCpRequest();
+        $formId = $this->request->getQueryParam('formId');
+        $site = $this->request->getQueryParam('site');
 
-        $record = NotificationTemplateRecord::createFormSpecific();
         if (null === $id) {
+            $this->requireTemplateCreation();
+            $this->requireManageTemplateForm($this->validateId($formId), $site);
+
+            $record = NotificationTemplateRecord::createFormSpecific();
             $record->name = 'Notification';
             $record->handle = 'notification';
 
@@ -74,8 +85,10 @@ class NotificationsController extends BaseApiController
             return $this->asSerializedJson($fields);
         }
 
-        $template = $this->notificationTemplateProvider->getNotificationTemplate($id);
-        $form = $this->formsService->getFormById($template->getFormId(), $this->request->get('site'));
+        $record = NotificationTemplateRecord::findOne(['id' => $this->validateId($id)]);
+        $ownerId = $this->requireTemplateOwner($record, $formId);
+        $form = $this->requireManageTemplateForm($ownerId, $site);
+        $template = NotificationTemplate::fromRecord($record);
 
         $convertableValues = [
             'body' => $template->getBody(),
@@ -112,13 +125,19 @@ class NotificationsController extends BaseApiController
 
     public function actionGetTemplates(): Response
     {
-        if ('POST' === $this->request->method) {
+        if ($this->request->getIsPost()) {
+            $this->requireCpRequest();
             $id = $this->request->post('id');
-            if ($id) {
-                return $this->editTemplate($id);
+            $formId = $this->request->post('formId');
+            $site = $this->request->post('site');
+
+            if (null !== $id) {
+                return $this->editTemplate($this->validateId($id), $formId, $site);
             }
 
-            $formId = $this->request->post('formId');
+            $this->requireTemplateCreation();
+            $formId = $this->validateId($formId);
+            $this->requireManageTemplateForm($formId, $site);
 
             return $this->createNewTemplate($formId);
         }
@@ -146,7 +165,7 @@ class NotificationsController extends BaseApiController
         return $response;
     }
 
-    private function editTemplate(mixed $id): Response
+    private function editTemplate(int $id, mixed $formId, mixed $site): Response
     {
         $errors = new ErrorCollection();
 
@@ -156,6 +175,9 @@ class NotificationsController extends BaseApiController
 
             throw new ApiException(404, $errors);
         }
+
+        $ownerId = $this->requireTemplateOwner($notification, $formId);
+        $this->requireManageTemplateForm($ownerId, $site);
 
         $post = $this->postedContentProvider->getConvertedPostWithTwigValues();
 
@@ -221,6 +243,61 @@ class NotificationsController extends BaseApiController
         $this->response->content = $this->serializer->serialize($notification, 'json');
 
         return $this->response;
+    }
+
+    private function requireTemplateCreation(): void
+    {
+        $settings = $this->settingsService->getSettingsModel();
+        if (!$settings->allowBuilderTemplateCreation || Settings::EMAIL_TEMPLATE_METHOD_GLOBAL === $settings->emailTemplateMethod) {
+            throw new ForbiddenHttpException('Form template creation is disabled.');
+        }
+    }
+
+    private function requireTemplateOwner(?NotificationTemplateRecord $template, mixed $formId): int
+    {
+        $ownerId = (int) $template?->formId;
+        if (!$ownerId || (null !== $formId && $this->validateId($formId) !== $ownerId)) {
+            throw new NotFoundHttpException('Form template not found.');
+        }
+
+        return $ownerId;
+    }
+
+    private function requireManageTemplateForm(int $formId, mixed $site): Form
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        $permission = Freeform::PERMISSION_FORMS_MANAGE;
+        if ((!PermissionHelper::checkPermission($permission)
+            && !PermissionHelper::checkPermission(PermissionHelper::prepareNestedPermission($permission, $formId)))
+            || !$this->limitedUserChecker->can('notifications.tab')) {
+            throw new ForbiddenHttpException('User is not permitted to manage notifications for this form.');
+        }
+
+        if (null !== $site && (!\is_string($site) || '' === $site)) {
+            throw new BadRequestHttpException('Invalid site.');
+        }
+
+        $site ??= \Craft::$app->getSites()->getCurrentSite()->handle;
+        if (!\in_array($site, SitesHelper::getEditableSiteHandles(), true)) {
+            throw new ForbiddenHttpException('User is not permitted to edit this site.');
+        }
+
+        $form = $this->formsService->getFormById($formId, SitesHelper::isEnabled() ? $site : null);
+        if (!$form) {
+            throw new NotFoundHttpException('Form not found.');
+        }
+
+        return $form;
+    }
+
+    private function validateId(mixed $id): int
+    {
+        if ((!\is_int($id) && !\is_string($id)) || false === ($id = filter_var($id, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]))) {
+            throw new BadRequestHttpException('Invalid form or template ID.');
+        }
+
+        return $id;
     }
 
     private function getParsedTwigValues(array $values, ?Form $form = null): array

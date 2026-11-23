@@ -14,22 +14,24 @@ export type NotificationTemplateDefaults = NotificationTemplate & {
 
 export const QKNotificationTemplates = {
   all: ["notification-templates"] as const,
-  one: (templateId?: string | number, site?: string) =>
-    [...QKNotificationTemplates.all, templateId, site] as const,
+  one: (formId?: number, templateId?: string | number, site?: string) =>
+    [...QKNotificationTemplates.all, formId, templateId, site] as const,
 };
 
 export const useQueryNotificationTemplate = (
+  formId?: number,
   templateId?: string | number,
   site?: string,
 ): UseQueryResult<NotificationTemplateDefaults, AxiosError> => {
   return useQuery({
-    queryKey: QKNotificationTemplates.one(templateId, site),
+    queryKey: QKNotificationTemplates.one(formId, templateId, site),
     queryFn: () =>
       axios
         .get(
           `/api/notifications/templates/${templateId || "get-default-metadata"}`,
           {
             params: {
+              formId,
               site,
             },
           },
@@ -48,9 +50,9 @@ export const useNotificationTemplateMutation = (
     mutationFn: (payload: NotificationTemplate) => {
       return axios
         .post("/api/notifications/templates", {
+          ...payload,
           formId,
           site,
-          ...payload,
         })
         .then((res) => res.data);
     },

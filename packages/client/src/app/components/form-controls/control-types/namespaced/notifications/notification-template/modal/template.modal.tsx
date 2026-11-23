@@ -47,7 +47,8 @@ export type PushState = NotificationConfiguration & {
 export const EditNotificationModal: React.FC<
   ModalContainerProps<NotificationEditModalOptions>
 > = ({ data, closeModal }) => {
-  const { formId } = useParams();
+  const { formId: routeFormId } = useParams();
+  const formId = routeFormId ? Number(routeFormId) : undefined;
   const { current: currentSite } = useSiteContext();
 
   const id = data?.id;
@@ -55,13 +56,11 @@ export const EditNotificationModal: React.FC<
 
   const queryClient = useQueryClient();
   const { data: template, isLoading } = useQueryNotificationTemplate(
+    formId,
     id,
     currentSite?.handle,
   );
-  const mutation = useNotificationTemplateMutation(
-    formId && Number(formId),
-    currentSite?.handle,
-  );
+  const mutation = useNotificationTemplateMutation(formId, currentSite?.handle);
 
   const [activeTab, setActiveTab] = useState<NotificationTabs>(firstTab);
   const [state, setState] = useState<PushState>();
@@ -84,14 +83,20 @@ export const EditNotificationModal: React.FC<
         }));
 
         queryClient.invalidateQueries({
-          queryKey: QKNotificationTemplates.one(id, currentSite?.handle),
+          queryKey: QKNotificationTemplates.one(
+            formId,
+            id,
+            currentSite?.handle,
+          ),
         });
         queryClient.invalidateQueries({
           queryKey: QKNotifications.templates(),
         });
-        queryClient.invalidateQueries({
-          queryKey: QKNotifications.formTemplates(Number(formId)),
-        });
+        if (formId !== undefined) {
+          queryClient.invalidateQueries({
+            queryKey: QKNotifications.formTemplates(formId),
+          });
+        }
 
         closeModal();
 
@@ -177,7 +182,7 @@ export const EditNotificationModal: React.FC<
                     if (field.type === TemplatePreview) {
                       context = {
                         ...state,
-                        formId: formId ? Number(formId) : undefined,
+                        formId,
                         site: currentSite?.handle,
                       };
                     }

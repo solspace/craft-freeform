@@ -104,7 +104,14 @@ export const AiFormFields = styled.div<{ $collapsed: boolean }>`
   transition: grid-template-rows .35s ease, opacity .2s ease, transform .35s ease;
   pointer-events: ${({ $collapsed }) => ($collapsed ? "none" : "auto")};
 
-  > div { min-height: 0; overflow: hidden; }
+  > div {
+    min-height: 0;
+    overflow: hidden;
+
+    /* Leave room for Craft's focus ring within the animated clipping area. */
+    margin: -4px;
+    padding: 4px;
+  }
   fieldset {
     display: flex;
     flex-direction: column;

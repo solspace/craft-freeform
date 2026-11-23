@@ -58,11 +58,14 @@ it("charts all responses including choices outside the top three", async () => {
   expect(host.querySelector('[role="img"]')?.getAttribute("aria-label")).toBe(
     "Reason for contacting us: 100 responses",
   );
-  const segments = [...host.querySelectorAll("circle")];
-  expect(segments).toHaveLength(4);
-  expect(
-    segments.map((segment) => segment.getAttribute("stroke-dasharray")),
-  ).toEqual(["40 60", "30 70", "20 80", "10 90"]);
+  const paths = [...host.querySelectorAll("svg path")].map((segment) =>
+    segment.getAttribute("d")?.split(" "),
+  );
+  expect(paths).toHaveLength(4);
+  expect(paths[0]?.slice(0, 3)).toEqual(["M", "60", "16"]);
+  for (const [index, path] of paths.entries()) {
+    expect(path?.slice(-2)).toEqual(paths[(index + 1) % 4]?.slice(1, 3));
+  }
   expect(host.textContent).toContain("Other choices");
   expect(host.textContent).toContain("10% · 10");
 });
@@ -70,7 +73,16 @@ it("charts all responses including choices outside the top three", async () => {
 it("does not invent a remainder when the top choices cover every response", async () => {
   fixture.data.count = 90;
   await render();
-  expect(host.querySelectorAll("circle")).toHaveLength(3);
+  expect(host.querySelectorAll("svg path")).toHaveLength(3);
+  expect(host.textContent).not.toContain("Other choices");
+});
+
+it("draws a full ring when every response chose the same option", async () => {
+  fixture.data.options = [{ label: "Sales", count: 100, percent: 100 }];
+  await render();
+  expect(host.querySelector("svg path")?.getAttribute("d")).toBe(
+    "M 60 16 A 44 44 0 0 1 60 104 A 44 44 0 0 1 60 16",
+  );
   expect(host.textContent).not.toContain("Other choices");
 });
 

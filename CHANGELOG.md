@@ -5,6 +5,7 @@
 ### Fixed
 - Approving spam now refreshes the Spam and Submissions caches without flushing the entire Craft application cache.
 - Newly detected spam now appears on the next load of the Spam folder, including when filtering by reason.
+- Fixed a visible seam between slices in Forms dashboard donut charts at certain sizes and zoom levels.
 
 ## 5.18.5 - 2026-11-23
 

@@ -30,6 +30,26 @@ const Breakdown = styled.div`
   .field-key { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 50%; align-self: center; }
 `;
 const optionColors = ["#4f7ff0", "#1db1a4", "#8b61e9", "#9aa5b1"];
+const chartCenter = 60;
+const chartRadius = 44;
+
+const arcPoint = (count: number, total: number) => {
+  const angle = ((count % total) / total) * 2 * Math.PI;
+  return `${chartCenter + chartRadius * Math.sin(angle)} ${chartCenter - chartRadius * Math.cos(angle)}`;
+};
+
+const slicePath = (start: number, end: number, total: number) => {
+  const arc = `A ${chartRadius} ${chartRadius} 0`;
+  const from = arcPoint(start, total);
+  // SVG skips an arc whose endpoints coincide, so use two arcs for a full ring.
+  if (end - start === total) {
+    const halfway = `${chartCenter} ${chartCenter + chartRadius}`;
+    return `M ${from} ${arc} 0 1 ${halfway} ${arc} 0 1 ${from}`;
+  }
+
+  const largeArc = end - start > total / 2 ? 1 : 0;
+  return `M ${from} ${arc} ${largeArc} 1 ${arcPoint(end, total)}`;
+};
 
 export const CardFieldSummary = ({
   id,
@@ -62,7 +82,7 @@ export const CardFieldSummary = ({
           },
         ]
       : options;
-  let offset = 0;
+  let responseOffset = 0;
   return (
     <Summary className={compact ? "compact-details" : undefined} data-no-drag>
       {!fieldId ? (
@@ -133,28 +153,21 @@ export const CardFieldSummary = ({
                     })}
                   >
                     {slices.map((option, index) => {
-                      const portion = (option.count / data.count) * 100;
-                      const start = offset;
-                      offset += portion;
+                      const start = responseOffset;
+                      responseOffset += option.count;
                       return (
-                        <circle
+                        <path
                           key={index}
-                          cx="60"
-                          cy="60"
-                          r="44"
-                          pathLength="100"
+                          d={slicePath(start, responseOffset, data.count)}
                           fill="none"
                           stroke={optionColors[index]}
                           strokeWidth="18"
-                          strokeDasharray={`${portion} ${100 - portion}`}
-                          strokeDashoffset={-start}
-                          transform="rotate(-90 60 60)"
                         >
                           <title>
                             {option.label}: {option.percent}% ·{" "}
                             {option.count.toLocaleString()}
                           </title>
-                        </circle>
+                        </path>
                       );
                     })}
                     <text

@@ -201,13 +201,6 @@ const TrashedForms = () => {
               ))}
             </ArchivedItems>
           )}
-          {forms?.some((form) => form.trashedFromMerge) && (
-            <p className="light">
-              {translate(
-                "Submissions moved by a merge stay in the receiving form.",
-              )}
-            </p>
-          )}
         </div>
       </FormListDisclosure>
     </ArchivedAndGroupWrapper>

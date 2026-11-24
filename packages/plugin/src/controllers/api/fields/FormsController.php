@@ -27,7 +27,7 @@ class FormsController extends BaseApiController
         $allowedIds = $service->getAllowedFormIds();
 
         $forms = $service->getFormsFromQuery(
-            $service->getFormQuery()->where(['forms.id' => $allowedIds])
+            $service->getFormQuery()->andWhere(['forms.id' => $allowedIds])
         );
 
         $results = [];

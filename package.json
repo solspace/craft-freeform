@@ -8,6 +8,7 @@
     "packages/frontend/themes/*"
   ],
   "engines": {
+    "node": "24.x",
     "pnpm": ">=11"
   },
   "private": true,

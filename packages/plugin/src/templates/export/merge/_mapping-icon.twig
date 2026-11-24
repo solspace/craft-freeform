@@ -1,0 +1,11 @@
+{% set paths = {
+    map: 'M2.5 6h7m-3-3 3 3-3 3',
+    add: 'M6 2.5v7M2.5 6h7',
+    options: 'M2 3h4M2 6h4M2 9h3m3-3v5M5.5 8.5h5',
+    skip: 'M2.5 6h7',
+    split: 'M2 6h3m0 0 3-3h2m-5 3 3 3h2',
+    combine: 'M2 3h2l3 3m-5 3h2l3-3h3',
+} %}
+<span class="ff-merge-action-icon ff-merge-action-{{ action }}" aria-hidden="true">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="{{ paths[action] }}"/></svg>
+</span>

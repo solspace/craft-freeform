@@ -1,0 +1,63 @@
+{% import '_includes/forms' as formsUi %}
+{% set instructions = [] %}
+{% if trashOriginal %}
+    {% set instructions = instructions|merge([
+        'Once empty, the original form goes to trash and stops accepting submissions.'|t('freeform'),
+        'If you restore it, moved submissions and any added fields stay in the receiving form.'|t('freeform'),
+    ]) %}
+{% elseif move %}
+    {% set instructions = instructions|merge(['The original form stays open for new submissions.'|t('freeform')]) %}
+{% endif %}
+{% if not queued %}
+    {% set instructions = instructions|merge(['After you click Merge Forms, wait for the result before leaving.'|t('freeform')]) %}
+{% endif %}
+{{ formsUi.checkboxField({
+    id, name: 'confirmed', value: '1',
+    fieldClass: ['ff-merge-consequences', 'ff-merge-confirmation-warning'],
+    label: 'I understand this merge has no automatic undo.'|t('freeform'),
+    instructions: instructions|join(' '),
+    inputAttributes: {required: true},
+}) }}
+{% if move %}
+    {{ formsUi.checkboxField({
+        id: id ~ '-backup', name: 'backupConfirmed', value: '1',
+        fieldClass: ['ff-merge-backup-confirmation', 'ff-merge-confirmation-warning'],
+        label: 'I’ve backed up the site database.'|t('freeform'),
+        inputAttributes: {required: true},
+    }) }}
+{% endif %}
+
+{% js %}
+{
+    const form = document.getElementById({{ id|json_encode|raw }}).form;
+    const applyButton = form.querySelector('button[value="apply"]');
+    const confirmations = Array.from(form.querySelectorAll('input[type="checkbox"][required]'));
+    const updateApplyButton = () => { applyButton.disabled = confirmations.some(checkbox => !checkbox.checked); };
+    form.addEventListener('change', updateApplyButton);
+    window.addEventListener('pageshow', updateApplyButton);
+    updateApplyButton();
+}
+{% endjs %}
+
+{% css %}
+.ff-merge-confirmation-warning { --merge-confirmation-color: #b42332; }
+:root[data-dark-mode="dark"] .ff-merge-confirmation-warning { --merge-confirmation-color: #f47780; }
+.ff-merge-confirmation-warning label { color: var(--merge-confirmation-color); font-weight: 700; }
+.ff-merge-confirmation-warning input.checkbox + label::before {
+    border-color: color-mix(in srgb, var(--merge-confirmation-color) 65%, var(--pane-bg, #fff));
+    background-color: color-mix(in srgb, var(--merge-confirmation-color) 6%, var(--pane-bg, #fff));
+}
+.ff-merge-confirmation-warning input.checkbox:enabled + label:hover::before { border-color: var(--merge-confirmation-color); }
+.ff-merge-confirmation-warning input.checkbox:checked + label::before {
+    border-color: var(--merge-confirmation-color);
+    background-color: var(--merge-confirmation-color);
+    color: var(--pane-bg, #fff);
+}
+.ff-merge-confirmation-warning.checkboxfield .instructions {
+    margin-block-start: .125rem;
+    color: color-mix(in srgb, var(--merge-confirmation-color) 82%, var(--pane-bg, #fff));
+    font-size: .8125rem;
+}
+.ff-merge-consequences.checkboxfield:has(+ .ff-merge-backup-confirmation) { margin-block-end: 0; }
+.ff-merge-backup-confirmation.checkboxfield { margin-block-start: .625rem; }
+{% endcss %}

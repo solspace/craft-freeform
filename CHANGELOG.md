@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added **Merge Forms** under **Import / Export** for Pro. Map compatible fields, add optional fields to another form, or use text rules to split and combine values when moving submissions. Review a preview before applying the merge. Large moves run in the background and can resume from the last completed batch. Empty originals moved to trash can be restored or permanently deleted from **Recently merged forms**.
+- Added **Trash** to the Forms dashboard. Deleted forms and their submissions can be restored or permanently deleted.
+
 ## 5.18.6 - 2026-11-23
 
 ### Fixed

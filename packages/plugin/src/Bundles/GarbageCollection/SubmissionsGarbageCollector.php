@@ -4,12 +4,14 @@ namespace Solspace\Freeform\Bundles\GarbageCollection;
 
 use craft\config\GeneralConfig;
 use craft\console\Application as ConsoleApplication;
+use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\services\Gc;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Records\FormRecord;
 use yii\base\Event;
 use yii\db\Exception;
 use yii\helpers\BaseConsole;
@@ -49,6 +51,10 @@ class SubmissionsGarbageCollector extends FeatureBundle
             'and',
             ['=', 'type', Submission::class],
             ['not', ["{$tableAlias}dateDeleted" => null]],
+            ['not exists', (new Query())->from(Submission::TABLE.' submission')
+                ->innerJoin(FormRecord::TABLE.' form', 'form.[[id]] = submission.[[formId]]')
+                ->where('submission.[[id]] = '.Table::ELEMENTS.'.[[id]]')
+                ->andWhere(['not', ['form.dateTrashed' => null]])],
         ];
 
         if (!\Craft::$app->gc->deleteAllTrashed) {

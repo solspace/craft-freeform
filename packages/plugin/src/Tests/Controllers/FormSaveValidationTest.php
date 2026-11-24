@@ -8,6 +8,8 @@ use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use yii\mutex\Mutex;
+use yii\web\ConflictHttpException;
 use yii\web\Response;
 
 #[CoversClass(FormsController::class)]
@@ -33,7 +35,10 @@ class FormSaveValidationTest extends TestCase
         $request = $this->createMock(Request::class);
         $request->method('getIsConsoleRequest')->willReturn(true);
         $request->method('getRawBody')->willReturn('{}');
-        \Craft::$app = (object) ['request' => $request];
+        $mutex = $this->createMock(Mutex::class);
+        $mutex->expects(self::once())->method('acquire')->with('freeform-form-layout-7', 0)->willReturn(true);
+        $mutex->expects(self::once())->method('release')->with('freeform-form-layout-7')->willReturn(true);
+        $this->setApp($request, $mutex);
 
         $controller = (new \ReflectionClass(FormsController::class))->newInstanceWithoutConstructor();
         $controller->request = $request;
@@ -54,5 +59,35 @@ class FormSaveValidationTest extends TestCase
         self::assertSame($expectedStages, $stages);
         self::assertSame($errorStage ? 400 : 204, $controller->response->statusCode);
         self::assertSame($errorStage ? ['errors' => ['form' => $errors]] : [], $result);
+    }
+
+    public function testSaveReportsAConflictWhileTheLayoutIsLocked(): void
+    {
+        $request = $this->createMock(Request::class);
+        $request->method('getIsConsoleRequest')->willReturn(true);
+        $request->method('getRawBody')->willReturn('{}');
+        $mutex = $this->createMock(Mutex::class);
+        $mutex->expects(self::once())->method('acquire')->with('freeform-form-layout-7', 0)->willReturn(false);
+        $mutex->expects(self::never())->method('release');
+        $this->setApp($request, $mutex);
+
+        $controller = (new \ReflectionClass(FormsController::class))->newInstanceWithoutConstructor();
+        $controller->request = $request;
+        $controller->on(FormsController::EVENT_UPDATE_FORM, static fn () => self::fail('The save started while the layout was locked.'));
+
+        $this->expectException(ConflictHttpException::class);
+        (new \ReflectionMethod(FormsController::class, 'post'))->invoke($controller, 7);
+    }
+
+    private function setApp(Request $request, Mutex $mutex): void
+    {
+        \Craft::$app = new class($request, $mutex) {
+            public function __construct(public Request $request, private Mutex $mutex) {}
+
+            public function getMutex(): Mutex
+            {
+                return $this->mutex;
+            }
+        };
     }
 }

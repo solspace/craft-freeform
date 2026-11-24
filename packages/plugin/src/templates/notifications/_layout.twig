@@ -5,6 +5,12 @@
 
 {% set title = title ?? "Email Notifications"|t('freeform') %}
 
+{% block toolbar %}
+    {% if showTemplateSearch ?? false %}
+        {% include 'freeform/notifications/_search' only %}
+    {% endif %}
+{% endblock %}
+
 {% block sidebar %}
 
     {% set segment = craft.app.request.segment(3) %}

@@ -1,0 +1,40 @@
+{% import 'freeform/export/merge/_job-ui' as jobUi %}
+
+{% macro formLabel(form, savedName) %}
+    {% set color = form.color ?? '' %}
+    <span class="ff-merge-form-label">
+        {% include 'freeform/_components/form-color-dot' with {color} only %}
+        <span>{{ form.name ?? savedName }}</span>
+    </span>
+{% endmacro %}
+
+<section class="ff-merge-jobs" aria-labelledby="merge-activity-heading">
+    <h2 id="merge-activity-heading">{{ 'Recent merge activity'|t('freeform') }}</h2>
+    <div class="ff-activity-table">
+        <table class="data fullwidth">
+            <thead><tr>
+                <th scope="col">{{ 'Forms'|t('freeform') }}</th>
+                <th scope="col">{{ 'Status'|t('freeform') }}</th>
+                <th scope="col">{{ 'Progress'|t('freeform') }}</th>
+            </tr></thead>
+            <tbody>
+            {% for job in jobs %}
+                {% set state = job.state %}
+                {% set statusKey = state.error ? 'paused' : job.status %}
+                <tr data-merge-status="{{ statusKey }}">
+                    <th scope="row">
+                        <a class="ff-merge-job-route" href="{{ cpUrl('freeform/export/merge', {merge: job.id}) }}">
+                            {{ _self.formLabel(forms[job.sourceId] ?? null, state.source) }}
+                            <span class="ff-merge-job-arrow" aria-hidden="true">→</span>
+                            <span class="visually-hidden">{{ 'into'|t('freeform') }}</span>
+                            {{ _self.formLabel(forms[job.targetId] ?? null, state.target) }}
+                        </a>
+                    </th>
+                    <td>{{ jobUi.badge(statusKey) }}</td>
+                    <td class="ff-merge-job-progress">{{ jobUi.progress(job, statusKey, jobUi.caption(job)) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>

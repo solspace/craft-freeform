@@ -366,6 +366,10 @@ class SubmissionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam($table.'.[[formId]]', $this->formId));
         }
 
+        $this->subQuery->andWhere(['exists', (new Query())->from(FormRecord::TABLE.' active_form')
+            ->where('active_form.[[id]] = '.$table.'.[[formId]]')
+            ->andWhere(['active_form.dateTrashed' => null])]);
+
         if (SitesHelper::isEnabled()) {
             $isConsole = \Craft::$app instanceof Application;
 

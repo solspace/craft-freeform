@@ -1,0 +1,5 @@
+{{ '{count, plural, one{This field’s data will be <strong>permanently lost</strong> from <strong>#</strong> submission.} other{This field’s data will be <strong>permanently lost</strong> from <strong>#</strong> submissions.}}'
+    |t('freeform', {count})
+    |e
+    |replace({'&lt;strong&gt;': '<strong>', '&lt;/strong&gt;': '</strong>'})
+    |raw }}

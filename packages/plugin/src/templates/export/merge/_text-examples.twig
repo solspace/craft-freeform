@@ -1,0 +1,54 @@
+{% macro ruleLabel(rule) %}
+    {%- set ruleLabels = {
+        first: 'Split at the first whitespace',
+        last: 'Split at the last whitespace',
+        space: 'Combine with spaces',
+        comma: 'Combine with a comma and space',
+        'comma-only': 'Combine with commas only',
+        hyphen: 'Combine with hyphens and spaces',
+        slash: 'Combine with slashes and spaces',
+        none: 'Combine without a separator',
+        newline: 'Combine with line breaks',
+    } -%}
+    {{- ruleLabels[rule.format]|t('freeform') -}}
+{% endmacro %}
+
+{% macro preview(rule, examples) %}
+    {% if rule.type == 'split' %}
+        <p class="light">{{ 'Single-word values go to {field}.'|t('freeform', {field: rule.outputLabels[(rule.singleWord ?? 'first') == 'second' ? 1 : 0]}) }}</p>
+    {% endif %}
+    {% if examples %}
+        <div class="ff-merge-text-preview-table">
+            <table class="data fullwidth">
+                <thead><tr><th scope="col">{{ 'Before'|t('freeform') }}</th><th scope="col">{{ 'After'|t('freeform') }}</th></tr></thead>
+                <tbody>
+                    {% for example in examples %}
+                        <tr>
+                            {% for side, labels in {before: rule.inputLabels, after: rule.outputLabels} %}
+                                <td>
+                                    {% for part in example[side] %}
+                                        <div><strong>{{ labels[loop.index0] }}</strong> <span>{{ part is same as('') ? 'Blank'|t('freeform') : part }}</span></div>
+                                    {% endfor %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="light">{{ 'No reviewed submissions had a value for this rule.'|t('freeform') }}</p>
+    {% endif %}
+{% endmacro %}
+
+{% if rules %}
+    <section class="ff-merge-text-examples" aria-labelledby="merge-text-examples-title">
+        <h2 id="merge-text-examples-title">{{ 'Text rule examples'|t('freeform') }}</h2>
+        <p>{{ 'These examples show what the rule will do to the values in the reviewed submissions.'|t('freeform') }}</p>
+        {% for index, rule in rules %}
+            <h3>{{ _self.ruleLabel(rule) }}</h3>
+            <p>{{ rule.inputLabels|join(', ') }} <span aria-hidden="true">→</span><span class="visually-hidden">{{ 'into'|t('freeform') }}</span> {{ rule.outputLabels|join(', ') }}</p>
+            {{ _self.preview(rule, examples[index] ?? []) }}
+        {% endfor %}
+    </section>
+{% endif %}

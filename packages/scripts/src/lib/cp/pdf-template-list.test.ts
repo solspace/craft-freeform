@@ -141,6 +141,22 @@ describe("PDF template list actions", () => {
     );
   });
 
+  it("returns focus to search when the remaining templates are filtered out", async () => {
+    const f = fixture(2);
+    const search = document.createElement("input");
+    search.id = "ff-template-search";
+    document.body.prepend(search);
+    document.querySelector<HTMLTableRowElement>('tr[data-id="2"]')!.hidden =
+      true;
+
+    await f.choose("delete");
+
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(1);
+    expect(document.getElementById("pdf-template-list")!.hidden).toBe(false);
+    expect(document.getElementById("notemplates")!.hidden).toBe(true);
+    expect(document.activeElement).toBe(search);
+  });
+
   it("leaves templates intact when deletion is cancelled", async () => {
     const f = fixture();
     f.confirm.mockReturnValueOnce(false);

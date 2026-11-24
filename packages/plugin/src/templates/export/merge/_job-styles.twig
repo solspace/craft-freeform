@@ -1,0 +1,31 @@
+{% css %}
+[data-merge-status] { --merge-accent: var(--secondary-text-color, #596979); }
+[data-merge-status="ready"] { --merge-accent: var(--link-color, #2563eb); }
+[data-merge-status="moving"] { --merge-accent: #2563eb; }
+[data-merge-status="paused"] { --merge-accent: var(--bg-pending, var(--pending-color, #fb923c)); }
+[data-merge-status="done"] { --merge-accent: var(--bg-enabled, var(--enabled-color, #11a697)); }
+:root[data-dark-mode="dark"] [data-merge-status="stopped"] { --merge-accent: #8999ab; }
+.ff-merge-status { display: inline-flex; align-items: center; }
+.ff-merge-status .status { flex: none; }
+.ff-merge-job-progress { --merge-track-color: var(--gray-100, #e5ebf2); color: var(--secondary-text-color, #596979); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+:root[data-dark-mode="dark"] .ff-merge-job-progress { --merge-track-color: #35414f; }
+.ff-merge-job-progress progress:not(.visually-hidden), .ff-merge-progress-track { display: block; width: 100%; height: .45rem; margin-bottom: .25rem; }
+.ff-merge-job-progress progress { accent-color: var(--merge-accent); }
+.ff-merge-job-progress progress[value] { appearance: none; overflow: hidden; border: 0; border-radius: 999px; background: var(--merge-track-color); }
+.ff-merge-job-progress progress[value]::-webkit-progress-bar { background: var(--merge-track-color); }
+.ff-merge-job-progress progress[value]::-webkit-progress-value { border-radius: 999px; background: var(--merge-accent); }
+.ff-merge-job-progress progress[value]::-moz-progress-bar { border-radius: 999px; background: var(--merge-accent); }
+.ff-merge-progress-track { overflow: hidden; border-radius: 999px; background: var(--merge-track-color); }
+.ff-merge-progress-track > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgb(255 255 255 / .24) 25%, transparent 25% 50%, rgb(255 255 255 / .24) 50% 75%, transparent 75%) 0 / 1rem 1rem var(--merge-accent);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .ff-merge-progress-track > span { animation: ff-merge-progress-stripes .9s linear infinite; }
+}
+@keyframes ff-merge-progress-stripes {
+    to { background-position-x: 1rem; }
+}
+{% endcss %}

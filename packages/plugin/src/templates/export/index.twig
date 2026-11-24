@@ -1,0 +1,19 @@
+{% extends 'freeform/export/_layout' %}
+{% hook 'freeform.prepareCpTemplate' %}
+
+{% set title = 'Import / Export'|t('freeform') %}
+{% set crumbs = [{ label: craft.freeform.name, url: cpUrl('freeform') }] %}
+
+{% block toolbar %}
+    {% import 'freeform/_components/overview-search' as search %}
+    {{ search.input('Search import / export'|t('freeform'), 'Search import / export…'|t('freeform')) }}
+{% endblock %}
+
+{% set content %}
+    {% include 'freeform/_components/overview-search' with {
+        cards,
+        permissionCards,
+        editionCards,
+        emptyMessage: 'No import / export utilities match your search.'|t('freeform'),
+    } only %}
+{% endset %}

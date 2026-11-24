@@ -9,11 +9,44 @@
     }) %}
 {% endif %}
 
-{% set navItems = craft.freeform.settingsNavigation %}
+{% set navItems = navItems ?? craft.freeform.settingsNavigation %}
 
 {% set segment2 = craft.app.request.getSegment(2) %}
 {% set segment3 = craft.app.request.getSegment(3) %}
 {% set segment4 = craft.app.request.getSegment(4) %}
+
+{% if craft.app.request.getQueryParam('setting') %}
+    {% js %}
+        (() => {
+            const setting = new URLSearchParams(window.location.search).get('setting');
+            const normalize = text => text.trim().replace(/\s+/g, ' ');
+            const candidates = document.querySelectorAll('#content :is(label, legend, h2, h3, h4, th, .choice-heading, .ff-settings-choice-title)');
+            const destination = [...candidates].find(element => normalize(element.textContent) === normalize(setting));
+            if (!destination) return;
+
+            for (let details = destination.closest('details'); details; details = details.parentElement.closest('details')) {
+                details.open = true;
+            }
+
+            const field = destination.closest('.field') ?? destination;
+            if (!field.getClientRects().length) return;
+
+            field.classList.add('ff-setting-search-target');
+            field.tabIndex = -1;
+            requestAnimationFrame(() => {
+                field.focus({preventScroll: true});
+                field.scrollIntoView({block: 'center'});
+            });
+        })();
+    {% endjs %}
+    {% css %}
+    .ff-setting-search-target {
+        outline: 2px solid var(--link-color, #0b69a3);
+        outline-offset: .375rem;
+        border-radius: .25rem;
+    }
+    {% endcss %}
+{% endif %}
 
 {% block actionButton %}
 

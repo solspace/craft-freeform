@@ -16,11 +16,14 @@ use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
 use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Services\FormMergeService;
 use Solspace\Freeform\Services\FormPreviewService;
 use Solspace\Freeform\Services\FormStatsService;
+use Solspace\Freeform\Services\FormTrashService;
 use Solspace\Freeform\Services\QueuedFormGenerationService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
+use yii\web\ConflictHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -215,6 +218,7 @@ class FormsController extends BaseApiController
 
     public function actionDelete(): Response
     {
+        $this->requireCpRequest();
         $this->requireFormPermission(permission: Freeform::PERMISSION_FORMS_DELETE);
 
         $this->requirePostRequest();
@@ -226,7 +230,48 @@ class FormsController extends BaseApiController
         $this->requireFormPermission($id);
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
 
-        $this->getFormsService()->deleteById($id);
+        try {
+            (new FormTrashService())->moveToTrash($id);
+        } catch (\DomainException $exception) {
+            throw new ConflictHttpException($exception->getMessage());
+        }
+
+        return $this->asEmptyResponse(204);
+    }
+
+    public function actionTrash(): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_DELETE);
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+        $trash = new FormTrashService();
+
+        if ($this->request->getIsGet()) {
+            $formatter = \Craft::$app->getFormatter();
+            $forms = $trash->listForms();
+            foreach ($forms as &$form) {
+                $form['id'] = (int) $form['id'];
+                $form['trashedDate'] = $formatter->asDate($form['dateTrashed'], 'php:Y-m-d');
+                $form['dateTrashed'] = $formatter->asDate($form['dateTrashed'], 'medium');
+                $form['trashedFromMerge'] = (bool) $form['trashedFromMerge'];
+            }
+
+            return $this->asJson($forms);
+        }
+
+        $this->requirePostRequest();
+        $action = $this->request->getBodyParam('trashAction');
+        $id = $this->request->getBodyParam('trashedForm');
+        if (!\in_array($action, ['restore', 'purge'], true) || !\is_scalar($id) || !ctype_digit((string) $id)) {
+            throw new BadRequestHttpException();
+        }
+
+        try {
+            $trash->change((int) $id, 'purge' === $action);
+        } catch (\DomainException $exception) {
+            throw new ConflictHttpException($exception->getMessage());
+        }
 
         return $this->asEmptyResponse(204);
     }
@@ -398,13 +443,23 @@ class FormsController extends BaseApiController
             $general->allowHtmlEmbeds = $existing;
         }
 
-        $event = new PersistFormEvent($data, $id);
-        $this->trigger(self::EVENT_UPDATE_FORM, $event);
-        if (!$event->hasErrors()) {
-            $this->trigger(self::EVENT_UPSERT_FORM, $event);
+        $lock = FormMergeService::layoutLock((int) $id);
+        $mutex = \Craft::$app->getMutex();
+        if (!$mutex->acquire($lock, 0)) {
+            throw new ConflictHttpException(Freeform::t('This form is being updated. Try saving again.'));
         }
-        if (!$event->hasErrors()) {
-            $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+
+        try {
+            $event = new PersistFormEvent($data, $id);
+            $this->trigger(self::EVENT_UPDATE_FORM, $event);
+            if (!$event->hasErrors()) {
+                $this->trigger(self::EVENT_UPSERT_FORM, $event);
+            }
+            if (!$event->hasErrors()) {
+                $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+            }
+        } finally {
+            $mutex->release($lock);
         }
 
         $this->response->statusCode = $event->getStatus() ?? 204;

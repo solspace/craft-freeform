@@ -1,0 +1,39 @@
+{% macro badge(key) %}
+    {% set statuses = {reviewing: 'Preparing review', ready: 'Ready for review', moving: 'In progress', paused: 'Paused', done: 'Complete', stopped: 'Stopped'} %}
+    {% set colors = {reviewing: 'blue', ready: 'blue', moving: 'blue', paused: 'orange', done: 'teal', stopped: 'gray'} %}
+    {% set indicators = {paused: 'pending', done: 'live', stopped: 'disabled'} %}
+    <span class="ff-merge-status{{ craft.app.version starts with '5' ? ' status-label ' ~ colors[key] }}">
+        <span class="status {{ indicators[key] ?? colors[key] }}" aria-hidden="true"></span>
+        <span class="status-label-text">{{ statuses[key]|t('freeform') }}</span>
+    </span>
+{% endmacro %}
+
+{% macro caption(job) -%}
+    {%- set state = job.state -%}
+    {%- set mappedFieldCount = state.mappedFieldCount ?? (job.status == 'moving' and state.plan.destinations is defined ? state.plan.destinations|length : null) -%}
+    {%- set submissions = job.status == 'reviewing'
+        ? '{count, plural, one{# submission reviewed} other{# submissions reviewed}}'|t('freeform', {count: state.count})
+        : '{moved, number} of {total, plural, one{# submission moved} other{# submissions moved}}'|t('freeform', {moved: state.moved, total: state.count}) -%}
+    {%- if mappedFieldCount is null -%}
+        {{- submissions -}}
+    {%- else -%}
+        {%- set fields = '{count, plural, one{# of # field mapped} other{# of # fields mapped}}'|t('freeform', {count: mappedFieldCount}) -%}
+        {{- '{fields}, {submissions}'|t('freeform', {fields, submissions}) -}}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro progress(job, key, caption) %}
+    {% set state = job.state %}
+    <progress
+        {% if key == 'moving' %}class="visually-hidden"{% endif %}
+        aria-label="{{ caption|striptags }}"
+        max="{{ max(1, state.count) }}"
+        {% if job.status != 'reviewing' or state.error %}value="{{ job.status == 'done' ? max(1, state.moved) : state.moved }}"{% endif %}
+    ></progress>
+    {% if key == 'moving' %}
+        <span class="ff-merge-progress-track" aria-hidden="true">
+            <span style="inline-size: {{ state.moved * 100 / max(1, state.count) }}%"></span>
+        </span>
+    {% endif %}
+    <span>{{ caption }}</span>
+{% endmacro %}

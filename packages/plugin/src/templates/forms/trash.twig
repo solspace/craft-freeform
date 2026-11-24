@@ -1,0 +1,15 @@
+{% extends 'freeform/_layouts/main' %}
+{% hook 'freeform.prepareCpTemplate' %}
+
+{% set title = 'Forms Trash'|t('freeform') %}
+{% set selectedSubnavItem = 'forms' %}
+{% set crumbs = [{label: 'Forms'|t('freeform'), url: cpUrl('freeform/forms')}] %}
+
+{% block content %}
+    {% if trashedForms %}
+        {% include 'freeform/_components/activity-table-styles' only %}
+        {% include 'freeform/_components/form-trash' with {trashedForms, trashUrl: cpUrl('freeform/forms/trash'), mergeOnly: false} only %}
+    {% else %}
+        <p>{{ 'No forms in Trash.'|t('freeform') }}</p>
+    {% endif %}
+{% endblock %}

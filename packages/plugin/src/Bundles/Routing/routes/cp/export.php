@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'freeform/export' => 'freeform/export/overview/index',
+    'freeform/export/merge' => 'freeform/export/merge/index',
+
     // quick export
     'freeform/export/export-dialogue' => 'freeform/export/quick-export/export-dialogue',
     'freeform/export/quick-export' => 'freeform/export/quick-export/index',

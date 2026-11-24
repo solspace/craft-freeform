@@ -1,6 +1,7 @@
 {% extends "freeform/notifications/_layout" %}
 
 {% set title = 'Notification Wrappers'|t('freeform') %}
+{% set showTemplateSearch = list|length > 0 %}
 
 {% set canManageTemplates = currentUser.can('freeform-notificationsManage') %}
 
@@ -17,9 +18,9 @@
 ] %}
 
 {% set content %}
-    {% if list|length %}
+    {% if showTemplateSearch %}
         <div class="tablepane ff-notification-tablepane">
-            <table data-file-templates class="data fullwidth ff-notification-table">
+            <table id="templates" data-file-templates class="data fullwidth ff-notification-table">
                 <thead><tr>
                     <th scope="col" class="ff-notification-name-column">{{ 'Template'|t('freeform') }}</th>
                     <th scope="col">{{ 'Handle'|t('freeform') }}</th>

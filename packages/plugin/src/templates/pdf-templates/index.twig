@@ -1,6 +1,7 @@
 {% extends 'freeform/notifications/_layout' %}
 
 {% set canManageTemplates = currentUser.can('freeform-pdfTemplatesManage') %}
+{% set showTemplateSearch = craft.freeform.pro == 'pro' and templates|length > 0 %}
 
 {% do view.registerTranslations('freeform', [
     'Are you sure you want to delete “{name}”?',
@@ -208,14 +209,15 @@
                     } else {
                         row.remove();
                         Craft.cp.displayNotice(Craft.t('freeform', 'PDF template deleted.'));
-                        const next = list.querySelector('.ff-pdf-actions');
-                        if (!next) {
+                        const next = list.querySelector('tr:not([hidden]) .ff-pdf-actions');
+                        if (!list.querySelector('tbody tr')) {
                             list.hidden = true;
                             empty.hidden = false;
                             const target = empty.querySelector('a');
                             if (target) target.focus();
                         } else {
-                            next.focus();
+                            const target = next ?? document.getElementById('ff-template-search');
+                            target?.focus();
                         }
                     }
                 } catch (exception) {

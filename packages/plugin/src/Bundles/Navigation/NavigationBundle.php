@@ -8,6 +8,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Resources\Bundles\ActivityBadgeBundle;
+use Solspace\Freeform\Services\FormMergeService;
 use yii\base\Event;
 
 class NavigationBundle extends FeatureBundle
@@ -112,15 +113,6 @@ class NavigationBundle extends FeatureBundle
             $request = \Craft::$app->getRequest();
             $path = $request->getPathInfo();
 
-            // Determine default subnav landing
-            if ($canAccessExportProfiles) {
-                $defaultExportUrl = 'freeform/export/profiles';
-            } elseif ($canAccessExportNotifications) {
-                $defaultExportUrl = 'freeform/export/notifications';
-            } else {
-                $defaultExportUrl = 'freeform/export/forms';
-            }
-
             $subnav = [];
 
             if ($canAccessExportProfiles) {
@@ -157,13 +149,23 @@ class NavigationBundle extends FeatureBundle
                 ];
             }
 
+            if (FormMergeService::canAccess()) {
+                $subnav['merge'] = [
+                    'id' => 'merge',
+                    'label' => Freeform::t('Merge Forms'),
+                    'url' => 'freeform/export/merge',
+                    'sel' => str_starts_with($path, 'freeform/export/merge'),
+                ];
+            }
+
             $event->addSubnavItem(
                 'export',
                 Freeform::t('Import / Export'),
-                $defaultExportUrl,
+                'freeform/export',
                 extraOptions: [
                     'subnav' => $subnav,
-                    'sel' => str_starts_with($path, 'freeform/export/')
+                    'sel' => 'freeform/export' === $path
+                        || str_starts_with($path, 'freeform/export/')
                         || str_starts_with($path, 'freeform/import/'),
                 ],
             );

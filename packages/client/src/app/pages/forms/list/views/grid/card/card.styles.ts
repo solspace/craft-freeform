@@ -118,7 +118,7 @@ export const Controls = styled.div`
   }
 `;
 
-export const ControlButton = styled.button`
+export const ControlButton = styled.button<{ $destructive?: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -131,6 +131,14 @@ export const ControlButton = styled.button`
   background: light-dark(#ffffffed, ${colors.overlay});
   &:hover, &:focus-visible { color: var(--link-color); background: light-dark(#e9f2fc, var(--ui-control-hover-bg-color)); }
 
+  ${({ $destructive }) =>
+    $destructive &&
+    `
+    &:enabled:is(:hover, :focus-visible) {
+      color: var(--fg-error, light-dark(#b91c1c, #f47780));
+      background: color-mix(in srgb, currentColor 13%, var(--pane-bg, #fff));
+    }
+  `}
 
   > svg {
     display: block;

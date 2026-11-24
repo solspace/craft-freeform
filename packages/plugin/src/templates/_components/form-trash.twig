@@ -1,0 +1,75 @@
+{% include 'freeform/_components/form-trash-styles' only %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormMergeBundle') %}
+
+<section class="ff-merge-trash"{% if mergeOnly %} aria-labelledby="merge-trash-heading"{% else %} aria-label="{{ 'Trashed forms'|t('freeform') }}"{% endif %}>
+    {% if mergeOnly %}
+        <h2 id="merge-trash-heading">{{ 'Recently merged forms'|t('freeform') }}</h2>
+    {% endif %}
+    <p>{{ (mergeOnly
+        ? 'Restoring brings back the original form and its settings. Moved submissions stay in the receiving form.'
+        : 'Restoring brings back the form and its submissions. Submissions moved by a merge stay in the receiving form.')|t('freeform') }}</p>
+    <div class="ff-activity-table">
+        <table class="data fullwidth">
+            <thead><tr>
+                <th scope="col">{{ 'Original form'|t('freeform') }}</th>
+                <th scope="col">{{ 'Moved to trash'|t('freeform') }}</th>
+                <th scope="col">{{ 'Actions'|t('freeform') }}</th>
+            </tr></thead>
+            <tbody>
+                {% for form in trashedForms %}
+                    {% set dialogId = 'merge-trash-confirmation-' ~ form.id %}
+                    {% set deleteFormId = 'merge-trash-form-' ~ form.id %}
+                    <tr>
+                        <th scope="row">
+                            <span class="ff-merge-form-label">
+                                {% include 'freeform/_components/form-color-dot' with {color: form.color} only %}
+                                <span>
+                                    {{ form.name }}
+                                    {% if not mergeOnly and form.trashedFromMerge %}
+                                        <span class="ff-merge-trash-badge">{{ 'Merged'|t('freeform') }}</span>
+                                    {% endif %}
+                                    <code class="ff-merge-handle smalltext">{{ form.handle }}</code>
+                                </span>
+                            </span>
+                        </th>
+                        <td>{{ form.dateTrashed|date('short') }}</td>
+                        <td>
+                            <div class="ff-merge-trash-actions">
+                                <form action="{{ trashUrl }}" method="post">
+                                    {{ csrfInput() }}
+                                    {{ hiddenInput('trashedForm', form.id) }}
+                                    {{ hiddenInput('trashAction', 'restore') }}
+                                    <button type="submit" class="btn ff-merge-trash-restore">
+                                        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M5.5 2.5 2 6l3.5 3.5M2 6h7.75a3.25 3.25 0 0 1 0 6.5H7.5"/>
+                                        </svg>
+                                        <span>{{ 'Restore'|t('freeform') }}</span>
+                                    </button>
+                                </form>
+                                <form id="{{ deleteFormId }}" action="{{ trashUrl }}" method="post" data-merge-confirmation="{{ dialogId }}">
+                                    {{ csrfInput() }}
+                                    {{ hiddenInput('trashedForm', form.id) }}
+                                    {{ hiddenInput('trashAction', 'purge') }}
+                                    <button type="submit" class="btn ff-merge-trash-delete" aria-haspopup="dialog" aria-controls="{{ dialogId }}" disabled>{{ 'Delete Permanently'|t('freeform') }}</button>
+                                </form>
+                                {% set deleteMessage %}
+                                    <div class="ff-trash-confirmation-copy">
+                                        <p><strong>{{ form.name }}</strong></p>
+                                        <p>{{ form.deleteMessage.before }}<strong>{{ form.deleteMessage.submissions }}</strong>{{ form.deleteMessage.after }}{% if form.deleteMessage.note %} {{ form.deleteMessage.note }}{% endif %}</p>
+                                        {% if form.deleteMessage.warning %}<p class="ff-trash-confirmation-warning"><strong>{{ form.deleteMessage.warning }}</strong></p>{% endif %}
+                                    </div>
+                                {% endset %}
+                                {% include 'freeform/_components/confirmation-dialog' with {
+                                    id: dialogId,
+                                    title: 'Permanently delete this form?'|t('freeform'),
+                                    message: deleteMessage,
+                                    confirmLabel: 'Delete Permanently'|t('freeform'),
+                                } only %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>

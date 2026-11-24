@@ -1,0 +1,176 @@
+{% import "freeform/export/merge/_text-examples" as textRulesUi %}
+
+{% macro field(name, handle) %}
+    <span class="ff-merge-label-with-handle">
+        <strong>{{ name }}</strong>
+        <code class="ff-merge-handle smalltext">{{ handle }}</code>
+    </span>
+{% endmacro %}
+
+{% set actionLabels = {map: 'Map', add: 'Add', options: 'Merge options', skip: 'Exclude', split: 'Split', combine: 'Combine'} %}
+{% set ruleInputs = review.textRules|reduce((ids, rule) => ids|merge(rule.inputs), []) %}
+<div class="ff-merge-table ff-merge-field-table ff-merge-review-mapping">
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th scope="col" id="merge-review-source-heading">{{ 'Field to merge'|t('freeform') }}</th>
+                <th scope="col" id="merge-review-action-heading">{{ 'Action'|t('freeform') }}</th>
+                <th scope="col" id="merge-review-target-heading">{{ 'Receiving field'|t('freeform') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id in rows|keys %}
+                {% set matchingRules = review.textRules|filter(rule => rule.inputs[0] == id) %}
+                {% set rule = matchingRules|first %}
+                {% if rule %}
+                    {% set ruleIndex = matchingRules|keys|first %}
+                    <tr>
+                        <th scope="row" id="merge-review-rule-{{ ruleIndex }}">
+                            <div class="ff-merge-review-fields">
+                                {% for fieldId in rule.inputs %}
+                                    {{ _self.field(sourceFields[fieldId].label, sourceFields[fieldId].handle) }}
+                                {% endfor %}
+                            </div>
+                        </th>
+                        <td>
+                            <div class="ff-merge-review-rule-action">
+                                {{ _self.badge(rule.type, actionLabels[rule.type]) }}
+                                {% if not review.problems %}
+                                    <button type="button" class="ff-merge-review-examples-button ff-merge-action-{{ rule.type }}" aria-expanded="false" aria-controls="merge-review-examples-{{ ruleIndex }}">{{ 'Examples'|t('freeform') }}</button>
+                                {% endif %}
+                            </div>
+                            <small class="light">{{ rule.format == 'space' ? 'Separated by spaces'|t('freeform') : textRulesUi.ruleLabel(rule) }}</small>
+                        </td>
+                        <td>
+                            <div class="ff-merge-review-fields">
+                                {% for fieldId in rule.outputs %}
+                                    {{ _self.field(targetFields[fieldId].label, targetFields[fieldId].handle) }}
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% if not review.problems %}
+                        <tr class="ff-merge-review-preview-row" id="merge-review-examples-{{ ruleIndex }}" hidden>
+                            <td colspan="3" headers="merge-review-rule-{{ ruleIndex }}">
+                                <div class="ff-merge-text-examples">
+                                    {{ textRulesUi.preview(rule, review.textExamples[ruleIndex] ?? []) }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% elseif id not in ruleInputs %}
+                    {% set addition = review.additions[id] ?? null %}
+                    {% set options = review.optionMerges[id] ?? [] %}
+                    {% set action = options ? 'options' : (addition ? 'add' : (not move ? null : (review.map[id] is defined ? 'map' : 'skip'))) %}
+                    <tr{% if action == 'skip' %} class="ff-merge-review-exclusion ff-merge-action-skip"{% elseif options %} class="ff-merge-review-options"{% endif %}>
+                        <th scope="row">{{ _self.field(sourceFields[id].label, sourceFields[id].handle) }}</th>
+                        <td>
+                            {% if action %}
+                                {{ _self.badge(action, actionLabels[action]) }}
+                            {% else %}
+                                <span class="light">{{ 'No change'|t('freeform') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if action in ['map', 'options'] %}
+                                {% set field = targetFields[review.map[id]] %}
+                                {{ _self.field(field.label, field.handle) }}
+                                {% if options %}{% include 'freeform/export/merge/_option-preview' with {options} only %}{% endif %}
+                            {% elseif action == 'add' %}
+                                {{ _self.field(sourceFields[id].label, addition.handle) }}
+                                <small class="light">{{ 'On the {page} page'|t('freeform', {page: pages[addition.pageId]}) }}</small>
+                            {% elseif action == 'skip' and review.omitted[id] is defined %}
+                                <span class="ff-merge-review-omitted ff-merge-action-skip">
+                                    {% include 'freeform/export/merge/_exclusion-warning' with {count: review.omitted[id].count} only %}
+                                </span>
+                            {% else %}
+                                <span class="light" aria-hidden="true">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% macro badge(action, label) %}
+    <span class="ff-merge-review-badge ff-merge-action-{{ action }}">
+        {% include 'freeform/export/merge/_mapping-icon' with {action} only %}
+        {{ label|t('freeform') }}
+    </span>
+{% endmacro %}
+
+{% js %}
+document.querySelectorAll('.ff-merge-review-examples-button').forEach(button => {
+    const row = document.getElementById(button.getAttribute('aria-controls'));
+    button.addEventListener('click', () => {
+        button.setAttribute('aria-expanded', String(row.hidden));
+        row.hidden = !row.hidden;
+    });
+});
+{% endjs %}
+
+{% css %}
+.ff-merge-review-mapping > table.data { border-collapse: collapse; }
+.ff-merge-review-mapping > table.data > thead > tr > th:nth-child(2) { width: 24%; }
+.ff-merge-review-mapping > table.data > :is(thead, tbody) > tr > :is(th, td) {
+    padding-block: .5rem;
+    border-block-end: 1px solid var(--hairline-color, #dbe2eb);
+    overflow-wrap: anywhere;
+}
+.ff-merge-review-mapping > table.data > tbody > tr > :is(th, td) { background: transparent; }
+.ff-merge-review-mapping > table.data > tbody > .ff-merge-review-options > :is(th, td) { vertical-align: top; }
+.ff-merge-review-mapping > table.data > tbody > tr.ff-merge-review-exclusion > :is(th, td) {
+    background-color: color-mix(in srgb, var(--merge-action-color) 4%, var(--pane-bg, #fff));
+}
+.ff-merge-review-mapping .ff-merge-handle { overflow-wrap: anywhere; }
+.ff-merge-review-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .125rem .5rem;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--merge-action-color) 12%, transparent);
+    color: var(--merge-action-color);
+    font-size: .8125rem;
+    font-weight: 600;
+    line-height: 1.125rem;
+}
+.ff-merge-review-badge .ff-merge-action-icon { background: transparent; }
+.ff-merge-review-omitted { color: var(--merge-action-color); font-size: .8125rem; }
+.ff-merge-review-rule-action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .5rem;
+}
+.ff-merge-review-mapping > table.data > tbody > tr:has(+ .ff-merge-review-preview-row:not([hidden])) > :is(th, td) { border-block-end: 0; }
+.ff-merge-review-preview-row[hidden] { display: none; }
+.ff-merge-review-mapping > table.data > tbody > .ff-merge-review-preview-row > td { padding-block-start: 0; }
+.ff-merge-review-mapping > table.data > tbody > tr:has(.ff-merge-review-rule-action):hover > :is(th, td),
+.ff-merge-review-mapping > table.data > tbody > .ff-merge-review-preview-row:hover :is(th, td) { background-color: transparent; }
+.ff-merge-review-examples-button {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .125rem 0;
+    color: var(--merge-action-color);
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1.125rem;
+    cursor: pointer;
+}
+.ff-merge-review-examples-button:hover { text-decoration: underline; }
+.ff-merge-review-examples-button::before {
+    content: '';
+    inline-size: .375rem;
+    block-size: .375rem;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(-45deg);
+}
+.ff-merge-review-examples-button:dir(rtl)::before { transform: rotate(135deg); }
+.ff-merge-review-examples-button[aria-expanded="true"]::before { transform: rotate(45deg); }
+.ff-merge-review-preview-row .ff-merge-text-examples { margin-block: 0; padding: .5rem .75rem; }
+{% endcss %}

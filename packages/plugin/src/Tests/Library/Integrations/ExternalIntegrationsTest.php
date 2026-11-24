@@ -46,7 +46,11 @@ class ExternalIntegrationsTest extends TestCase
         $service = new ExternalIntegrations($settings, $icons);
         $logo = $service->getIconSvg();
         self::assertStringContainsString('fill="currentColor"', $logo);
-        self::assertStringContainsString('viewBox="0 0 64 64"', $logo);
+        self::assertStringNotContainsString('fill="#fff"', $logo);
+        self::assertSame(
+            file_get_contents(__DIR__.'/../../../icon-mask.svg'),
+            str_replace('fill="currentColor"', 'fill="#fff"', $logo),
+        );
         $settings->externalIntegrationIcon = 'rectangle-list';
         self::assertSame('<svg>form</svg>', $service->getIconSvg());
         $settings->externalIntegrationIcon = 'unknown';

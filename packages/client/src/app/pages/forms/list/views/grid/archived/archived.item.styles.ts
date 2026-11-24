@@ -105,21 +105,3 @@ export const ItemActions = styled.div`
     grid-row: 2;
   }
 `;
-
-export const DeleteButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  padding: 6px;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  color: #8493a1;
-  cursor: pointer;
-
-  svg { width: 18px; height: 18px; }
-  &:hover:not(:disabled) { color: light-dark(#b91c1c, var(--fg-error)); background: light-dark(#fff1f2, var(--bg-error)); }
-  &:focus-visible { outline: 2px solid #b91c1c; outline-offset: 1px; }
-`;

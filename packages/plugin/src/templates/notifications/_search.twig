@@ -1,0 +1,96 @@
+<div class="ff-template-search texticon search icon">
+    <input id="ff-template-search"
+           type="search"
+           class="text fullwidth"
+           aria-label="{{ 'Search templates'|t('freeform') }}"
+           aria-controls="templates"
+           placeholder="{{ 'Search templates…'|t('freeform') }}"
+           data-no-results="{{ 'No results found.'|t('freeform') }}">
+</div>
+
+{% js %}
+(() => {
+    const input = document.getElementById('ff-template-search');
+    const table = document.getElementById('templates');
+    const body = table.tBodies[0];
+    const status = document.createElement('p');
+    status.className = 'ff-template-search-status light';
+    status.setAttribute('role', 'status');
+    table.after(status);
+
+    const normalize = text => text.toLocaleLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[‘’]/g, "'");
+    const filter = () => {
+        const terms = normalize(input.value).trim().split(/\s+/).filter(Boolean);
+        let matches = 0;
+
+        for (const row of body.rows) {
+            const name = row.cells[0].textContent;
+            const fileOrHandle = row.cells[1].querySelector('code').textContent;
+            const text = normalize(name + ' ' + fileOrHandle);
+            row.hidden = !terms.every(term => text.includes(term));
+            if (!row.hidden) matches++;
+        }
+
+        input.parentElement.hidden = body.rows.length === 0;
+        status.textContent = body.rows.length && !matches ? input.dataset.noResults : '';
+    };
+
+    input.addEventListener('input', filter);
+    window.addEventListener('pageshow', filter);
+    new MutationObserver(filter).observe(body, {childList: true});
+    filter();
+})();
+{% endjs %}
+
+{% css %}
+#toolbar:has(> .ff-template-search) {
+    min-inline-size: 0;
+}
+
+.ff-template-search {
+    inline-size: clamp(15rem, 34vw, 36rem);
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    margin-inline-start: auto;
+}
+
+@media (max-width: 60.8125rem) {
+    #header:has(.ff-template-search:not([hidden])) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    #header:has(.ff-template-search:not([hidden])) #toolbar {
+        flex-basis: 9rem;
+    }
+
+    #header:has(.ff-template-search:not([hidden])) #action-buttons {
+        margin-block-start: 0;
+    }
+
+    #toolbar > .ff-template-search {
+        margin-block-start: 0 !important;
+    }
+}
+
+@media (max-width: 36rem) {
+    #header:has(.ff-template-search:not([hidden])) #page-title {
+        flex-basis: 100%;
+    }
+}
+
+.ff-template-search[hidden],
+#templates tbody > tr[hidden] {
+    display: none !important;
+}
+
+.ff-template-search-status {
+    margin: 0;
+    padding: 1rem 0;
+}
+
+.ff-template-search-status:empty {
+    padding: 0;
+}
+{% endcss %}

@@ -1,6 +1,7 @@
 {% extends "freeform/notifications/_layout" %}
 
 {% set title = 'File Templates'|t('freeform') %}
+{% set showTemplateSearch = notifications|length and settings.emailTemplateMethod != 'form' %}
 
 {% set canManageTemplates = currentUser.can('freeform-notificationsManage') and settings.emailTemplateMethod != 'form' and settings.emailTemplateStorageType in ['files', 'files_database'] and settings.absoluteEmailTemplateDirectory and settings.allowFileTemplateEdit %}
 
@@ -17,9 +18,9 @@
 ] %}
 
 {% set content %}
-    {% if notifications|length and settings.emailTemplateMethod != 'form' %}
+    {% if showTemplateSearch %}
         <div class="tablepane ff-notification-tablepane">
-            <table data-file-templates class="data fullwidth ff-notification-table">
+            <table id="templates" data-file-templates class="data fullwidth ff-notification-table">
                 <thead><tr>
                     <th scope="col" class="ff-notification-name-column">{{ 'Template'|t('freeform') }}</th>
                     <th scope="col">{{ 'File name'|t('freeform') }}</th>
@@ -44,7 +45,7 @@
             </table>
         </div>
     {% endif %}
-    <div data-notification-empty{% if notifications|length and settings.emailTemplateMethod != 'form' %} hidden{% endif %}>
+    <div data-notification-empty{% if showTemplateSearch %} hidden{% endif %}>
         {% include 'freeform/notifications/_empty' with {kind: 'files'} %}
     </div>
 {% endset %}

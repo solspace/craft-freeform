@@ -3,6 +3,11 @@
 {% set selectedSubnavItem = 'export' %}
 {% set currentUrl = craft.app.request.absoluteUrl %}
 
+{% css %}
+:is(.ff-form-merge, .ff-merge-detail) { max-width: 90rem; }
+:is(.ff-form-merge, .ff-merge-detail) button:disabled { cursor: not-allowed; }
+{% endcss %}
+
 {% block sidebar %}
 
     {% set items = [] %}

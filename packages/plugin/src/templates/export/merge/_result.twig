@@ -14,7 +14,7 @@
                 |replace({'__MERGE_RECEIVING_FORM__': result.target|e})
                 |raw }}
         </p>
-        <p class="light">{{ ((result.trashed ?? false) ? 'The original form was deleted. You can restore it from the recently merged forms list.' : 'The original form was kept.')|t('freeform') }}</p>
+        <p class="light">{{ ((result.trashed ?? false) ? 'The original form was moved to Trash. You can restore it from Recently merged forms.' : 'The original form was kept.')|t('freeform') }}</p>
     </div>
     <a class="btn ff-merge-result-link" href="{{ cpUrl('freeform/forms/' ~ result.targetId) }}">{{ 'Open receiving form'|t('freeform') }}</a>
 </section>

@@ -1,0 +1,64 @@
+{% set previewLimit = 4 %}
+<div class="ff-merge-option-preview">
+    <span class="ff-merge-option-preview-count">{{ '{count, plural, one{Add # option} other{Add # options}}'|t('freeform', {count: options|length}) }}</span>
+    <ul class="ff-merge-option-preview-list" role="list">
+        {% for option in options|slice(0, previewLimit) %}
+            <li class="ff-merge-option-preview-chip">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 3v6M3 6h6"/></svg>
+                <span>{{ option.label ?: option.value }}</span>
+                {% if option.label and option.value != option.label %}<code>{{ option.value }}</code>{% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% if options|length > previewLimit %}
+        <span class="ff-merge-option-preview-count">{{ 'And {count} more'|t('freeform', {count: options|length - previewLimit}) }}</span>
+    {% endif %}
+</div>
+
+{% css %}
+.ff-merge-option-preview {
+    --merge-option-accent: #187d45;
+    display: grid;
+    gap: .25rem;
+    margin-block-start: .375rem;
+    font-size: .75rem;
+    line-height: 1.125rem;
+}
+:root[data-dark-mode="dark"] .ff-merge-option-preview { --merge-option-accent: #51ca84; }
+.ff-merge-option-preview-count {
+    color: var(--secondary-text-color, #596979);
+    font-weight: 600;
+}
+.ff-merge-option-preview-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.ff-merge-option-preview-chip {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .125rem .25rem;
+    min-width: 0;
+    padding: .125rem .4375rem;
+    border: 1px solid color-mix(in srgb, var(--merge-option-accent) 24%, transparent);
+    border-radius: .375rem;
+    background-color: color-mix(in srgb, var(--merge-option-accent) 7%, transparent);
+    overflow-wrap: anywhere;
+}
+.ff-merge-option-preview-chip svg {
+    display: block;
+    flex: 0 0 .75rem;
+    height: .75rem;
+    color: var(--merge-option-accent);
+}
+.ff-merge-option-preview-chip > span { font-weight: 600; }
+.ff-merge-option-preview-chip code {
+    color: var(--secondary-text-color, #596979);
+    font-size: .6875rem;
+    line-height: inherit;
+}
+{% endcss %}

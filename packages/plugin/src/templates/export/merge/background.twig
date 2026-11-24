@@ -1,0 +1,268 @@
+{% extends "freeform/export/_layout" %}
+{% hook "freeform.prepareCpTemplate" %}
+{% import 'freeform/export/merge/_job-ui' as jobUi %}
+
+{% set title = 'Background Form Merge'|t('freeform') %}
+{% set crumbs = [
+    {label: craft.freeform.name, url: cpUrl('freeform')},
+    {label: 'Merge Forms'|t('freeform'), url: cpUrl('freeform/export/merge')},
+    {label: title, current: true},
+] %}
+{% set state = job.state %}
+{% set running = job.status in ['reviewing', 'moving'] %}
+{% set statusKey = state.error ? 'paused' : job.status %}
+{% set resumeLabel = 'Resume Merge'|t('freeform') %}
+{% set failureText = 'The merge paused after a batch failed.' %}
+{% set legacyFailureText = 'The merge paused after a batch failed. Select Resume Job to retry from the last completed batch.' %}
+{% set batchFailed = state.error in [failureText, failureText|t('freeform'), legacyFailureText, legacyFailureText|t('freeform')] %}
+{% set pausedMessage = batchFailed ? failureText|t('freeform') : state.error %}
+{% set canStop = job.status == 'ready' or running %}
+{% if canStop %}
+    {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormMergeBundle') %}
+{% endif %}
+
+{% set content %}
+    {% include 'freeform/export/merge/_job-styles' only %}
+    {% if canPreviewTextRules %}{% include 'freeform/export/merge/_text-styles' only %}{% endif %}
+    <div class="ff-merge-detail">
+        <div class="ff-merge-detail-route">
+            <div>
+                <p>{{ 'Merge from'|t('freeform') }}</p>
+                <h2>{{ state.source }}</h2>
+            </div>
+            <span class="ff-merge-detail-arrow" aria-hidden="true">→</span>
+            <div>
+                <p>{{ 'Merge into'|t('freeform') }}</p>
+                <h2>{{ state.target }}</h2>
+            </div>
+        </div>
+
+        <section class="ff-merge-detail-progress" data-merge-status="{{ statusKey }}" aria-labelledby="merge-progress-heading">
+            <div class="ff-merge-detail-progress-heading">
+                <h2 id="merge-progress-heading">{{ 'Progress'|t('freeform') }}</h2>
+                {{ jobUi.badge(statusKey) }}
+            </div>
+
+            {% if job.status == 'ready' %}
+                <p>{{ '{count, plural, one{# submission is ready to move.} other{# submissions are ready to move.}}'|t('freeform', {count: state.count}) }}</p>
+            {% else %}
+                <div class="ff-merge-job-progress">
+                    {{ jobUi.progress(job, statusKey, jobUi.caption(job)) }}
+                </div>
+            {% endif %}
+
+            {% for message in [error ?? null, pausedMessage]|filter|unique %}
+                <div class="ff-merge-detail-notice" role="alert">
+                    <span aria-hidden="true">!</span>
+                    <p>
+                        {{ message }}
+                        {% if batchFailed and message == pausedMessage and running and ownsJob %}
+                            {% set resumeButtonText %}<strong>{{ resumeLabel }}</strong>{% endset %}
+                            {{ 'Select {button} to retry from the last completed batch.'|t('freeform', {button: '__RESUME_BUTTON__'})|e|replace({'__RESUME_BUTTON__': resumeButtonText})|raw }}
+                        {% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+            {% if job.status == 'stopped' %}
+                <p>{{ 'This merge can’t be resumed. Submissions, fields, and options already added stay in the receiving form. Remaining submissions stay on the original form.'|t('freeform') }}</p>
+                {% if canStartNewMerge %}
+                    <p>{{ (state.restartMapping is defined
+                        ? 'Start a new merge to reuse the field mapping and review the submissions still on the original form.'
+                        : 'To move the remaining submissions, start a new merge and review the field mapping again.')|t('freeform') }}</p>
+                {% endif %}
+            {% endif %}
+        </section>
+
+        {% if job.status == 'ready' %}
+            {% if canPreviewTextRules %}
+                {% include 'freeform/export/merge/_text-examples' with {rules: state.plan.textRules, examples: state.plan.textExamples ?? []} only %}
+            {% endif %}
+            {% if state.plan.changes %}
+                <div class="ff-merge-detail-table">
+                    <table class="data fullwidth">
+                        <thead><tr>
+                            <th scope="col">{{ 'Field to merge'|t('freeform') }}</th>
+                            <th scope="col">{{ 'Mapping action'|t('freeform') }}</th>
+                        </tr></thead>
+                        <tbody>
+                            {% for change in state.plan.changes %}
+                                <tr>
+                                    <th scope="row">{{ change.source }}</th>
+                                    <td>
+                                        {{ change.destination }}
+                                        {% if change.options ?? [] %}{% include 'freeform/export/merge/_option-preview' with {options: change.options} only %}{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+            {% if state.omitted %}
+                <p><strong>{{ 'These values will be lost from moved submissions.'|t('freeform') }}</strong></p>
+                <ul class="bullets">
+                    {% for id, count in state.omitted %}
+                        <li>{{ '{field} · {count, plural, one{# submission} other{# submissions}}'|t('freeform', {field: state.plan.labels[id], count}) }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+
+        {% if job.status != 'stopped' %}
+            {% set note %}
+                {% if job.status == 'done' and (state.deleteOriginal ?? false) %}
+                    {{ ((state.originalTrashed ?? false)
+                        ? 'The original form was moved to Recently merged forms.'
+                        : 'The original form was kept.')|t('freeform') }}
+                {% elseif job.status == 'ready' and ownsJob %}
+                    {{ 'After the move starts, you can leave this page and check progress later from Merge Forms.'|t('freeform') }}
+                {% elseif canStop and (state.deleteOriginal ?? false) %}
+                    {{ 'Only reviewed submissions will move. The original form stays open during the move and goes to trash only if it’s empty afterward.'|t('freeform') }}
+                    {% if job.status == 'ready' %}
+                        {{ 'You can restore the original from Recently merged forms.'|t('freeform') }}
+                    {% endif %}
+                {% else %}
+                    {{ 'Only submissions included in the review move to the receiving form.'|t('freeform') }}
+                    {{ 'The original form stays open, and any new submissions stay there.'|t('freeform') }}
+                {% endif %}
+                {% if running and not state.error %}
+                    {{ 'You can leave this page and check progress later from Merge Forms.'|t('freeform') }}
+                {% endif %}
+            {% endset %}
+            {% if craft.app.version starts with '5' %}
+                <div class="pane tip"><p>{{ note }}</p></div>
+            {% else %}
+                <p class="notice with-icon">{{ note }}</p>
+            {% endif %}
+        {% endif %}
+
+        {% if canStop %}
+            <form action="{{ statusUrl }}" method="post">
+                {{ csrfInput() }}
+                {{ hiddenInput('mergeId', job.id) }}
+                {% if job.status == 'ready' and ownsJob %}
+                    {% include 'freeform/export/merge/_confirmation' with {id: 'merge-background-confirm', move: true, trashOriginal: state.deleteOriginal ?? false, queued: true} only %}
+                {% endif %}
+                <div class="ff-merge-detail-controls">
+                    <div class="ff-merge-detail-actions">
+                        {% if job.status == 'ready' and ownsJob %}
+                            <button type="submit" class="btn submit" name="jobAction" value="apply" disabled>{{ 'Move Submissions'|t('freeform') }}</button>
+                        {% elseif running %}
+                            {% if ownsJob and state.error %}
+                                <button type="submit" class="btn ff-merge-resume" name="jobAction" value="resume">
+                                    <span class="icon" data-icon="play" aria-hidden="true"></span>{{ resumeLabel }}
+                                </button>
+                            {% endif %}
+                            <a class="btn" href="{{ statusUrl }}"><span class="icon" data-icon="refresh" aria-hidden="true"></span>{{ 'Refresh Status'|t('freeform') }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="ff-merge-detail-stop">
+                        <button type="submit" form="merge-stop-form" class="btn ff-merge-stop" aria-haspopup="dialog" aria-controls="merge-stop-confirmation"{% if job.status == 'moving' %} aria-describedby="merge-stop-note"{% endif %} disabled>{{ 'Stop Merge'|t('freeform') }}</button>
+                        {% if job.status == 'moving' %}
+                            <p id="merge-stop-note" class="light">{{ 'Moved submissions stay in the receiving form. The rest stay on the original form.'|t('freeform') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+            <form id="merge-stop-form" action="{{ statusUrl }}" method="post" data-merge-confirmation="merge-stop-confirmation" hidden>
+                {{ csrfInput() }}
+                {{ hiddenInput('mergeId', job.id) }}
+                {{ hiddenInput('jobAction', 'stop') }}
+            </form>
+            {% include 'freeform/_components/confirmation-dialog' with {
+                id: 'merge-stop-confirmation',
+                title: 'Stop this merge?'|t('freeform'),
+                message: 'A stopped merge can’t be resumed. Submissions already moved and fields already added stay in the receiving form. All remaining submissions stay on the original form.'|t('freeform'),
+                confirmLabel: 'Stop Merge'|t('freeform'),
+            } only %}
+        {% elseif job.status == 'stopped' and (canStartNewMerge or submissionUrls) %}
+            <form class="ff-merge-detail-actions" action="{{ cpUrl('freeform/export/merge') }}" method="post">
+                {% if canStartNewMerge %}
+                    {{ csrfInput() }}
+                    {{ hiddenInput('step', 'map') }}
+                    {{ hiddenInput('source', job.sourceId) }}
+                    {{ hiddenInput('target', job.targetId) }}
+                    {{ hiddenInput('restartMerge', job.id) }}
+                    <button type="submit" class="btn submit">{{ 'Start New Merge'|t('freeform') }}</button>
+                {% endif %}
+                {% if submissionUrls.source is defined %}
+                    <a class="btn" href="{{ submissionUrls.source }}">{{ 'View original submissions'|t('freeform') }}</a>
+                {% endif %}
+                {% if submissionUrls.target is defined %}
+                    <a class="btn" href="{{ submissionUrls.target }}">{{ 'View receiving submissions'|t('freeform') }}</a>
+                {% endif %}
+            </form>
+        {% elseif job.status == 'done' %}
+            <div class="ff-merge-detail-actions">
+                <a class="btn" href="{{ cpUrl('freeform/forms/' ~ job.targetId) }}">{{ 'Open receiving form'|t('freeform') }}</a>
+            </div>
+        {% endif %}
+    </div>
+{% endset %}
+
+{% css %}
+.ff-merge-detail { container-type: inline-size; }
+.ff-merge-detail-route {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--hairline-color, #dbe2eb);
+    border-radius: 6px;
+    background: var(--gray-050, #f4f7fb);
+    overflow-wrap: anywhere;
+}
+.ff-merge-detail-route p { margin: 0 0 .25rem; color: var(--light-text-color, #596979); font-size: .8125rem; font-weight: 600; }
+.ff-merge-detail-route h2 { margin: 0; font-size: 1.25rem; }
+.ff-merge-detail-arrow { display: grid; place-items: center; color: var(--secondary-text-color, #596979); font-size: 1.5rem; line-height: 1; }
+.ff-merge-detail-arrow:dir(rtl) { transform: scaleX(-1); }
+.ff-merge-detail-progress {
+    margin-block: 1.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--hairline-color, #dbe2eb);
+    border-radius: 6px;
+}
+.ff-merge-detail-progress-heading { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; }
+.ff-merge-detail-progress-heading h2 { margin: 0; }
+.ff-merge-detail-progress .ff-merge-job-progress { font-size: .875rem; }
+.ff-merge-detail-progress progress:not(.visually-hidden), .ff-merge-detail-progress .ff-merge-progress-track { height: .625rem; margin-bottom: .5rem; }
+.ff-merge-detail-progress > p:last-child { margin-bottom: 0; }
+.ff-merge-detail-notice {
+    display: flex;
+    align-items: start;
+    gap: .625rem;
+    margin-top: 1rem;
+    padding: .75rem;
+    border-inline-start: 3px solid #c58117;
+    border-radius: 4px;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    background: color-mix(in srgb, #c58117 11%, var(--pane-bg, #fff));
+}
+.ff-merge-detail-notice > span { display: grid; place-items: center; flex: 0 0 1.125rem; height: 1.125rem; border-radius: 50%; background: #8b4b0c; color: #fff; font-weight: 700; line-height: 1; }
+.ff-merge-detail-notice p { margin: 0; line-height: 1.125rem; }
+.ff-merge-detail-table { overflow-x: auto; }
+.ff-merge-detail-controls { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 1.5rem; margin-top: 1.25rem; padding-top: 1.25rem; border-block-start: 1px solid var(--hairline-color, #dbe2eb); }
+.ff-merge-detail-controls .ff-merge-detail-actions { align-self: start; margin-top: 0; }
+.ff-merge-detail-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
+.ff-merge-detail-actions > .btn { display: inline-flex; justify-content: center; align-items: center; gap: .375rem; }
+.ff-merge-detail-actions .btn .icon { display: inline-grid; place-items: center; width: 1rem; height: 1rem; margin: 0; line-height: 1; }
+.ff-merge-detail .btn.ff-merge-stop {
+    --merge-stop-color: var(--fg-error, #a5272e);
+    color: var(--merge-stop-color);
+    background-color: color-mix(in srgb, var(--merge-stop-color) 13%, var(--pane-bg, #fff));
+}
+:root[data-dark-mode="dark"] .ff-merge-detail .btn.ff-merge-stop { --merge-stop-color: var(--fg-error, #f47780); }
+.ff-merge-detail .btn.ff-merge-stop:hover {
+    background-color: color-mix(in srgb, var(--merge-stop-color) 20%, var(--pane-bg, #fff));
+}
+.ff-merge-detail .btn.ff-merge-resume { color: #fff; background-color: #197747; }
+.ff-merge-detail .btn.ff-merge-resume:hover { background-color: #14643c; }
+.ff-merge-detail-stop { max-width: 22rem; }
+.ff-merge-detail-stop p { margin: .375rem 0 0; font-size: .8125rem; }
+@container (max-width: 30rem) {
+    .ff-merge-detail-route { grid-template-columns: minmax(0, 1fr); gap: .625rem; }
+    .ff-merge-detail-arrow, .ff-merge-detail-arrow:dir(rtl) { justify-self: start; transform: rotate(90deg); }
+}
+{% endcss %}

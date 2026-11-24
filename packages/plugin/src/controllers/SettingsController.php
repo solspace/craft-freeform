@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\DarkModeTipHelper;
 use Solspace\Freeform\Library\Helpers\DefaultViewHelper;
+use Solspace\Freeform\Library\Helpers\OverviewCardHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Library\Integrations\ExternalIntegrations;
@@ -47,11 +48,25 @@ class SettingsController extends BaseController
 
     public function actionIndex(): Response
     {
-        if ($this->getSettingsService()->isAllowAdminEdit()) {
-            return $this->actionProvideSetting();
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        $settings = $this->getSettingsService();
+        $navigation = $settings->getSettingsNavigation();
+        $cards = $settings->getOverviewCards($navigation);
+        $overview = OverviewCardHelper::groupByAccess($cards, Freeform::getInstance()->edition());
+
+        $cardGroups = [];
+        foreach ($overview['cards'] as $card) {
+            $handle = $card['group']['handle'] ?? '';
+            $cardGroups[$handle]['title'] = $card['group']['title'] ?? null;
+            $cardGroups[$handle]['cards'][] = $card;
         }
 
-        return $this->redirect(UrlHelper::cpUrl('freeform/settings/statuses'));
+        return $this->renderTemplate('freeform/settings/overview', $overview + [
+            'navItems' => $navigation,
+            'cardGroups' => $cardGroups,
+        ]);
     }
 
     public function actionFormMonitor(): Response

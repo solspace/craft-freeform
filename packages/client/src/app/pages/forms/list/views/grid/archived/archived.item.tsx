@@ -13,10 +13,10 @@ import { isValid, parseISO } from "date-fns";
 import type React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
+import { FormDeleteButton, FormRestoreButton } from "../../form-list-actions";
 import { useArchiveFormMutation } from "../grid.mutations";
 
 import {
-  DeleteButton,
   Item,
   ItemActions,
   ItemDate,
@@ -97,10 +97,8 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
           <time dateTime={archivedAt.toISOString()}>{archivedDate}</time>
         </ItemDate>
       )}
-      <ItemActions>
-        <button
-          type="button"
-          className="btn small"
+      <ItemActions className="ff-merge-trash-actions ff-dashboard-form-actions">
+        <FormRestoreButton
           disabled={isDisabled}
           aria-label={`${translate("Restore this Form")}: ${name}`}
           onClick={() => {
@@ -108,13 +106,13 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
           }}
         >
           {translate(isDisabled ? "Restoring" : "Restore")}
-        </button>
+        </FormRestoreButton>
         {canDelete && (
-          <DeleteButton
-            type="button"
+          <FormDeleteButton
+            icon={<TrashIcon aria-hidden="true" />}
             disabled={isDisabled}
-            title={translate("Delete this Form and its Submissions")}
-            aria-label={`${translate("Delete this Form and its Submissions")}: ${name}`}
+            title={translate("Move to Trash")}
+            aria-label={`${translate("Move to Trash")}: ${name}`}
             onClick={async (event) => {
               if (event.metaKey && event.shiftKey) {
                 await axios.post(`/api/forms/delete`, { id });
@@ -129,8 +127,8 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
               }
             }}
           >
-            <TrashIcon />
-          </DeleteButton>
+            {translate("Move to Trash")}
+          </FormDeleteButton>
         )}
       </ItemActions>
     </Item>

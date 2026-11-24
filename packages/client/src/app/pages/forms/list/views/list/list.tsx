@@ -9,6 +9,7 @@ import { createFormSearch } from "../../form-search.utils";
 import { Notices } from "../../notices/notices";
 import { Archived } from "../grid/archived/archived";
 import { ArchivedAndGroupWrapper, ContentContainer } from "../grid/grid.styles";
+import { Trash } from "../trashed";
 
 import { Wrapper } from "./list.styles";
 import { ListTable } from "./list.table";
@@ -47,6 +48,7 @@ export const FormList: React.FC<FormSearchProps> = ({ search = "" }) => {
               <Archived data={archivedForms} />
             </ArchivedAndGroupWrapper>
           )}
+          <Trash />
         </Wrapper>
       </div>
     </ContentContainer>

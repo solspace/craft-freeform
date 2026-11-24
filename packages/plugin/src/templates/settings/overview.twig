@@ -1,0 +1,22 @@
+{% extends 'freeform/_layouts/settings' %}
+
+{% set title = 'Settings'|t('freeform') %}
+{% set fullPageForm = false %}
+{% set crumbs = [{label: craft.freeform.name, url: cpUrl('freeform')}] %}
+
+{% block actionButton %}{% endblock %}
+
+{% block toolbar %}
+    {% import 'freeform/_components/overview-search' as search %}
+    {{ search.input('Search settings'|t('freeform'), 'Search settings…'|t('freeform')) }}
+{% endblock %}
+
+{% block content %}
+    {% include 'freeform/_components/overview-search' with {
+        cards,
+        cardGroups,
+        permissionCards,
+        editionCards,
+        emptyMessage: 'No settings pages match your search.'|t('freeform'),
+    } only %}
+{% endblock %}

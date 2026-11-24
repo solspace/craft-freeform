@@ -18,6 +18,8 @@ use Solspace\Freeform\Library\Configuration\FreeformConfig;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\FreeformClientBundle;
+use Solspace\Freeform\Services\FormTrashService;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -67,6 +69,34 @@ class FormsController extends BaseController
         }
 
         return $this->asJson(['success' => true]);
+    }
+
+    public function actionTrash(): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_DELETE);
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        $trash = new FormTrashService();
+        if ($this->request->getIsPost()) {
+            $action = $this->request->getBodyParam('trashAction');
+            $id = $this->request->getBodyParam('trashedForm');
+            if (!\in_array($action, ['restore', 'purge'], true) || !\is_scalar($id) || !ctype_digit((string) $id)) {
+                throw new BadRequestHttpException();
+            }
+
+            try {
+                $trash->change((int) $id, 'purge' === $action);
+                $this->setSuccessFlash(Freeform::t('purge' === $action ? 'The form was permanently deleted.' : 'The form was restored.'));
+            } catch (\DomainException $exception) {
+                \Craft::$app->getSession()->setError($exception->getMessage());
+            }
+
+            return $this->redirect('freeform/forms/trash');
+        }
+
+        return $this->renderTemplate('freeform/forms/trash', ['trashedForms' => $trash->listForms()]);
     }
 
     private function requireFormManagePermission($id): void

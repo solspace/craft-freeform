@@ -156,7 +156,7 @@ class FreeformFormsExporter extends BaseExporter
 
         $query = $this->forms->getFormQuery();
         if (null !== $ids) {
-            $query->where(['uid' => $ids]);
+            $query->andWhere(['uid' => $ids]);
         }
 
         $forms = $this->forms->getFormsFromQuery($query);

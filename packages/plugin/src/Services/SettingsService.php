@@ -19,6 +19,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
+use Solspace\Freeform\Library\Configuration\SettingsSearchIndex;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -349,6 +350,93 @@ class SettingsService extends BaseService
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);
 
         return $event->getNavigation();
+    }
+
+    public function getOverviewCards(array $navigation): array
+    {
+        $details = [
+            'setup' => ['list', 'Walk through initial setup and configure Freeform defaults.'],
+            'general' => ['settings', 'Configure the control panel, file uploads, and submission defaults.'],
+            'form-behavior' => ['sliders', 'Control how forms submit, display errors, and load scripts and styles.'],
+            'queue-processing' => ['clock', 'Choose which tasks run in the background and configure queue pings.'],
+            'form-builder' => ['layout', 'Configure the builder’s templates, toolbars, and HTML blocks.'],
+            'limited-users' => ['users', 'Define which form builder features limited user groups can access.'],
+            'spam' => ['shield', 'Manage spam handling, submission throttling, and automatic cleanup.'],
+            'template-manager' => ['profile', 'Manage the templates used for forms, notifications, and success messages.'],
+            'statuses' => ['list', 'Create and organize the statuses used for submissions.'],
+            'content-integrations' => ['plug', 'Configure supported content integrations and field containers.'],
+            'demo-templates' => ['layout', 'Install sample templates for trying Freeform on the front end.'],
+            'ai' => ['sparkles', 'Review SolspaceAI usage, credits, and billing.'],
+            'surveys' => ['chart', 'Set default chart types and reporting preferences for surveys and polls.'],
+            'notices-and-alerts' => ['bell', 'Set up update notices, error alerts, and scheduled digest emails.'],
+            'form-monitor' => ['pulse', 'Set up Form Monitor to check that your forms can be submitted.'],
+            'diagnostics' => ['pulse', 'Check Freeform’s configuration, database, and system health.'],
+            'activity' => ['list', 'Configure which events Freeform records and how long it keeps them.'],
+            'error-log' => ['shield', 'Review errors recorded in Freeform’s technical log.'],
+            'integrations-log' => ['plug', 'Review events and errors recorded by integrations.'],
+            'email-log' => ['mail', 'Review events and errors related to email delivery.'],
+        ];
+
+        $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
+        $proAccess = [
+            'limited-users' => $canAccessForms,
+            'ai' => $canAccessForms && isset($navigation['ai']),
+            'surveys' => isset($navigation['surveys']),
+        ];
+
+        // Keep edition- or permission-restricted features discoverable on the overview.
+        $navigation += [
+            'ai' => ['title' => Freeform::t('SolspaceAI')],
+            'surveys' => ['title' => Freeform::t('Surveys & Polls')],
+        ];
+
+        $cards = [];
+        $group = null;
+        foreach ($navigation as $handle => $item) {
+            if (isset($item['heading'])) {
+                $group = ['handle' => $handle, 'title' => $item['heading']];
+
+                continue;
+            }
+
+            if (!isset($item['title'])) {
+                continue;
+            }
+
+            [$icon, $description] = $details[$handle] ?? ['settings', null];
+            $additionalLabels = [];
+            if ('form-behavior' === $handle) {
+                $additionalLabels = match ($this->getSettingsModel()->sessionContext) {
+                    Settings::CONTEXT_TYPE_SESSION, Settings::CONTEXT_TYPE_DATABASE => ['Freeform Session Context', 'Session Length', 'Amount of active forms per user'],
+                    Settings::CONTEXT_TYPE_PAYLOAD => ['Secret key'],
+                    default => ['Freeform Session Context'],
+                };
+            }
+            if ('queue-processing' === $handle && $this->isFormMonitorEnabledAndAuthorized()) {
+                $additionalLabels = ['Use Queue Pinging Service', 'Pinging Interval'];
+                if ($this->getSettingsModel()->managedPingerEnabled) {
+                    $additionalLabels[] = 'Manage Queue Pinging Service';
+                }
+            }
+
+            $card = [
+                'title' => $item['title'],
+                'description' => $description ? Freeform::t($description) : null,
+                'url' => 'freeform/settings/'.$handle,
+                'icon' => $icon,
+                'canAccess' => $proAccess[$handle] ?? true,
+                'group' => $group,
+                'searchSettings' => SettingsSearchIndex::forPage($handle, $additionalLabels),
+            ];
+
+            if (\array_key_exists($handle, $proAccess)) {
+                $card['edition'] = Freeform::EDITION_PRO;
+            }
+
+            $cards[] = $card;
+        }
+
+        return $cards;
     }
 
     public function isSpamFolderEnabled(): bool

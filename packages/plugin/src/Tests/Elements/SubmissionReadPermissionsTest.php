@@ -75,11 +75,16 @@ class SubmissionReadPermissionsTest extends TestCase
     }
 
     #[DataProvider('readScenarios')]
-    public function testQueriesReturnOnlyReadableSubmissions(mixed $formId, array $allowedIds, ?string $bodyContext, bool $cp, bool $console, bool $spam, array $expected, string $path = 'actions/element-indexes/get-elements'): void
+    public function testQueriesReturnOnlyReadableSubmissions(mixed $formId, array $allowedIds, ?string $bodyContext, bool $cp, bool $console, bool $spam, array $expected, string $path = 'actions/element-indexes/get-elements', bool $formIsTrashed = false): void
     {
         $db = new Connection(['dsn' => 'sqlite::memory:']);
         $db->createCommand('CREATE TABLE freeform_submissions (id INTEGER, formId INTEGER, statusId INTEGER, isSpam INTEGER, isHidden INTEGER)')->execute();
         $db->createCommand('CREATE TABLE freeform_statuses (id INTEGER)')->execute();
+        $db->createCommand('CREATE TABLE freeform_forms (id INTEGER, dateTrashed DATETIME)')->execute();
+        $db->createCommand()->batchInsert('freeform_forms', ['id', 'dateTrashed'], [
+            [1, null],
+            [2, $formIsTrashed ? '2026-11-23 00:00:00' : null],
+        ])->execute();
         $db->createCommand()->insert('freeform_statuses', ['id' => 1])->execute();
         $db->createCommand()->batchInsert('freeform_submissions', ['id', 'formId', 'statusId', 'isSpam', 'isHidden'], [
             [11, 1, 1, 0, 0],
@@ -169,6 +174,8 @@ class SubmissionReadPermissionsTest extends TestCase
         yield 'frontend queries retain their scope' => [2, [], null, false, false, false, [22]];
 
         yield 'console queries retain their scope' => [2, [], null, true, true, false, [22]];
+
+        yield 'trashed forms hide their submissions even from authorized users' => [2, [2], null, true, false, false, [], 'actions/element-indexes/get-elements', true];
     }
 }
 

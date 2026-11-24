@@ -1,0 +1,77 @@
+<section class="ff-merge-result" aria-labelledby="merge-result-title">
+    <div class="ff-merge-result-copy">
+        <h2 id="merge-result-title">
+            <span class="ff-merge-result-check" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 3.25 3.25L13 4.5"/></svg>
+            </span>
+            {{ 'Merge complete'|t('freeform') }}
+        </h2>
+        <p>
+            {{ '{count, plural, =0{<strong>No submissions</strong> moved} one{<strong># submission</strong> moved} other{<strong># submissions</strong> moved}} and {fields, plural, =0{<strong>no fields</strong> added} one{<strong># field</strong> added} other{<strong># fields</strong> added}} to <strong>{receivingForm}</strong>.'
+                |t('freeform', {count: result.count, fields: result.added, receivingForm: '__MERGE_RECEIVING_FORM__'})
+                |e
+                |replace({'&lt;strong&gt;': '<strong>', '&lt;/strong&gt;': '</strong>'})
+                |replace({'__MERGE_RECEIVING_FORM__': result.target|e})
+                |raw }}
+        </p>
+        <p class="light">{{ ((result.trashed ?? false) ? 'The original form was deleted. You can restore it from the recently merged forms list.' : 'The original form was kept.')|t('freeform') }}</p>
+    </div>
+    <a class="btn ff-merge-result-link" href="{{ cpUrl('freeform/forms/' ~ result.targetId) }}">{{ 'Open receiving form'|t('freeform') }}</a>
+</section>
+
+{% css %}
+.ff-merge-result {
+    --merge-success: #187d45;
+    --merge-success-button-text: #126035;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .875rem 1.5rem;
+    margin-block: 0 1.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--merge-success) 25%, var(--pane-bg, #fff));
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--merge-success) 7%, var(--pane-bg, #fff));
+}
+:root[data-dark-mode="dark"] .ff-merge-result {
+    --merge-success: #51ca84;
+    --merge-success-button-text: #a2e9bc;
+}
+.ff-merge-result-copy { min-inline-size: 0; overflow-wrap: anywhere; }
+.ff-merge-result h2 {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0 0 .5rem;
+    color: var(--merge-success);
+}
+.ff-merge-result-check {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 1.5rem;
+    block-size: 1.5rem;
+    border-radius: 50%;
+    background: #187d45;
+    color: #fff;
+}
+:root[data-dark-mode="dark"] .ff-merge-result-check {
+    background: var(--merge-success);
+    color: #102a1b;
+}
+.ff-merge-result-check svg { inline-size: 1.125rem; block-size: 1.125rem; }
+.ff-merge-result p { margin: .25rem 0 0; }
+.ff-merge-result .ff-merge-result-link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--ui-control-height, 34px);
+    padding-inline: var(--button-padding, .75rem);
+    border-radius: var(--button-border-radius, 6px);
+    color: var(--merge-success-button-text);
+    background: color-mix(in srgb, var(--merge-success) 20%, var(--pane-bg, #fff));
+    text-decoration: none;
+}
+.ff-merge-result .ff-merge-result-link:is(:hover, :focus-visible) {
+    background: color-mix(in srgb, var(--merge-success) 27%, var(--pane-bg, #fff));
+}
+{% endcss %}

@@ -107,7 +107,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             self::CACHE_PREFIX_ALL_NON_ARCHIVED,
             $orderByName,
             $sites,
-            static fn (Query $query) => $query->where(['forms.dateArchived' => null]),
+            static fn (Query $query) => $query->andWhere(['forms.dateArchived' => null]),
         );
     }
 
@@ -157,6 +157,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             ->from(FormRecord::TABLE.' forms')
             ->innerJoin(FormSiteRecord::TABLE.' forms_sites', 'forms_sites.[[formId]] = forms.[[id]]')
             ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = forms_sites.[[siteId]]')
+            ->andWhere(['forms.dateTrashed' => null])
         ;
 
         if ($siteIds) {
@@ -204,7 +205,7 @@ class FormsService extends BaseService implements FormHandlerInterface
     {
         $query = $this->getFormQuery()->select('id');
         if (null !== $type) {
-            $query->where(['type' => $type]);
+            $query->andWhere(['type' => $type]);
         }
 
         return $query->column();
@@ -268,7 +269,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             $idKey,
             function () use ($id, $site, $uniqueId): ?Form {
                 $form = $this->loadForm(
-                    static fn (Query $query) => $query->where(['forms.id' => $id]),
+                    static fn (Query $query) => $query->andWhere(['forms.id' => $id]),
                     $site,
                     $uniqueId,
                 );
@@ -355,10 +356,17 @@ class FormsService extends BaseService implements FormHandlerInterface
         );
     }
 
-    public function deleteById(int $formId): bool
+    public function deleteById(int $formId, bool $onlyIfEmpty = false, bool $trashOnly = false): bool
     {
         App::maxPowerCaptain();
-        $record = $this->getFormById($formId);
+        $record = $trashOnly
+            ? $this->loadForm(
+                static fn (Query $query) => $query->andWhere(['forms.id' => $formId])->andWhere(['not', ['forms.dateTrashed' => null]]),
+                null,
+                null,
+                includeTrash: true,
+            )
+            : $this->getFormById($formId);
         if (!$record) {
             return false;
         }
@@ -372,23 +380,33 @@ class FormsService extends BaseService implements FormHandlerInterface
         $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
 
         try {
-            $submissionQuery = Submission::find()
-                ->formId($formId)
-                ->skipContent(true)
-            ;
+            // Recheck the trash state under the lock that protects submission inserts.
+            $locked = \Craft::$app->db->createCommand(
+                'SELECT [[dateTrashed]] FROM '.FormRecord::TABLE.' WHERE [[id]] = :id FOR UPDATE',
+                [':id' => $formId],
+            )->queryOne();
+            if (!$locked || $trashOnly !== (null !== $locked['dateTrashed'])) {
+                $transaction?->rollBack();
 
-            foreach ($submissionQuery->batch() as $submissions) {
-                $ids = array_map(
-                    static fn (Submission $submission) => $submission->getId(),
-                    $submissions
-                );
+                return false;
+            }
 
-                \Craft::$app
-                    ->db
-                    ->createCommand()
-                    ->delete(Table::ELEMENTS, ['id' => $ids])
-                    ->execute()
-                ;
+            if ($onlyIfEmpty) {
+                if ((new Query())->from(Submission::TABLE)->where(['formId' => $formId])->exists()) {
+                    $transaction?->rollBack();
+
+                    return false;
+                }
+            } else {
+                $submissionIds = (new Query())->select(['id'])->from(Submission::TABLE)->where(['formId' => $formId]);
+                foreach ($submissionIds->batch() as $submissions) {
+                    \Craft::$app
+                        ->db
+                        ->createCommand()
+                        ->delete(Table::ELEMENTS, ['id' => array_column($submissions, 'id')])
+                        ->execute()
+                    ;
+                }
             }
 
             $affectedRows = \Craft::$app
@@ -408,15 +426,21 @@ class FormsService extends BaseService implements FormHandlerInterface
             ;
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($record));
+            $this->clearFormCache();
 
             return (bool) $affectedRows;
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             if (null !== $transaction) {
                 $transaction->rollBack();
             }
 
             throw $exception;
         }
+    }
+
+    public function clearFormCache(): void
+    {
+        $this->cache->clear();
     }
 
     public function renderFormTemplate(Form $form, ?string $templateName): ?Markup
@@ -661,6 +685,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $query
             ->select($baseQuery->select)
             ->from($baseQuery->from)
+            ->andWhere($baseQuery->where)
         ;
 
         $results = $query->all();
@@ -680,7 +705,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $forms;
     }
 
-    public function getFormQuery(): Query
+    public function getFormQuery(bool $includeTrash = false): Query
     {
         return (new Query())
             ->select(
@@ -700,6 +725,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ]
             )
             ->from(FormRecord::TABLE.' forms')
+            ->andWhere($includeTrash ? [] : ['forms.dateTrashed' => null])
             ->orderBy(['forms.order' => \SORT_ASC, 'forms.name' => \SORT_ASC])
         ;
     }
@@ -866,9 +892,9 @@ class FormsService extends BaseService implements FormHandlerInterface
      * `$uniqueId`-tagged variants (AB tests, multi-instance rendering) must
      * always be standalone instances and bypass the reuse step.
      */
-    private function loadForm(callable $whereModifier, ?string $site, ?string $uniqueId): ?Form
+    private function loadForm(callable $whereModifier, ?string $site, ?string $uniqueId, bool $includeTrash = false): ?Form
     {
-        $query = $this->getFormQuery();
+        $query = $this->getFormQuery($includeTrash);
         $whereModifier($query);
         $this->attachSitesToQuery($query, $site);
 
@@ -882,7 +908,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         try {
-            if ($uniqueId || $site) {
+            if ($uniqueId || $site || $includeTrash) {
                 return $this->createForm($result);
             }
 

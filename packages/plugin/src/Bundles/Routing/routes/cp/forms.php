@@ -7,6 +7,7 @@ return [
     'freeform/forms/duplicate' => 'freeform/forms/duplicate',
     'freeform/forms/reset-spam-counter' => 'freeform/forms/reset-spam-counter',
     'freeform/forms/delete' => 'freeform/forms/delete',
+    'freeform/forms/trash' => 'freeform/forms/trash',
 
     'freeform/forms' => 'freeform/app',
     'freeform/forms/<id:.*>' => 'freeform/app',

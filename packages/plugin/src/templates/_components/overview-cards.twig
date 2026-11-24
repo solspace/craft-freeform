@@ -1,0 +1,245 @@
+{% macro icon(name) %}
+    {% set paths = {
+        profile: 'M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10ZM13 3v7h7M8 14h8M8 17h5',
+        mail: 'M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm-2 2 9 6 9-6',
+        download: 'M12 3v12m-4-4 4 4 4-4M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4',
+        upload: 'M12 15V3M8 7l4-4 4 4M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4',
+        migrate: 'M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5m12-8H8m9-5 5 5-5 5',
+        merge: 'M4 5h3a5 5 0 0 1 5 5v2m-8 7h3a5 5 0 0 0 5-5v-2m0 0h8m-4-4 4 4-4 4',
+        arrow: 'M4 12h15m-6-6 6 6-6 6',
+        layers: 'M12 3 3 8l9 5 9-5-9-5ZM3 12l9 5 9-5M3 16l9 5 9-5',
+        lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z',
+        settings: 'M4 7h16M4 12h16M4 17h16M8 5v4m8 1v4m-7 1v4',
+        sliders: 'M6 4v6m0 4v6M12 4v10m0 4v2m6-16v2m0 4v10M4 10h4v4H4Zm6 4h4v4h-4Zm6-8h4v4h-4Z',
+        list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
+        clock: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 7v5l3 2',
+        layout: 'M3 4h18v16H3ZM3 8h18M9 8v12',
+        users: 'M15 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM5 20v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2M18 6a3 3 0 0 1 0 6M21 19v-1a4 4 0 0 0-2-3',
+        shield: 'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM9 12l2 2 4-4',
+        plug: 'M9 3v5m6-5v5M7 8h10v4a5 5 0 0 1-10 0V8Zm5 9v4',
+        sparkles: 'M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3ZM19 3v4m-2-2h4',
+        chart: 'M4 4v16h16M8 16v-4m4 4V8m4 8v-6m4 6V5',
+        bell: 'M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 12h4',
+        pulse: 'M3 12h5l3-7 3 14 3-7h4',
+    } %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="{{ paths[name] ?? paths.settings }}"/>
+    </svg>
+{% endmacro %}
+
+{% macro cards(cards, section = null, heading = 'h2') %}
+    {% import _self as overview %}
+    {% set restricted = section is not null %}
+    {% set tag = restricted ? 'div' : 'a' %}
+    <ul class="ff-overview-grid">
+        {% for card in cards %}
+            <li{% if card.searchSettings is defined %} data-settings-search="{{ card.searchSettings|json_encode|e('html_attr') }}"{% endif %}>
+                <{{ tag }} class="ff-overview-card"{% if not restricted %} href="{{ cpUrl(card.url) }}"{% endif %}>
+                    <span class="ff-overview-icon">{{ overview.icon(card.icon) }}</span>
+                    <{{ heading }}>{{ card.title }}</{{ heading }}>
+                    {% if not restricted %}
+                        <span class="ff-overview-arrow">{{ overview.icon('arrow') }}</span>
+                    {% endif %}
+                    {% if section == 'edition' %}
+                        <span class="ff-overview-edition-label">{{ (card.edition == 'pro' ? 'Pro' : 'Lite/Pro')|t('freeform') }}</span>
+                    {% endif %}
+                    {% if card.description %}<p>{{ card.description }}</p>{% endif %}
+                </{{ tag }}>
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% import _self as overview %}
+{% set sections = [
+    {handle: 'permission', title: 'Requires permission'|t('freeform'), icon: 'lock', cards: permissionCards},
+    {handle: 'edition', title: 'Available in other editions'|t('freeform'), icon: 'layers', cards: editionCards},
+]|filter(section => section.cards) %}
+<div class="ff-overview">
+    {% for group in cardGroups ?? (cards ? [{cards: cards, title: null}] : []) %}
+        {% if not loop.first %}<hr>{% endif %}
+        {% if group.title %}
+            <section class="ff-overview-group" aria-labelledby="ff-overview-group-{{ loop.index }}">
+                <h2 id="ff-overview-group-{{ loop.index }}">{{ group.title }}</h2>
+                {{ overview.cards(group.cards, null, 'h3') }}
+            </section>
+        {% else %}
+            {{ overview.cards(group.cards) }}
+        {% endif %}
+    {% endfor %}
+    {% for section in sections %}
+        {% if cards or not loop.first %}<hr>{% endif %}
+        <section class="ff-overview-restricted ff-overview-{{ section.handle }}" aria-labelledby="ff-overview-{{ section.handle }}-heading">
+            <h2 id="ff-overview-{{ section.handle }}-heading">
+                {{ overview.icon(section.icon) }}
+                {{ section.title }}
+            </h2>
+            {{ overview.cards(section.cards, section.handle, 'h3') }}
+        </section>
+    {% endfor %}
+</div>
+
+{% css %}
+.ff-overview-grid {
+    --ff-overview-gap: .75rem;
+    --ff-overview-quarter-width: calc((100% - 3 * var(--ff-overview-gap)) / 4);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, max(16rem, var(--ff-overview-quarter-width))), 1fr));
+    gap: var(--ff-overview-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ff-overview-card {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    gap: .625rem .75rem;
+    height: 100%;
+    min-block-size: 8.5rem;
+    padding: .875rem 1rem;
+    border: 1px solid var(--hairline-color, #dbe3eb);
+    border-radius: .5rem;
+    color: var(--text-color, inherit);
+}
+
+a.ff-overview-card:is(:hover, :focus-visible) {
+    color: var(--text-color, inherit);
+    text-decoration: none;
+    border-color: var(--link-color, #0b69a3);
+    background: color-mix(in srgb, var(--link-color, #0b69a3) 4%, transparent);
+}
+
+.ff-overview-arrow,
+a.ff-overview-card .ff-overview-icon {
+    color: var(--link-color, #0b69a3);
+}
+
+.ff-overview-card :is(h2, h3) {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.3;
+}
+
+.ff-overview-card p {
+    grid-column: 1 / -1;
+    align-self: start;
+    margin: 0;
+    color: var(--medium-text-color, #596775);
+    line-height: 1.5;
+}
+
+.ff-overview-icon {
+    display: grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    border-radius: .5rem;
+    background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.ff-overview-icon svg {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+}
+
+.ff-overview-arrow {
+    display: grid;
+    place-items: center;
+}
+
+.ff-overview-arrow svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+}
+
+.ff-overview-arrow:dir(rtl) {
+    transform: scaleX(-1);
+}
+
+.ff-overview > hr {
+    margin-block: 1.25rem 1rem;
+    margin-inline: calc(-1 * var(--pane-padding, 24px));
+}
+
+.ff-overview-group > h2 {
+    margin: 0 0 .75rem;
+    font-size: 1rem;
+}
+
+.ff-overview-restricted > h2 {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0 0 .75rem;
+    color: #737c88;
+    font-size: .875rem;
+}
+
+:root[data-dark-mode="dark"] .ff-overview-restricted > h2 {
+    color: #a0a8b3;
+}
+
+.ff-overview-restricted > h2 svg {
+    flex: none;
+    inline-size: .875rem;
+    block-size: .875rem;
+}
+
+.ff-overview-restricted .ff-overview-card {
+    gap: .375rem .5rem;
+    min-block-size: 0;
+    padding: .625rem .75rem;
+    border-color: color-mix(in srgb, var(--hairline-color, #dbe3eb) 70%, transparent);
+    color: #a9b1bc;
+}
+
+:root[data-dark-mode="dark"] .ff-overview-restricted .ff-overview-card {
+    color: #67717e;
+}
+
+.ff-overview-restricted .ff-overview-card :is(h3, .ff-overview-icon) {
+    color: color-mix(in srgb, currentColor 88%, var(--text-color, #3f4d5a));
+}
+
+.ff-overview-restricted .ff-overview-card h3 {
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.ff-overview-restricted .ff-overview-card p {
+    color: #b8bfc9;
+    font-size: .8125rem;
+    line-height: 1.45;
+}
+
+:root[data-dark-mode="dark"] .ff-overview-restricted .ff-overview-card p {
+    color: #59636f;
+}
+
+.ff-overview-restricted .ff-overview-icon {
+    inline-size: 1.625rem;
+    block-size: 1.625rem;
+    border-radius: .375rem;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+}
+
+.ff-overview-restricted .ff-overview-icon svg {
+    inline-size: .9375rem;
+    block-size: .9375rem;
+}
+
+.ff-overview-edition-label {
+    grid-column: 3;
+    justify-self: end;
+    padding: .125rem .375rem;
+    border-radius: .25rem;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 18%, transparent);
+    font-size: .75rem;
+    font-weight: 600;
+    text-align: center;
+}
+{% endcss %}

@@ -111,6 +111,11 @@ class FieldProvider
         return FavoriteFieldRecord::find()->count();
     }
 
+    public function clearCache(): void
+    {
+        $this->cache->clear();
+    }
+
     private function warmCache(): void
     {
         if ($this->cache->get(self::KEY_ALL)) {

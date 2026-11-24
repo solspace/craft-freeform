@@ -26,6 +26,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState("");
   const inputId = useId();
   // Translate separately so the confirmation stays a single, simple word.
   const confirmationWord = translate("delete");
@@ -59,6 +60,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
     }
 
     setIsDeleting(true);
+    setError("");
 
     try {
       await axios.post(`/api/forms/delete`, { id: data?.form.id });
@@ -72,6 +74,11 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
       setInputValue("");
 
       closeModal();
+    } catch (error) {
+      setError(
+        (axios.isAxiosError(error) && error.response?.data?.message) ||
+          translate("The form could not be moved to Trash."),
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -86,7 +93,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
       <FormWrapper>
         <div>
           {translate(
-            "Are you sure you want to permanently delete this form? This action cannot be undone.",
+            "This form and its submissions will move to Trash. You can restore them from the Forms dashboard.",
           )}
         </div>
         <label
@@ -110,6 +117,11 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
           onChange={handleChange}
           className="text fullwidth"
         />
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
       </FormWrapper>
 
       <ModalFooter>

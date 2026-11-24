@@ -586,6 +586,17 @@ class Submission extends Element
         }
 
         if ($isNew) {
+            // Match the shared lock used by the submission FK, but recheck availability
+            // in case the form was moved to merge trash after this request loaded it.
+            $db = \Craft::$app->getDb();
+            $lock = $db->getIsPgsql() ? 'FOR SHARE' : 'LOCK IN SHARE MODE';
+            $formId = $db->createCommand(
+                'SELECT [[id]] FROM '.FormRecord::TABLE.' WHERE [[id]] = :id AND [[dateTrashed]] IS NULL '.$lock,
+                [':id' => $this->formId],
+            )->queryScalar();
+            if (false === $formId) {
+                throw new FreeformException(Freeform::t('This form is no longer available.'));
+            }
             $contentData['id'] = $this->id;
             $insertData['id'] = $this->id;
             $insertData['sourceUrl'] = $this->sourceUrl;

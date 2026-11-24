@@ -10,6 +10,7 @@ import type { FormSearchProps } from "../../form-search";
 import { createFormSearch } from "../../form-search.utils";
 import { useFormLimitModal } from "../../modals/hooks/use-add-form-modal";
 import { Notices } from "../../notices/notices";
+import { Trash } from "../trashed";
 import { Archived } from "./archived/archived";
 import { Card } from "./card/card";
 import { CardLoading } from "./card/card.loading";
@@ -321,6 +322,7 @@ export const FormGrid: React.FC<
               <Archived data={archivedForms} />
             )}
           </ArchivedAndGroupWrapper>
+          <Trash />
         </Wrapper>
       </div>
     </ContentContainer>

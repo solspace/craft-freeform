@@ -1,0 +1,280 @@
+{% macro field(label, fields, attribute, hideLabel = false) %}
+    <label class="ff-merge-text-field">
+        <span{% if hideLabel %} class="visually-hidden"{% endif %}>{{ label }}</span>
+        <span class="select fullwidth">
+            <select {{ attribute }} data-merge-rule-picker required>
+                <option value="">{{ 'Choose a field'|t('freeform') }}</option>
+                {% for id, field in fields %}
+                    <option value="{{ id }}" data-name="{{ field.label ?? '' }}" data-handle="{{ field.handle }}">{{ field.label ? field.label ~ ' (' ~ field.handle ~ ')' : field.handle }}</option>
+                {% endfor %}
+            </select>
+        </span>
+    </label>
+{% endmacro %}
+
+<div hidden data-text-rules data-multiline-targets="{{ textTargets|filter(field => field.type == 'textarea')|keys|json_encode }}">
+    {{ hiddenInput('textRules', textInput|json_encode, {'data-text-rules-input': true}) }}
+    <template data-text-rule-row>
+        <tr><td colspan="2" class="ff-merge-text-rule-cell"></td></tr>
+    </template>
+    <template data-text-rule-template="split">
+        <fieldset class="ff-merge-text-rule" data-text-rule="split">
+            <legend class="visually-hidden">{{ 'Split a text field'|t('freeform') }}</legend>
+            <div class="ff-merge-text-layout">
+                <div class="ff-merge-text-fields ff-merge-text-split-options">
+                    <label class="ff-merge-text-field">
+                        <span>{{ 'Split at'|t('freeform') }}</span>
+                        <span class="select fullwidth"><select data-rule-format data-merge-rule-picker>
+                            <option value="first">{{ 'First whitespace'|t('freeform') }}</option>
+                            <option value="last">{{ 'Last whitespace'|t('freeform') }}</option>
+                        </select></span>
+                    </label>
+                    <label class="ff-merge-text-field">
+                        <span>{{ 'Single-word values'|t('freeform') }}</span>
+                        <span class="select fullwidth"><select data-rule-single-word data-merge-rule-picker>
+                            <option value="first">{{ 'First part'|t('freeform') }}</option>
+                            <option value="second">{{ 'Second part'|t('freeform') }}</option>
+                        </select></span>
+                    </label>
+                </div>
+                <div class="ff-merge-text-fields">
+                    {{ _self.field('First part goes to'|t('freeform'), textTargets, 'data-rule-output') }}
+                    {{ _self.field('Second part goes to'|t('freeform'), textTargets, 'data-rule-output') }}
+                </div>
+            </div>
+        </fieldset>
+    </template>
+
+    <template data-text-rule-template="combine">
+        <fieldset class="ff-merge-text-rule" data-text-rule="combine">
+            <legend class="visually-hidden">{{ 'Combine text fields'|t('freeform') }}</legend>
+            <div class="ff-merge-text-layout">
+                <div>
+                    <div class="ff-merge-text-fields" data-rule-inputs>
+                        {{ _self.field('Additional field'|t('freeform'), textSources, 'data-rule-input') }}
+                    </div>
+                    <button type="button" class="btn ff-merge-text-add" data-add-text-input>
+                        <span aria-hidden="true">+</span>{{ 'Add another field'|t('freeform') }}
+                    </button>
+                </div>
+                <div class="ff-merge-text-fields">
+                    {{ _self.field('Combined value goes to'|t('freeform'), textTargets, 'data-rule-output') }}
+                    <label class="ff-merge-text-field">
+                        <span>{{ 'Separator'|t('freeform') }}</span>
+                        {% set newline = 'New line'|t('freeform') %}
+                        <span class="select fullwidth"><select data-rule-format data-merge-rule-picker data-newline-label="{{ newline }}">
+                            <option value="space">{{ 'Space'|t('freeform') }}</option>
+                            <option value="comma">{{ 'Comma + space'|t('freeform') }}</option>
+                            <option value="comma-only">{{ 'Comma only'|t('freeform') }}</option>
+                            <option value="hyphen">{{ 'Hyphen with spaces'|t('freeform') }}</option>
+                            <option value="slash">{{ 'Slash with spaces'|t('freeform') }}</option>
+                            <option value="none">{{ 'No separator'|t('freeform') }}</option>
+                            <option value="newline">{{ newline }}</option>
+                        </select></span>
+                    </label>
+                    <p class="ff-merge-text-note">{{ 'Values are combined in the order shown. Blank values are skipped.'|t('freeform') }}</p>
+                </div>
+            </div>
+        </fieldset>
+    </template>
+    <template data-text-input-template>
+        <div class="ff-merge-text-extra">
+            {{ _self.field('Additional field'|t('freeform'), textSources, 'data-rule-input', true) }}
+            {% set removeLabel = 'Remove additional field'|t('freeform') %}
+            <button type="button" class="btn ff-merge-text-remove" data-remove-text-input aria-label="{{ removeLabel }}" title="{{ removeLabel }}">
+                <svg aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                    <path d="m3 3 6 6m0-6-6 6"/>
+                </svg>
+            </button>
+        </div>
+    </template>
+</div>
+
+{% js %}
+(() => {
+    const templates = document.querySelector('[data-text-rules]');
+    const form = templates.closest('form');
+    const input = templates.querySelector('[data-text-rules-input]');
+    const multilineTargets = new Set(JSON.parse(templates.dataset.multilineTargets).map(String));
+    const fields = Array.from(form.querySelectorAll('select[data-merge-field-id]'));
+    const labels = new Map(fields.map((field) => [
+        field.dataset.mergeFieldId, field.closest('tr').querySelector('[data-field-label]'),
+    ]));
+    const editors = new Map();
+    const unavailableInputs = new WeakMap();
+    const saved = new Map(JSON.parse(input.value)
+        .filter((rule) => rule && Array.isArray(rule.inputs))
+        .map((rule) => [String(rule.inputs[0]), rule]));
+    const textInputLimit = {{ constant('Solspace\\Freeform\\Library\\Forms\\Merge\\TextRules::MAX_INPUTS') }};
+    const values = (row, selector) => Array.from(row.querySelectorAll(selector), (control) => control.value);
+    const enhanceControls = (container) => form.dispatchEvent(new CustomEvent('merge-rule-controls', {detail: container}));
+    const destroyControls = (container) => {
+        container.querySelectorAll('select[data-merge-rule-picker]').forEach((select) => select.selectize?.destroy());
+    };
+
+    const updateSeparator = (editor) => {
+        const select = editor.querySelector('[data-newline-label]');
+        const allowsNewline = multilineTargets.has(editor.querySelector('[data-rule-output]').value);
+        const picker = select.selectize;
+        if (picker) {
+            if (allowsNewline && !picker.options.newline) {
+                picker.addOption({value: 'newline', text: select.dataset.newlineLabel});
+            } else if (!allowsNewline && picker.options.newline) {
+                if (select.value === 'newline') picker.setValue('space', true);
+                picker.removeOption('newline', true);
+            }
+            return;
+        }
+
+        const option = select.querySelector('option[value="newline"]');
+        if (allowsNewline && !option) {
+            select.add(new Option(select.dataset.newlineLabel, 'newline'));
+        } else if (!allowsNewline && option) {
+            if (select.value === 'newline') select.value = 'space';
+            option.remove();
+        }
+    };
+
+    const updateCombineInputs = (editor, usedInputs) => {
+        for (const select of editor.querySelectorAll('[data-rule-input]')) {
+            const unavailable = new Set(usedInputs);
+            unavailable.delete(select.value);
+            const previous = unavailableInputs.get(select) ?? new Set();
+            for (const id of new Set([...previous, ...unavailable])) {
+                const disabled = unavailable.has(id);
+                if (previous.has(id) === disabled) continue;
+
+                const picker = select.selectize;
+                if (picker) {
+                    if (Object.hasOwn(picker.options, id)) {
+                        picker.updateOption(id, {...picker.options[id], disabled});
+                    }
+                } else {
+                    const option = Array.from(select.options).find((candidate) => candidate.value === id);
+                    if (option) option.disabled = disabled;
+                }
+            }
+            unavailableInputs.set(select, unavailable);
+        }
+    };
+
+    const sync = () => {
+        for (const editor of form.querySelectorAll('[data-text-rule="combine"]')) {
+            updateSeparator(editor);
+        }
+        const rules = Array.from(form.querySelectorAll('[data-text-rule]'), (editor) => ({
+            type: editor.dataset.textRule,
+            inputs: [editor.dataset.ruleAnchor, ...values(editor, '[data-rule-input]')],
+            outputs: values(editor, '[data-rule-output]'),
+            format: editor.querySelector('[data-rule-format]').value,
+            singleWord: editor.querySelector('[data-rule-single-word]')?.value,
+        }));
+        input.value = JSON.stringify(rules);
+        const combinedFields = new Map(rules.flatMap((rule) =>
+            rule.inputs.slice(1).map((id) => [id, labels.get(rule.inputs[0]).dataset.fieldLabel])
+        ));
+        const usedInputs = new Set(rules.flatMap((rule) => rule.inputs).filter(Boolean));
+        for (const field of fields) {
+            const cell = field.closest('td');
+            const message = cell.querySelector('[data-combined-field]');
+            if (!message) continue;
+
+            const id = field.dataset.mergeFieldId;
+            const owner = combinedFields.get(id);
+            const combined = owner !== undefined && !field.value.startsWith('rule:');
+            const label = labels.get(id);
+            cell.querySelector('[data-direct-mapping]').hidden = combined;
+            message.hidden = !combined;
+            if (combined) {
+                label.removeAttribute('for');
+                message.firstElementChild.textContent = message.dataset.combinedField.replace('{field}', () => owner);
+            } else {
+                label.htmlFor = field.selectize?.$control_input.attr('id') ?? field.id;
+            }
+        }
+        for (const {editor} of editors.values()) {
+            const button = editor.querySelector('[data-add-text-input]');
+            if (button) {
+                updateCombineInputs(editor, usedInputs);
+                button.disabled = editor.querySelectorAll('[data-rule-input]').length >= textInputLimit - 1;
+            }
+        }
+    };
+
+    const appendInput = (editor) => {
+        const template = templates.querySelector('[data-text-input-template]');
+        const extra = template.content.firstElementChild.cloneNode(true);
+        editor.querySelector('[data-rule-inputs]').append(extra);
+        return extra.querySelector('select');
+    };
+
+    const render = (field, initial = null) => {
+        const anchor = field.dataset.mergeFieldId;
+        const current = editors.get(anchor);
+        if (current) {
+            if (field.value === 'rule:' + current.editor.dataset.textRule) return;
+            destroyControls(current.editor);
+            current.container.remove();
+            editors.delete(anchor);
+        }
+        if (field.value !== 'rule:split' && field.value !== 'rule:combine') return;
+
+        const type = field.value.slice(5);
+        const template = templates.querySelector('[data-text-rule-template="' + type + '"]');
+        const editor = template.content.firstElementChild.cloneNode(true);
+        editor.dataset.ruleAnchor = anchor;
+        if (type === 'combine' && initial?.type === type) {
+            for (let i = 2; i < Math.min(initial.inputs.length, textInputLimit); i++) appendInput(editor);
+            editor.querySelectorAll('[data-rule-input]').forEach((select, i) => {
+                select.value = initial.inputs[i + 1] ?? '';
+            });
+        }
+        if (initial?.type === type) {
+            editor.querySelectorAll('[data-rule-output]').forEach((select, i) => {
+                select.value = initial.outputs?.[i] ?? '';
+            });
+            editor.querySelector('[data-rule-format]').value = initial.format;
+            const singleWord = editor.querySelector('[data-rule-single-word]');
+            if (singleWord) singleWord.value = initial.singleWord ?? 'first';
+        }
+        const container = templates.querySelector('[data-text-rule-row]').content.firstElementChild.cloneNode(true);
+        container.firstElementChild.append(editor);
+        field.closest('tr').after(container);
+        editors.set(anchor, {editor, container});
+        enhanceControls(editor);
+    };
+
+    for (const field of fields) {
+        render(field, saved.get(field.dataset.mergeFieldId));
+    }
+    sync();
+    for (const eventName of ['change', 'merge-mapping-change', 'merge-rule-change']) {
+        form.addEventListener(eventName, (event) => {
+            if (event.target.matches('[data-merge-field-id]')) {
+                render(event.target);
+                sync();
+            } else if (event.target.closest('[data-text-rule]')) {
+                sync();
+            }
+        });
+    }
+    form.addEventListener('click', (event) => {
+        const button = event.target.closest('button');
+        const editor = button?.closest('[data-text-rule]');
+        if (!editor) return;
+        if (button.hasAttribute('data-add-text-input')) {
+            const select = appendInput(editor);
+            enhanceControls(select.parentElement);
+            sync();
+            if (select.selectize) select.selectize.focus();
+            else select.focus();
+        } else if (button.hasAttribute('data-remove-text-input')) {
+            const extra = button.closest('.ff-merge-text-extra');
+            destroyControls(extra);
+            extra.remove();
+            sync();
+            editor.querySelector('[data-add-text-input]').focus();
+        }
+    });
+})();
+{% endjs %}

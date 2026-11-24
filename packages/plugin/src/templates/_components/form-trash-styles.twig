@@ -1,0 +1,46 @@
+{% css %}
+.ff-trash-confirmation-copy { white-space: normal; }
+.ff-trash-confirmation-copy > p { margin: 0; }
+.ff-trash-confirmation-copy > p + p { margin-block-start: .625rem; }
+.ff-trash-confirmation-warning { color: var(--fg-error, #a5272e); }
+:root[data-dark-mode="dark"] .ff-trash-confirmation-warning { color: var(--fg-error, #f47780); }
+.ff-merge-trash { --activity-table-secondary-width: 18%; margin-block-end: 1.5rem; }
+.ff-dashboard-trash { margin: 0; }
+.ff-dashboard-trash .ff-merge-form-label { display: flex; max-width: 100%; }
+.ff-dashboard-trash .ff-merge-trash-badge { flex: none; }
+.ff-dashboard-trash > p { margin: .75rem 1rem; }
+.ff-dashboard-form-actions > [type="button"] { min-height: 28px; height: 28px; }
+.ff-dashboard-form-actions > .btn.ff-merge-trash-delete { min-inline-size: 9.25rem; }
+.ff-dashboard-form-actions > [type="button"] svg { width: .875rem; height: .875rem; flex: none; }
+.ff-merge-trash .ff-merge-handle { margin-inline-start: .25rem; opacity: .7; font-weight: 400; }
+.ff-merge-trash-badge {
+    --trash-badge-color: #8b4b0c;
+    display: inline-block;
+    margin-inline-start: .25rem;
+    padding: .0625rem .375rem;
+    border-radius: 1rem;
+    background: color-mix(in srgb, #f59e0b 16%, transparent);
+    color: var(--trash-badge-color);
+    font-size: .6875rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+:root[data-dark-mode="dark"] .ff-merge-trash-badge { --trash-badge-color: #fbbf58; }
+.ff-merge-trash-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.ff-merge-trash-actions .btn { display: inline-flex; align-items: center; gap: .375rem; }
+.ff-merge-trash .ff-activity-table tbody :is(th, td) { padding-block: .375rem; }
+.ff-merge-trash-actions > form > .btn { height: 28px; min-height: 28px; padding-inline: .5rem; font-size: .8125rem; }
+.ff-merge-trash-actions :is(.ff-merge-trash-restore, .ff-merge-trash-delete) {
+    color: var(--trash-action-color);
+    background-color: color-mix(in srgb, var(--trash-action-color) 13%, var(--pane-bg, #fff));
+}
+.ff-merge-trash-actions :is(.ff-merge-trash-restore, .ff-merge-trash-delete):enabled:hover {
+    background-color: color-mix(in srgb, var(--trash-action-color) 20%, var(--pane-bg, #fff));
+}
+.ff-merge-trash-restore { --trash-action-color: #197747; }
+:root[data-dark-mode="dark"] .ff-merge-trash-restore { --trash-action-color: #65d49a; }
+.ff-merge-trash-delete { --trash-action-color: var(--fg-error, #a5272e); }
+:root[data-dark-mode="dark"] .ff-merge-trash-delete { --trash-action-color: var(--fg-error, #f47780); }
+.ff-merge-trash-restore svg { width: .875rem; height: .875rem; flex: none; }
+.ff-merge-trash-restore svg:dir(rtl) { transform: scaleX(-1); }
+{% endcss %}

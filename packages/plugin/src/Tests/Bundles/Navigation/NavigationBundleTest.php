@@ -16,9 +16,11 @@ use Solspace\Freeform\Services\SettingsService;
 #[CoversNothing]
 class NavigationBundleTest extends TestCase
 {
+    #[TestWith(['freeform/export', true])]
     #[TestWith(['freeform/export/profiles', true])]
     #[TestWith(['freeform/export/notifications/new', true])]
     #[TestWith(['freeform/export/forms', true])]
+    #[TestWith(['freeform/export/merge', true])]
     #[TestWith(['freeform/import/forms', true])]
     #[TestWith(['freeform/import/formie/v3', true])]
     #[TestWith(['freeform/notifications', false])]
@@ -82,7 +84,7 @@ class NavigationBundleTest extends TestCase
                 [strtolower(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS)],
             );
             self::assertSame($selected, $event->getSubnavItems()['export']['sel']);
-            self::assertSame('freeform/export/profiles', $event->getSubnavItems()['export']['url']);
+            self::assertSame('freeform/export', $event->getSubnavItems()['export']['url']);
         } finally {
             \Craft::$app = $previousApp;
         }

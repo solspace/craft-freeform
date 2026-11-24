@@ -107,6 +107,8 @@ class EmptyStatePermissionsTest extends TestCase
         $twig->addFunction(new TwigFunction('csrfInput', static fn () => ''));
         $twig->addGlobal('view', new class {
             public function registerAssetBundle(string $class): void {}
+
+            public function registerTranslations(string $category, array $messages): void {}
         });
 
         return $twig->render('page', array_merge([

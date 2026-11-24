@@ -1,0 +1,582 @@
+{% extends "freeform/export/_layout" %}
+{% hook "freeform.prepareCpTemplate" %}
+{% import "_includes/forms" as formsUi %}
+{% import "freeform/export/merge/_text-examples" as textRulesUi %}
+
+{% set title = 'Merge Forms'|t('freeform') %}
+{% set usePlanB = craft.app.request.getQueryParam('reviewLayout') == 'plan-b' %}
+{% set mergeUrl = cpUrl('freeform/export/merge', usePlanB ? {reviewLayout: 'plan-b'} : {}) %}
+{% set crumbs = [{label: craft.freeform.name, url: cpUrl('freeform')}] %}
+{% if step == 'choose' %}
+    {% set crumbs = crumbs|merge([{label: title, current: true}]) %}
+{% else %}
+    {% set crumbs = crumbs|merge([
+        {label: title, url: mergeUrl},
+        {label: (step == 'map' ? 'Map fields' : 'Review the merge')|t('freeform'), current: true},
+    ]) %}
+{% endif %}
+
+{% macro labelWithHandle(name, handle) %}
+    {% if name %}<span>{{ name }}</span>{% endif %}
+    {% if handle %}<code class="ff-merge-handle smalltext">{{ handle }}</code>{% endif %}
+{% endmacro %}
+
+{% set content %}
+    {% include 'freeform/_components/activity-table-styles' only %}
+    {% include 'freeform/export/merge/_job-styles' only %}
+    {% include 'freeform/export/merge/_text-styles' only %}
+    {% set result = craft.app.session.getFlash('freeformMergeResult') %}
+    <div class="ff-form-merge{{ step == 'review' ? ' ff-form-merge-review' }}">
+        {% if step == 'review' %}
+            <h2 class="ff-merge-review-heading">{{ 'Review the merge'|t('freeform') }}</h2>
+        {% endif %}
+        {% if result %}
+            {% include 'freeform/export/merge/_result' with {result} only %}
+        {% endif %}
+
+        {% if error is defined %}
+            <p class="error" role="alert">{{ error }}</p>
+        {% endif %}
+
+        {% if step == 'choose' %}
+            <h2>{{ 'Choose forms'|t('freeform') }}</h2>
+            {% if forms|length < 2 %}
+                <p class="light">{{ 'You need access to manage at least two active Freeform forms to start a merge.'|t('freeform') }}</p>
+            {% else %}
+                {% set options = [{label: 'Select a form'|t('freeform'), value: ''}] %}
+                {% for form in forms %}
+                    {% set options = options|merge([{
+                        label: form.name ~ ' (' ~ form.handle ~ ')',
+                        value: form.id,
+                        data: {name: form.name, handle: form.handle, color: form.color},
+                    }]) %}
+                {% endfor %}
+                {% set pickerAttributes = {required: true, data: {'merge-form-picker': true}} %}
+                <form action="{{ mergeUrl }}" method="post">
+                    {{ csrfInput() }}
+                    <div class="ff-merge-form-pair ff-merge-picker">
+                        {{ formsUi.selectField({
+                            id: 'merge-source', name: 'source', label: 'Merge from'|t('freeform'),
+                            instructions: 'Copy fields and optionally move submissions from this form.'|t('freeform'),
+                            options, value: sourceId ?? '', required: true, inputAttributes: pickerAttributes, class: 'fullwidth',
+                        }) }}
+                        <span class="ff-merge-direction" aria-hidden="true"><span>→</span></span>
+                        {{ formsUi.selectField({
+                            id: 'merge-target', name: 'target', label: 'Merge into'|t('freeform'),
+                            instructions: 'This form receives the fields and any submissions you move.'|t('freeform'),
+                            options, required: true, inputAttributes: pickerAttributes, class: 'fullwidth',
+                        }) }}
+                    </div>
+                    <div class="ff-merge-actions">
+                        <button type="submit" name="step" value="map" class="btn submit" disabled>{{ 'Continue'|t('freeform') }}</button>
+                    </div>
+                </form>
+                {% include 'freeform/export/merge/_picker-script' only %}
+            {% endif %}
+            {% if jobs %}
+                <hr>
+                {% include 'freeform/export/merge/_jobs' with {jobs, forms} only %}
+            {% endif %}
+            {% if trashedForms %}
+                <hr>
+                {% include 'freeform/_components/form-trash' with {trashedForms, trashUrl: mergeUrl, mergeOnly: true} only %}
+            {% endif %}
+        {% else %}
+            <div class="ff-merge-form-pair ff-merge-selected is-ready">
+                {% for item in [{form: source, label: 'Merge from'}, {form: target, label: 'Merge into'}] %}
+                    {% if not loop.first %}<span class="ff-merge-direction" aria-hidden="true"><span>→</span></span>{% endif %}
+                    <div class="ff-merge-selected-form">
+                        <strong>{{ item.label|t('freeform') }}</strong>
+                        <div class="ff-merge-selected-name">
+                            {% include 'freeform/_components/form-color-dot' with {color: item.form.color} only %}
+                            <span>{{ item.form.name }}</span>
+                        </div>
+                        <code class="ff-merge-handle smalltext">{{ item.form.handle }}</code>
+                    </div>
+                {% endfor %}
+                <a class="btn ff-merge-change-forms" href="{{ mergeUrl }}">{{ 'Change Forms'|t('freeform') }}</a>
+            </div>
+
+            <form action="{{ mergeUrl }}" method="post"{% if step == 'map' %} data-merge-mapping{% endif %}>
+                {{ csrfInput() }}
+                {{ hiddenInput('source', source.id) }}
+                {{ hiddenInput('target', target.id) }}
+
+                {% if step == 'map' %}
+                    {% set canTransformText = canMove and textSources and textTargets %}
+                    {% set canSplit = canTransformText and textTargets|length >= 2 %}
+                    {% set canCombine = canTransformText and textSources|length >= 2 %}
+                    <h2>{{ 'Map fields'|t('freeform') }}</h2>
+                    {% if rows %}
+                        {% if canMove %}
+                            <p>{{ 'Excluded field values are lost when their submissions move.'|t('freeform') }}</p>
+                        {% endif %}
+                        <div class="ff-merge-table ff-merge-field-table">
+                            <table class="data fullwidth">
+                                <thead><tr>
+                                    <th scope="col">{{ 'Field to merge'|t('freeform') }}</th>
+                                    <th scope="col">{{ 'Mapping action'|t('freeform') }}</th>
+                                </tr></thead>
+                                <tbody>
+                                {% for id, row in rows %}
+                                    {% set options = [] %}
+                                    {% set directTargets = row.targets|filter((label, targetId) => row.optionTargets[targetId] is not defined) %}
+                                    {% set selectedAction = input[id] ?? 'skip' %}
+                                    {% if row.optionTargets[selectedAction] is defined %}
+                                        {% set selectedAction = 'options:' ~ selectedAction %}
+                                    {% endif %}
+                                    {% if textSources[id] is defined and (canSplit or canCombine) %}
+                                        {% set options = [{optgroup: 'Transform text'|t('freeform')}] %}
+                                        {% if canSplit %}
+                                            {% set options = options|merge([{label: 'Split'|t('freeform'), value: 'rule:split'}]) %}
+                                        {% endif %}
+                                        {% if canCombine %}
+                                            {% set options = options|merge([{label: 'Combine'|t('freeform'), value: 'rule:combine'}]) %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% set options = options|merge([{label: 'Exclude field and values'|t('freeform'), value: 'skip'}]) %}
+                                    {% if directTargets %}
+                                        {% set group = {optgroup: 'Map to existing field'|t('freeform')} %}
+                                        {% set options = options|merge([group]) %}
+                                        {% for targetFieldId, label in directTargets %}
+                                            {% set field = targetFields[targetFieldId] %}
+                                            {% set options = options|merge([{label, value: targetFieldId, data: {name: field.label ?? '', handle: field.handle ?? ''}}]) %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if row.optionTargets %}
+                                        {% set options = options|merge([{optgroup: 'Merge options'|t('freeform')}]) %}
+                                        {% for targetFieldId in row.optionTargets|keys %}
+                                            {% set field = targetFields[targetFieldId] %}
+                                            {% set name = 'Merge options into {field}'|t('freeform', {field: field.label ?: field.handle}) %}
+                                            {% set options = options|merge([{label: name, value: 'options:' ~ targetFieldId, data: {name, handle: field.handle}}]) %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if row.canAdd and pages %}
+                                        {% set options = options|merge([{optgroup: 'Add as a new field'|t('freeform')}]) %}
+                                        {% for pageId, label in pages %}
+                                            {% set options = options|merge([{label: 'Add to {page}'|t('freeform', {page: label}), value: 'add:' ~ pageId}]) %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <tr>
+                                        <th scope="row"><label for="merge-field-{{ id }}" class="ff-merge-label-with-handle" data-field-label="{{ sourceFields[id].label ?: sourceFields[id].handle }}">{{ _self.labelWithHandle(sourceFields[id].label, sourceFields[id].handle) }}</label></th>
+                                        <td>
+                                            <div data-direct-mapping>
+                                                {{ formsUi.select({
+                                                    id: 'merge-field-' ~ id, name: 'mapping[' ~ id ~ ']',
+                                                    options, value: selectedAction, class: 'fullwidth',
+                                                    inputAttributes: {required: true, data: {'merge-field-picker': true, 'merge-field-id': id}},
+                                                }) }}
+                                            </div>
+                                            {% if canMove and textSources[id] is defined %}
+                                                <div class="ff-merge-combined-field ff-merge-action-combine" data-combined-field="{{ 'Combined with {field}'|t('freeform') }}" hidden>
+                                                    <span></span>
+                                                </div>
+                                            {% endif %}
+                                            {% if not row.canAdd %}
+                                                <small class="light">{{ 'This field type or configuration can only be excluded.'|t('freeform') }}</small>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="light">{{ 'This form has no fields that store submission values.'|t('freeform') }}</p>
+                    {% endif %}
+
+                    {% if canMove and textSources and textTargets and (textSources|length >= 2 or textTargets|length >= 2) %}
+                        {% include 'freeform/export/merge/_text-rules' with {textSources, textTargets, textInput} only %}
+                    {% endif %}
+
+                    {% if canMove %}
+                        <fieldset class="ff-merge-submissions">
+                            <legend class="visually-hidden">{{ 'Merge options'|t('freeform') }}</legend>
+                            <div class="ff-merge-submission-option">
+                                {{ formsUi.lightswitch({
+                                    id: 'merge-move', name: 'move', on: move, labelledBy: 'merge-move-label',
+                                }) }}
+                                <span id="merge-move-label" class="ff-merge-submission-label">{{ 'Move submissions to the receiving form'|t('freeform') }}</span>
+                            </div>
+                            {% if canDelete %}
+                                <div class="ff-merge-submission-option" data-merge-delete-option{% if not move %} hidden{% endif %}>
+                                    {{ formsUi.lightswitch({
+                                        id: 'merge-delete', name: 'delete', on: move and delete,
+                                        labelledBy: 'merge-delete-label', describedBy: 'merge-delete-instructions',
+                                    }) }}
+                                    <div>
+                                        <span id="merge-delete-label" class="ff-merge-submission-label">{{ 'Move the original form to trash after the merge'|t('freeform') }}</span>
+                                        <p id="merge-delete-instructions" class="light">{{ 'If it’s empty after the move, you can restore it from Recently merged forms.'|t('freeform') }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </fieldset>
+                    {% else %}
+                        <p class="light">{{ 'Moving submissions requires permission to manage submissions on both forms.'|t('freeform') }}</p>
+                    {% endif %}
+
+                    <div class="ff-merge-actions ff-merge-review-actions">
+                        <button type="submit" name="step" value="review" class="btn submit" aria-describedby="merge-review-instructions">{{ 'Review Merge'|t('freeform') }}</button>
+                        <p id="merge-review-instructions" class="light" role="status" hidden
+                           data-need-field="{{ (canMove
+                               ? 'Turn on Move submissions to use these mappings, or add a field or merge options to update the receiving form only.'
+                               : 'Add a field or merge options to continue.')|t('freeform') }}"
+                           data-need-move="{{ 'Turn on Move submissions to use your Split or Combine rules. For a fields-only merge, change those mapping actions.'|t('freeform') }}"></p>
+                    </div>
+                    {% include 'freeform/export/merge/_picker-script' only %}
+                {% else %}
+                    {% for id, row in rows %}{{ hiddenInput('mapping[' ~ id ~ ']', input[id]) }}{% endfor %}
+                    {% if textInput %}{{ hiddenInput('textRules', textInput|json_encode) }}{% endif %}
+                    {% if move %}{{ hiddenInput('move', '1') }}{% endif %}
+                    {% if delete %}{{ hiddenInput('delete', '1') }}{% endif %}
+                    {{ hiddenInput('token', review.token) }}
+
+                    <p class="ff-merge-review-submissions{{ move and review.count ? ' ff-merge-review-submissions-moving' }}">
+                        {% if move and review.count %}
+                            <svg class="ff-merge-review-transfer-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M11 5h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-4M3 10h10m-3-3 3 3-3 3"/>
+                            </svg>
+                        {% endif %}
+                        <span>{{ (move ? '{count, plural, =0{No submissions will move.} one{# submission will move to the receiving form.} other{# submissions will move to the receiving form.}}' : 'Submissions will stay on the original form.')|t('freeform', {count: review.count}) }}</span>
+                    </p>
+
+                    {% if rows and not usePlanB %}
+                        {% include 'freeform/export/merge/_review-mapping' with {rows, review, move, sourceFields, targetFields, pages} only %}
+                    {% elseif rows %}
+                        {% set ruleInputs = review.textRules|reduce((ids, rule) => ids|merge(rule.inputs), []) %}
+                        <div class="ff-merge-table ff-merge-field-table ff-merge-review-table">
+                            <table class="data fullwidth">
+                                <thead><tr>
+                                    <th scope="col" id="merge-review-source-heading">{{ 'Field to merge'|t('freeform') }}</th>
+                                    <th scope="col" id="merge-review-action-heading">{{ 'Mapping action'|t('freeform') }}</th>
+                                </tr></thead>
+                                <tbody>
+                                {% for id in rows|keys %}
+                                    {% set matchingRules = review.textRules|filter(rule => rule.inputs[0] == id) %}
+                                    {% set rule = matchingRules|first %}
+                                    {% if rule %}
+                                        {% set ruleIndex = matchingRules|keys|first %}
+                                        <tr>
+                                            <td colspan="2" class="ff-merge-review-rule-cell" headers="merge-review-source-heading merge-review-action-heading">
+                                                <div class="ff-merge-text-examples ff-merge-review-rule">
+                                                    <div class="ff-merge-review-rule-summary">
+                                                        <div class="ff-merge-review-fields ff-merge-review-rule-sources">
+                                                            {% for fieldId in rule.inputs %}
+                                                                <span class="ff-merge-label-with-handle">{{ _self.labelWithHandle(sourceFields[fieldId].label, sourceFields[fieldId].handle) }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="ff-merge-mapping-action">
+                                                            {% include 'freeform/export/merge/_mapping-icon' with {action: rule.type} only %}
+                                                            <div class="ff-merge-review-fields">
+                                                                <span>{{ textRulesUi.ruleLabel(rule) }}</span>
+                                                                {% for fieldId in rule.outputs %}
+                                                                    <span class="ff-merge-label-with-handle">{{ _self.labelWithHandle(targetFields[fieldId].label, targetFields[fieldId].handle) }}</span>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% if not review.problems %}
+                                                        <details class="ff-merge-review-examples">
+                                                            <summary>{{ 'View examples'|t('freeform') }}</summary>
+                                                            {{ textRulesUi.preview(rule, review.textExamples[ruleIndex] ?? []) }}
+                                                        </details>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% elseif id not in ruleInputs %}
+                                        {% set action = review.optionMerges[id] is defined ? 'options' : (review.additions[id] is defined ? 'add' : (not move ? null : (review.map[id] is defined ? 'map' : 'skip'))) %}
+                                        <tr{% if action %} class="ff-merge-review-action-row ff-merge-action-{{ action }}"{% endif %}>
+                                            <th scope="row">
+                                                <span class="ff-merge-label-with-handle">{{ _self.labelWithHandle(sourceFields[id].label, sourceFields[id].handle) }}</span>
+                                            </th>
+                                            <td>
+                                                <div class="ff-merge-mapping-action">
+                                                    {% if action %}
+                                                        {% include 'freeform/export/merge/_mapping-icon' with {action} only %}
+                                                    {% endif %}
+                                                    {% if action in ['map', 'options'] %}
+                                                        {% set field = targetFields[review.map[id]] %}
+                                                        <div>
+                                                            <span class="ff-merge-label-with-handle">{{ _self.labelWithHandle(field.label, field.handle) }}</span>
+                                                            {% if action == 'options' %}{% include 'freeform/export/merge/_option-preview' with {options: review.optionMerges[id]} only %}{% endif %}
+                                                        </div>
+                                                    {% elseif action == 'add' %}
+                                                        {% set addition = review.additions[id] %}
+                                                        {% set pageName %}<strong>{{ pages[addition.pageId] }}</strong>{% endset %}
+                                                        <span class="ff-merge-label-with-handle">
+                                                            <span class="ff-merge-add-destination">{{ 'Add to {page} page'|t('freeform', {page: '__MERGE_PAGE__'})|e|replace({'__MERGE_PAGE__': pageName})|raw }}</span>
+                                                            <code class="ff-merge-handle smalltext">{{ addition.handle }}</code>
+                                                        </span>
+                                                    {% elseif action == 'skip' %}
+                                                        <div>
+                                                            <span>{{ 'Exclude field and values'|t('freeform') }}</span>
+                                                            {% if review.omitted[id] is defined %}
+                                                                <small>{% include 'freeform/export/merge/_exclusion-warning' with {count: review.omitted[id].count} only %}</small>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% else %}
+                                                        <span class="light">{{ 'No change'|t('freeform') }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                    {% if review.problems %}
+                        <ul class="errors">
+                            {% for problem in review.problems %}<li>{{ problem }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if not delete %}<p>{{ 'The original form will be kept.'|t('freeform') }}</p>{% endif %}
+
+                    {% if not review.problems %}
+                        {% include 'freeform/export/merge/_confirmation' with {id: 'merge-confirm', move, trashOriginal: delete, queued: false} only %}
+                    {% endif %}
+
+                    <div class="ff-merge-actions">
+                        <button type="submit" name="step" value="back" class="btn" formnovalidate>{{ 'Back to Mapping'|t('freeform') }}</button>
+                        {% if not review.problems %}
+                            <button type="submit" name="step" value="apply" class="btn submit" disabled>{{ 'Merge Forms'|t('freeform') }}</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </form>
+        {% endif %}
+    </div>
+{% endset %}
+
+{% css %}
+.ff-form-merge { --merge-field-column: 38%; --merge-field-cell-padding: .75rem; container-type: inline-size; }
+.ff-merge-review-heading { margin-block: 0 .875rem; }
+.ff-form-merge .ff-activity-table { max-width: none; }
+.ff-merge-form-pair { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: .75rem; }
+.ff-merge-picker > .field { display: flex; flex-direction: column; justify-content: space-between; margin: 0; }
+.ff-merge-direction { display: grid; place-items: center; align-self: end; width: 30px; height: var(--ui-control-height, 34px); color: var(--secondary-text-color, #596979); font-size: 22px; line-height: 1; }
+.ff-merge-direction:dir(rtl) { transform: scaleX(-1); }
+.ff-merge-form-pair.is-ready .ff-merge-direction { color: #187d45; }
+:root[data-dark-mode="dark"] .ff-merge-form-pair.is-ready .ff-merge-direction { color: #51ca84; }
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+    .ff-merge-form-pair.is-ready .ff-merge-direction > span {
+        animation: ff-merge-direction-nudge 3.6s ease-in-out infinite;
+    }
+    @keyframes ff-merge-direction-nudge {
+        0%, 65%, 100% { transform: translateX(0); }
+        30% { transform: translateX(4px); }
+    }
+}
+.ff-form-merge .selectize-control.single .selectize-input {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: var(--ui-control-height, 34px);
+    padding-block: 6px;
+    padding-inline: 10px 30px;
+}
+.ff-merge-field-table [data-direct-mapping] .selectize-control.single .selectize-input:not(.focus) {
+    background-color: color-mix(in srgb, var(--button-bg, #d7dce2) 45%, var(--pane-bg, #fff));
+    outline: 1px solid var(--hairline-color, #dbe2eb);
+    outline-offset: -1px;
+}
+.ff-merge-field-table [data-direct-mapping] .selectize-control.single .selectize-input:not(.focus):hover {
+    background-color: color-mix(in srgb, var(--button-bg, #d7dce2) 65%, var(--pane-bg, #fff));
+}
+:root[data-dark-mode="dark"] .ff-merge-field-table [data-direct-mapping] .selectize-control.single .selectize-input:not(.focus) {
+    background-color: color-mix(in srgb, var(--button-bg, #21262d) 94%, var(--text-color, #c9d1d9));
+}
+:root[data-dark-mode="dark"] .ff-merge-field-table [data-direct-mapping] .selectize-control.single .selectize-input:not(.focus):hover {
+    background-color: color-mix(in srgb, var(--button-bg, #21262d) 89%, var(--text-color, #c9d1d9));
+}
+.ff-form-merge .selectize-input > :is(.item, input) { min-width: 0; margin: 0; line-height: 20px; }
+.ff-form-merge .selectize-input .ff-merge-picker-option > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ff-merge-field-table .selectize-input.ff-merge-mapping-searching > .item { display: none; }
+.ff-merge-picker-option, .ff-merge-mapping-action { display: flex; align-items: center; gap: 8px; line-height: 20px; }
+.ff-merge-picker-menu {
+    --merge-menu-text: var(--text-color, #33404d);
+    --merge-menu-active: color-mix(in srgb, var(--link-color, #2563eb) 13%, var(--pane-bg, #fff));
+    --merge-menu-selected: color-mix(in srgb, var(--link-color, #2563eb) 7%, var(--pane-bg, #fff));
+    font-size: 14px;
+}
+.ff-merge-picker-menu .selectize-dropdown-content { max-height: 300px; }
+.ff-merge-picker-menu .option { position: relative; padding-block: 8px; padding-inline: 10px 30px; }
+.selectize-dropdown.ff-merge-picker-menu .option.selected {
+    background: var(--merge-menu-selected);
+    color: var(--merge-menu-text) !important;
+}
+.selectize-dropdown.ff-merge-picker-menu .option:is(.active, :hover):not([aria-disabled="true"]) {
+    background: var(--merge-menu-active);
+    color: var(--merge-menu-text);
+}
+.ff-merge-picker-menu .option.selected::before {
+    position: absolute;
+    inset-inline-end: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    content: '✓';
+    content: '✓' / '';
+    font-size: 12px;
+    line-height: 1;
+}
+.ff-merge-picker-menu .ff-merge-picker-option > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.ff-merge-handle { opacity: .7; font-weight: 400; }
+.ff-merge-picker-option .ff-merge-handle { margin-inline-start: .2rem; }
+.ff-merge-label-with-handle { display: inline-flex; align-items: baseline; gap: .15rem .4rem; flex-wrap: wrap; }
+.ff-merge-picker-menu .optgroup-header { padding: .4rem .625rem; font-size: .75rem; font-weight: 600; color: var(--light-text-color, #596979); }
+.ff-merge-action-icon {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    color: var(--merge-action-color);
+    background: color-mix(in srgb, var(--merge-action-color) 14%, transparent);
+}
+.ff-merge-action-icon svg { display: block; width: .75rem; height: .75rem; }
+.selectize-dropdown.ff-merge-picker-menu .ff-merge-action-icon path { fill: none; stroke-width: 1.75; }
+.ff-merge-action-map svg:dir(rtl) { transform: scaleX(-1); }
+.ff-merge-action-map { --merge-action-color: var(--link-color, #2563eb); }
+.ff-merge-action-split, .ff-merge-action-combine { --merge-action-color: #7041be; }
+:root[data-dark-mode="dark"] :is(.ff-merge-action-split, .ff-merge-action-combine) { --merge-action-color: #b6a0f0; }
+.ff-merge-action-add, .ff-merge-action-options { --merge-action-color: #187d45; }
+.ff-merge-action-skip { --merge-action-color: #b42332; }
+:root[data-dark-mode="dark"] :is(.ff-merge-action-add, .ff-merge-action-options) { --merge-action-color: #51ca84; }
+:root[data-dark-mode="dark"] .ff-merge-action-skip { --merge-action-color: #f47780; }
+.ff-merge-picker-option .ff-merge-picker-dot { --merge-accent: var(--secondary-text-color, #596979); flex-basis: 12px; height: 12px; }
+.ff-merge-selected {
+    position: relative;
+    grid-template-columns: var(--merge-field-column) minmax(0, 1fr) auto;
+    gap: 0;
+    align-items: center;
+    padding-block: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 0 0 1px var(--hairline-color, #dbe2eb);
+    border-radius: 6px;
+    background: var(--gray-050, #f4f7fb);
+}
+.ff-merge-selected .ff-merge-direction {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--merge-field-column) - 2.25rem);
+    margin-block: auto;
+    font-size: 1.5rem;
+}
+.ff-merge-selected-form { padding-inline: var(--merge-field-cell-padding); overflow-wrap: anywhere; }
+.ff-merge-selected-form:first-child { padding-inline-end: 2.75rem; }
+.ff-merge-selected-form > strong { color: var(--light-text-color, #596979); font-size: .8125rem; }
+.ff-merge-selected-name {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-block: .2rem;
+    font-size: 1.25rem;
+    font-weight: 650;
+    line-height: 1.25;
+}
+.ff-merge-selected-name .ff-merge-chip-dot { --merge-accent: var(--secondary-text-color, #596979); flex-basis: .75rem; height: .75rem; }
+.ff-merge-selected-form > code { display: block; margin-inline-start: 1.25rem; }
+.ff-merge-change-forms { display: inline-flex; align-items: center; justify-self: start; margin-inline: var(--merge-field-cell-padding); white-space: nowrap; }
+.ff-merge-table { overflow-x: auto; }
+.ff-merge-table table { table-layout: fixed; }
+.ff-merge-table > table > :is(thead, tbody) > tr > th:first-child { width: var(--merge-field-column); overflow-wrap: anywhere; }
+.ff-merge-table table th, .ff-merge-table table td { vertical-align: middle; }
+.ff-merge-field-table > table > :is(thead, tbody) > tr > :is(th, td) { padding-inline: var(--merge-field-cell-padding); }
+.ff-merge-review-submissions {
+    margin-block: 1rem 1.5rem;
+    padding: .75rem 1rem;
+    border: 1px solid var(--hairline-color, #dbe2eb);
+    border-radius: 6px;
+    background: var(--gray-050, #f4f7fb);
+    font-weight: 600;
+}
+.ff-merge-review-submissions-moving {
+    --merge-summary-accent: var(--link-color, #2563eb);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    border-color: color-mix(in srgb, var(--merge-summary-accent) 22%, transparent);
+    background: color-mix(in srgb, var(--merge-summary-accent) 8%, var(--pane-bg, #fff));
+}
+.ff-merge-review-transfer-icon { flex: 0 0 1.125rem; height: 1.125rem; color: var(--merge-summary-accent); }
+.ff-merge-review-transfer-icon:dir(rtl) { transform: scaleX(-1); }
+.ff-merge-review-table > table.data { border-collapse: separate; border-spacing: 0 .25rem; }
+.ff-merge-review-fields { display: grid; justify-items: start; gap: .125rem; }
+.ff-merge-mapping-action .ff-merge-label-with-handle > span:not(.ff-merge-add-destination) { font-weight: 700; }
+.ff-merge-mapping-action:has(.ff-merge-review-fields) .ff-merge-action-icon,
+.ff-merge-mapping-action:has(small) .ff-merge-action-icon { align-self: start; margin-block-start: 2px; }
+.ff-merge-field-table > table.data > tbody > tr.ff-merge-review-action-row > :is(th, td) {
+    background: color-mix(in srgb, var(--merge-action-color) var(--merge-review-row-tint, 6%), var(--pane-bg, #fff));
+}
+.ff-merge-review-action-row.ff-merge-action-map { --merge-review-row-tint: 2%; }
+.ff-merge-review-action-row > th {
+    position: relative;
+    border-start-start-radius: 4px;
+    border-end-start-radius: 4px;
+}
+.ff-merge-review-action-row > th::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 2px;
+    background: color-mix(in srgb, var(--merge-action-color) var(--merge-review-accent-strength, 42%), transparent);
+}
+.ff-merge-review-action-row.ff-merge-action-skip { --merge-review-accent-strength: 72%; }
+.ff-merge-review-action-row > td { border-start-end-radius: 4px; border-end-end-radius: 4px; }
+.ff-merge-review-action-row:is(.ff-merge-action-add, .ff-merge-action-skip) .ff-merge-mapping-action { color: var(--merge-action-color); }
+.ff-merge-field-table > table.data > tbody > tr > td.ff-merge-review-rule-cell { padding: 0; background: transparent; }
+.ff-merge-review-rule { margin: 0; padding: .5rem 0; }
+.ff-merge-review-rule-summary { display: grid; grid-template-columns: var(--merge-field-column) minmax(0, 1fr); line-height: 20px; }
+.ff-merge-review-rule-summary > div { min-width: 0; padding-inline: var(--merge-field-cell-padding); }
+.ff-merge-review-rule:has(details) .ff-merge-review-rule-summary > .ff-merge-mapping-action { padding-inline-end: 8.5rem; }
+.ff-merge-review-rule-sources { font-weight: 700; }
+.ff-merge-review-examples { padding-inline: var(--merge-field-cell-padding); }
+.ff-merge-review-examples > summary {
+    position: absolute;
+    inset-block-start: .5rem;
+    inset-inline-end: var(--merge-field-cell-padding);
+    max-inline-size: 7rem;
+    color: var(--merge-rule-accent);
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 20px;
+    cursor: pointer;
+}
+.ff-merge-review-examples > summary::marker { font-size: .625rem; }
+@container (max-width: 36rem) {
+    .ff-merge-review-rule:has(details) .ff-merge-review-rule-summary > .ff-merge-mapping-action { padding-inline-end: var(--merge-field-cell-padding); }
+    .ff-merge-review-examples > summary { position: static; max-inline-size: none; inline-size: fit-content; margin-inline-start: auto; }
+}
+.ff-merge-table td small { display: block; margin-top: .25rem; }
+.ff-form-merge > hr { margin-block: 1.5rem; margin-inline: calc(var(--pane-padding, 24px) * -1); }
+.ff-merge-jobs { margin-block-end: 1.5rem; }
+.ff-merge-jobs h2 { margin-block-start: 0; }
+.ff-merge-job-route { display: inline-grid; grid-template-columns: minmax(0, auto) auto minmax(0, auto); align-items: center; gap: .65rem; font-weight: 600; }
+.ff-merge-job-route:is(:hover, :focus-visible) { text-decoration: none; }
+.ff-merge-job-route:is(:hover, :focus-visible) .ff-merge-form-label > span:last-child { text-decoration: underline; }
+.ff-merge-job-arrow { color: var(--secondary-text-color, #596979); font-size: 1.15em; line-height: 1; }
+.ff-merge-job-arrow:dir(rtl) { transform: scaleX(-1); }
+.ff-form-merge .select.fullwidth, .ff-form-merge .select.fullwidth select { width: 100%; }
+.ff-merge-submissions { min-inline-size: 0; padding: 0; border: 1px solid var(--hairline-color, #dbe2eb); border-radius: 6px; margin-block-start: 1.5rem; }
+.ff-merge-submission-option:not([hidden]) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: .75rem; padding: .75rem; }
+.ff-merge-submission-option + .ff-merge-submission-option { border-block-start: 1px solid var(--hairline-color, #dbe2eb); }
+.ff-merge-submission-label { display: flex; align-items: center; min-block-size: 22px; font-weight: 600; }
+.ff-merge-submission-option p { margin: .25rem 0 0; }
+.ff-merge-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+.ff-form-merge-review > form > .ff-merge-actions { margin-block-start: 2rem; }
+.ff-merge-actions > .btn { display: inline-flex; align-items: center; justify-content: center; }
+.ff-merge-actions > .btn:disabled { opacity: .5; }
+.ff-merge-review-actions { column-gap: .75rem; }
+.ff-merge-review-actions p { margin: 0; }
+@container (max-width: 34rem) {
+    .ff-merge-form-pair { grid-template-columns: minmax(0, 1fr); }
+    .ff-merge-picker { gap: .5rem; }
+    .ff-merge-direction, .ff-merge-direction:dir(rtl) { justify-self: center; height: 24px; transform: rotate(90deg); }
+    .ff-merge-selected { gap: .5rem; }
+    .ff-merge-selected .ff-merge-direction { position: static; margin: 0; }
+    .ff-merge-selected-form:first-child { padding-inline-end: var(--merge-field-cell-padding); }
+}
+{% endcss %}

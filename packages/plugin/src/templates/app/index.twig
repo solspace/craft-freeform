@@ -8,6 +8,10 @@
 
 {% block main %}
 
+    {% if craft.app.request.getSegment(2) == 'forms' %}
+        {% include 'freeform/_components/activity-table-styles' only %}
+        {% include 'freeform/_components/form-trash-styles' only %}
+    {% endif %}
     <script type="application/json" id="freeform-config">{{ config|json_encode|raw }}</script>
     <div id="freeform-client"></div>
 

@@ -1,0 +1,204 @@
+{% set mappingIcons = {} %}
+{% for action in ['map', 'add', 'options', 'skip', 'split', 'combine'] %}
+    {% set icon %}{% include 'freeform/export/merge/_mapping-icon' with {action} only %}{% endset %}
+    {% set mappingIcons = mappingIcons|merge({(action): icon|trim}) %}
+{% endfor %}
+{% js %}
+const mergePicker = document.querySelector('.ff-merge-picker');
+const [mergeFrom, mergeInto] = mergePicker?.querySelectorAll('select[data-merge-form-picker]') ?? [];
+const continueButton = mergePicker?.closest('form').querySelector('button[value="map"]');
+const unavailableForms = new Map();
+
+const excludeForm = (select, value) => {
+    const previous = unavailableForms.get(select);
+    if (previous === value) {
+        return;
+    }
+    unavailableForms.set(select, value);
+    const picker = select.selectize;
+    if (!picker) {
+        for (const option of select.options) {
+            option.disabled = option.value !== '' && option.value === value;
+        }
+        return;
+    }
+
+    for (const id of [previous, value]) {
+        if (id && Object.hasOwn(picker.options, id)) {
+            picker.updateOption(id, { ...picker.options[id], disabled: id === value });
+        }
+    }
+};
+
+const updateMergePicker = () => {
+    const ready = mergeFrom.value !== '' && mergeInto.value !== '' && mergeFrom.value !== mergeInto.value;
+    mergePicker.classList.toggle('is-ready', ready);
+    continueButton.disabled = !ready;
+    excludeForm(mergeFrom, mergeInto.value);
+    excludeForm(mergeInto, mergeFrom.value);
+};
+if (mergePicker) {
+    window.addEventListener('pageshow', updateMergePicker);
+    mergeFrom.addEventListener('change', updateMergePicker);
+    mergeInto.addEventListener('change', updateMergePicker);
+}
+
+const mappingForm = document.querySelector('[data-merge-mapping]');
+const fieldPickers = Array.from(mappingForm?.querySelectorAll('select[data-merge-field-picker]') ?? []);
+const moveSubmissions = mappingForm?.querySelector('#merge-move');
+const deleteOption = mappingForm?.querySelector('[data-merge-delete-option]');
+const reviewButton = mappingForm?.querySelector('button[value="review"]');
+const reviewInstructions = mappingForm?.querySelector('#merge-review-instructions');
+const updateReviewButton = () => {
+    const choices = fieldPickers.map((field) => field.value);
+    const updatingFields = choices.some((choice) => choice.startsWith('add:') || choice.startsWith('options:'));
+    const usingTextRules = choices.some((choice) => choice.startsWith('rule:'));
+    const moving = moveSubmissions?.getAttribute('aria-checked') === 'true';
+    reviewButton.disabled = !moving && (usingTextRules || !updatingFields);
+    const instruction = reviewButton.disabled
+        ? reviewInstructions.dataset[usingTextRules ? 'needMove' : 'needField']
+        : '';
+    reviewInstructions.hidden = !instruction;
+    if (reviewInstructions.textContent !== instruction) {
+        reviewInstructions.textContent = instruction;
+    }
+    if (deleteOption) {
+        deleteOption.hidden = !moving;
+        if (!moving) {
+            const deleteSwitch = deleteOption.querySelector('#merge-delete');
+            $(deleteSwitch).data('lightswitch')?.turnOff(true);
+        }
+    }
+};
+if (mappingForm) {
+    mappingForm.addEventListener('change', updateReviewButton);
+    $(moveSubmissions).on('change', updateReviewButton);
+    window.addEventListener('pageshow', updateReviewButton);
+}
+
+const mappingIcons = {{ mappingIcons|json_encode(constant('JSON_HEX_TAG'))|raw }};
+let rulePickerId = 0;
+const enhancePicker = (select) => {
+    if (!$.fn.selectize || select.selectize) {
+        return;
+    }
+
+    const required = select.required;
+    const isFieldPicker = select.hasAttribute('data-merge-field-picker');
+    const isRulePicker = select.hasAttribute('data-merge-rule-picker');
+    const isFormPicker = !isFieldPicker && !isRulePicker;
+    const keepsSelection = !isFormPicker;
+    const label = isRulePicker ? select.closest('label') : null;
+    if (label) {
+        select.id = 'merge-rule-picker-' + ++rulePickerId;
+        label.htmlFor = select.id;
+    }
+    const optionDetails = new Map();
+    for (const option of select.options) {
+        if (option.dataset.handle) {
+            optionDetails.set(option.value, option.dataset);
+        }
+    }
+    const renderChoice = (option, showHandle) => {
+        const value = String(option.value);
+        const details = optionDetails.get(value);
+        const row = document.createElement('div');
+        row.className = 'ff-merge-picker-option';
+        if (isFieldPicker) {
+            let action = 'map';
+            if (value === 'skip') action = 'skip';
+            if (value.startsWith('add:')) action = 'add';
+            if (value.startsWith('options:')) action = 'options';
+            if (value.startsWith('rule:')) action = value.slice(5);
+            row.insertAdjacentHTML('beforeend', mappingIcons[action]);
+        } else if (isFormPicker && details) {
+            const dot = document.createElement('span');
+            dot.className = 'ff-merge-chip-dot ff-merge-picker-dot';
+            dot.setAttribute('aria-hidden', 'true');
+            if (/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(details.color)) {
+                dot.style.setProperty('--merge-accent', details.color);
+            }
+            row.append(dot);
+        }
+        const label = document.createElement('span');
+        label.textContent = details ? details.name : option.text;
+        if (details && (showHandle || keepsSelection)) {
+            const handle = document.createElement('code');
+            handle.className = 'ff-merge-handle smalltext';
+            handle.textContent = details.handle;
+            if (details.name) {
+                label.append(' ');
+            }
+            label.append(handle);
+        }
+        row.append(label);
+        return row.outerHTML;
+    };
+
+    select.parentElement.classList.add('selectize');
+    $(select).selectize({
+        plugins: [
+            'auto_position',
+            {% if craft.app.version starts with '5' %}'selectize-plugin-a11y',{% endif %}
+        ],
+        dropdownParent: 'body',
+        dropdownClass: 'selectize-dropdown ff-merge-picker-menu',
+        placeholder: select.options[0]?.value === '' ? select.options[0].text : undefined,
+        searchField: ['text'],
+        maxOptions: null,
+        selectOnTab: false,
+        closeAfterSelect: true,
+        render: {
+            option: (option) => '<div class="option" role="option"' + (option.disabled ? ' aria-disabled="true"' : '') + '>' + renderChoice(option, true) + '</div>',
+            item: (option) => '<div class="item">' + renderChoice(option, false) + '</div>',
+        },
+        onChange() {
+            if (isFormPicker) {
+                updateMergePicker();
+            } else if (isFieldPicker) {
+                select.dispatchEvent(new Event('merge-mapping-change', {bubbles: true}));
+                updateReviewButton();
+            } else {
+                select.dispatchEvent(new Event('merge-rule-change', {bubbles: true}));
+            }
+        },
+        onDelete: keepsSelection ? () => false : undefined,
+        onType(query) {
+            if (keepsSelection) {
+                this.$control.toggleClass('ff-merge-mapping-searching', query !== '');
+            }
+        },
+        onDropdownClose() {
+            if (keepsSelection) {
+                this.$control.removeClass('ff-merge-mapping-searching');
+            }
+        },
+        onInitialize() {
+            // Keep one committed action while letting the user type to filter the choices.
+            if (keepsSelection) {
+                this.setMaxItems(null);
+            }
+            if (label) {
+                label.htmlFor = this.$control_input.attr('id');
+                this.$control_input.attr('aria-label', label.firstElementChild.textContent);
+            }
+            for (const attribute of select.attributes) {
+                if (attribute.name.startsWith('aria-')) {
+                    this.$control_input.attr(attribute.name, attribute.value);
+                }
+            }
+            this.$control_input.attr('aria-required', String(required));
+        },
+    });
+};
+document.querySelectorAll('select[data-merge-form-picker], select[data-merge-field-picker], select[data-merge-rule-picker]').forEach(enhancePicker);
+mappingForm?.addEventListener('merge-rule-controls', (event) => {
+    event.detail.querySelectorAll('select[data-merge-rule-picker]').forEach(enhancePicker);
+});
+if (mergePicker) {
+    updateMergePicker();
+}
+if (mappingForm) {
+    updateReviewButton();
+}
+{% endjs %}

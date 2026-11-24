@@ -1,0 +1,252 @@
+{% macro input(label, placeholder) %}
+    <div class="ff-overview-search-input texticon search icon">
+        <input id="ff-overview-search"
+               class="text fullwidth"
+               type="search"
+               aria-label="{{ label }}"
+               placeholder="{{ placeholder }}"
+               aria-controls="ff-overview-search-content">
+    </div>
+{% endmacro %}
+
+<div id="ff-overview-search-content" class="ff-overview-search-content">
+    <div id="ff-overview-browse-results">
+        {% include 'freeform/_components/overview-cards' with {cards, cardGroups: cardGroups ?? null, permissionCards, editionCards} only %}
+    </div>
+    <ul class="ff-overview-grid ff-overview-search-results" hidden></ul>
+    <p class="light ff-overview-search-empty" role="status"
+       data-message="{{ emptyMessage }}"></p>
+</div>
+
+{% js %}
+    (() => {
+        const overview = document.getElementById('ff-overview-search-content');
+        const input = document.getElementById('ff-overview-search');
+        const emptyMessage = overview.querySelector('[role="status"]');
+        const pageCards = overview.querySelector('#ff-overview-browse-results');
+        const results = overview.querySelector('.ff-overview-search-results');
+        const normalize = value => value.toLocaleLowerCase()
+            .normalize('NFD')
+            .replace(/\p{M}/gu, '')
+            .replace(/[‘’]/g, "'");
+        const pages = [...pageCards.querySelectorAll('.ff-overview-card')].map(card => {
+            const title = card.querySelector('h2, h3').textContent.trim();
+            const description = card.querySelector('p')?.textContent ?? '';
+            const section = card.closest('.ff-overview-restricted');
+            const settings = JSON.parse(card.parentElement.dataset.settingsSearch ?? '[]').map(({source, label, description, direct}) => ({
+                label,
+                description,
+                direct,
+                text: normalize(`${source} ${label}`),
+            }));
+
+            return {
+                title,
+                description,
+                icon: card.querySelector('.ff-overview-icon svg'),
+                url: card.getAttribute('href'),
+                restriction: section?.classList.contains('ff-overview-edition')
+                    ? card.querySelector('.ff-overview-edition-label')?.textContent.trim()
+                    : section?.querySelector('h2')?.textContent.trim(),
+                settings,
+                text: [normalize(`${title} ${description}`), ...settings.map(setting => setting.text)].join(' '),
+            };
+        });
+
+        function appendHighlighted(container, text, pattern) {
+            const offsets = [];
+            let position = 0;
+            for (const character of text) {
+                const end = position + character.length;
+                const length = normalize(character).length;
+                for (let index = 0; index < length; index++) offsets.push({start: position, end});
+                if (!length && offsets.length) offsets[offsets.length - 1].end = end;
+                position = end;
+            }
+
+            let cursor = 0;
+            for (const match of normalize(text).matchAll(pattern)) {
+                const start = offsets[match.index]?.start;
+                const end = offsets[match.index + match[0].length - 1]?.end;
+                if (start == null || end == null || start < cursor) continue;
+
+                container.append(text.slice(cursor, start));
+                const mark = document.createElement('mark');
+                mark.textContent = text.slice(start, end);
+                container.append(mark);
+                cursor = end;
+            }
+            container.append(text.slice(cursor));
+        }
+
+        function resultCard(page, setting, pattern) {
+            const item = document.createElement('li');
+            const card = document.createElement(page.url ? 'a' : 'div');
+            card.className = 'ff-overview-card ff-overview-result-card';
+
+            if (page.url) {
+                const url = new URL(page.url, window.location.href);
+                if (setting) url.searchParams.set('setting', setting.label);
+                card.href = url.href;
+            } else {
+                item.className = 'ff-overview-restricted';
+            }
+
+            const title = document.createElement('span');
+            title.className = 'ff-overview-result-title';
+            if (!setting && !page.restriction && page.icon) title.append(page.icon.cloneNode(true));
+            const titleText = document.createElement('span');
+            appendHighlighted(titleText, setting?.label ?? page.title, pattern);
+            title.append(titleText);
+            card.append(title);
+
+            const description = setting ? setting.description : page.description.trim();
+            if (description) {
+                const summary = document.createElement('p');
+                summary.className = 'ff-overview-result-description';
+                appendHighlighted(summary, description, pattern);
+                summary.title = description;
+                card.append(summary);
+            }
+
+            if (setting || page.restriction) {
+                const context = document.createElement('span');
+                context.className = 'ff-overview-result-context';
+                if (page.icon) context.append(page.icon.cloneNode(true));
+                const contextText = document.createElement('span');
+                appendHighlighted(contextText, [setting ? page.title : '', page.restriction].filter(Boolean).join(' · '), pattern);
+                context.append(contextText);
+                card.append(context);
+            }
+
+            item.append(card);
+            return item;
+        }
+
+        function filterCards() {
+            const terms = normalize(input.value).trim().split(/\s+/).filter(Boolean);
+            const searching = terms.length > 0;
+            const matches = [];
+            if (searching) {
+                const alternatives = [...terms]
+                    .sort((a, b) => b.length - a.length)
+                    .map(term => term.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&'));
+                const pattern = new RegExp(alternatives.join('|'), 'gu');
+                for (const page of pages) {
+                    if (!terms.every(term => page.text.includes(term))) continue;
+
+                    const settings = page.settings.filter(setting => setting.direct && terms.every(term => setting.text.includes(term)));
+                    if (settings.length) {
+                        matches.push(...settings.map(setting => resultCard(page, setting, pattern)));
+                    } else {
+                        matches.push(resultCard(page, null, pattern));
+                    }
+                }
+            }
+
+            pageCards.hidden = searching;
+            results.hidden = !searching;
+            results.replaceChildren(...matches);
+            emptyMessage.textContent = searching && !matches.length ? emptyMessage.dataset.message : '';
+        }
+
+        input.addEventListener('input', filterCards);
+        window.addEventListener('pageshow', filterCards);
+        filterCards();
+    })();
+{% endjs %}
+
+{% css %}
+#toolbar:has(> .ff-overview-search-input) {
+    min-inline-size: 0;
+}
+
+.ff-overview-search-input {
+    inline-size: clamp(15rem, 34vw, 36rem);
+    max-inline-size: 100%;
+    min-inline-size: 0;
+}
+
+@media (max-width: 60.8125rem) {
+    #header:has(.ff-overview-search-input) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    #toolbar:has(> .ff-overview-search-input) {
+        flex-basis: 10rem;
+    }
+
+    #toolbar > .ff-overview-search-input {
+        margin-block-start: 0 !important;
+    }
+}
+
+.ff-overview-search-content [hidden] {
+    display: none !important;
+}
+
+.ff-overview-search-empty {
+    margin: 0;
+}
+
+.ff-overview-search-results .ff-overview-result-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .375rem;
+    min-block-size: 0;
+    padding: .625rem .75rem;
+}
+
+.ff-overview-result-title {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.ff-overview-result-card mark {
+    border-radius: .125rem;
+    color: inherit;
+    background: color-mix(in srgb, var(--link-color, #0b69a3) 14%, transparent);
+}
+
+.ff-overview-result-card .ff-overview-result-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: .8125rem;
+    line-height: 1.4;
+}
+
+.ff-overview-result-card > :is(.ff-overview-result-title, .ff-overview-result-description):has(+ .ff-overview-result-context) {
+    margin-block-end: .25rem;
+}
+
+.ff-overview-result-context {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    inline-size: 100%;
+    margin-block-start: auto;
+    padding-block-start: .625rem;
+    border-block-start: 1px solid var(--hairline-color, #dbe3eb);
+    font-size: .75rem;
+    color: var(--medium-text-color, #596775);
+}
+
+:is(.ff-overview-result-title, .ff-overview-result-context) svg {
+    flex: none;
+    inline-size: .875rem;
+    block-size: .875rem;
+}
+
+.ff-overview-restricted .ff-overview-result-description,
+.ff-overview-restricted .ff-overview-result-context {
+    color: inherit;
+}
+{% endcss %}

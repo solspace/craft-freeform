@@ -10,7 +10,7 @@ import { ImportExportWrapper } from "./index.styles";
 
 export const ImportExport: React.FC = () => {
   const { pathname } = useLocation();
-  useSidebarSelect("export/profiles");
+  useSidebarSelect("freeform/export");
   useQueryFormsWithStats();
 
   let title: string;

@@ -202,6 +202,8 @@ export const ListTableRow: React.FC<Props> = ({
           {canDelete && (
             <Tooltip title={translate("Delete this Form")} {...tooltipProps}>
               <ControlButton
+                $destructive
+                aria-label={translate("Delete this Form")}
                 onClick={async (event) => {
                   if (event.metaKey && event.shiftKey) {
                     await axios.post(`/api/forms/delete`, { id });

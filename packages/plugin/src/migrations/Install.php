@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use Solspace\Freeform\Library\Activity\ActivityTable;
+use Solspace\Freeform\Library\Forms\Merge\BackgroundMergeTables;
 use Solspace\Freeform\Library\Migrations\ForeignKey;
 use Solspace\Freeform\Library\Migrations\StreamlinedInstallMigration;
 use Solspace\Freeform\Library\Migrations\Table;
@@ -70,6 +71,7 @@ class Install extends StreamlinedInstallMigration
     {
         return [
             ActivityTable::definition($this),
+            ...BackgroundMergeTables::definitions($this),
             (new Table('freeform_forms'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(200)->notNull())
@@ -95,7 +97,9 @@ class Install extends StreamlinedInstallMigration
                     ForeignKey::SET_NULL,
                     ForeignKey::CASCADE
                 )
-                ->addField('dateArchived', $this->dateTime()->null()),
+                ->addField('dateArchived', $this->dateTime()->null())
+                ->addField('dateTrashed', $this->dateTime()->null())
+                ->addField('trashedFromMerge', $this->boolean()->notNull()->defaultValue(false)),
 
             (new Table('freeform_forms_sites'))
                 ->addField('id', $this->primaryKey())

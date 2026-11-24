@@ -134,16 +134,14 @@ it("opens the existing deletion dialog and hides deletion without permission", a
   await act(async () =>
     (
       host.querySelector(
-        'button[aria-label^="Delete this Form"]',
+        'button[aria-label^="Move to Trash"]',
       ) as HTMLButtonElement
     ).click(),
   );
   expect(fixture.openDelete).toHaveBeenCalledOnce();
   fixture.canDelete = false;
   await act(async () => root.render(<Archived data={[form]} />));
-  expect(
-    host.querySelector('button[aria-label^="Delete this Form"]'),
-  ).toBeNull();
+  expect(host.querySelector('button[aria-label^="Move to Trash"]')).toBeNull();
 });
 
 it("disables restore and delete while restoring and omits an empty archive section", async () => {
@@ -159,7 +157,7 @@ it("disables restore and delete while restoring and omits an empty archive secti
   expect(
     (
       host.querySelector(
-        'button[aria-label^="Delete this Form"]',
+        'button[aria-label^="Move to Trash"]',
       ) as HTMLButtonElement
     ).disabled,
   ).toBe(true);

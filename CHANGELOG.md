@@ -16,9 +16,9 @@
 - Added search to the Settings, Import / Export overviews and to the notification template lists.
 
 ### Security
-- Restricted notification previews and test emails to users authorized to edit notifications for the relevant form and site. Form-specific notification templates now use sandboxed Twig for previews, test emails, and normal delivery. Custom templates that use Craft globals or unrestricted Twig features may need updates.
-- Fixed SQL injection in generated element option sorting. Freeform validates sort fields and directions for generated, saved, and translated configurations.
-- Fixed arbitrary PHP object construction in generated field options. Freeform accepts only registered option providers and their declared configuration properties.
+- Restricted notification previews and test emails to users authorized to edit notifications for the relevant form and site. Form-specific notification templates now use sandboxed Twig for previews, test emails, and normal delivery. Custom templates that use Craft globals or unrestricted Twig features may need updates. Credit to [nullthrix](https://github.com/nullthrix) for reporting.
+- Fixed SQL injection in generated element option sorting. Freeform validates sort fields and directions for generated, saved, and translated configurations. Credit to [nullthrix](https://github.com/nullthrix) for reporting.
+- Fixed arbitrary PHP object construction in generated field options. Freeform accepts only registered option providers and their declared configuration properties. Credit to [nullthrix](https://github.com/nullthrix) for reporting.
 
 ## 5.18.6 - 2026-11-23
 

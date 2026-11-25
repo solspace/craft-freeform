@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\controllers\api;
 
 use craft\elements\Asset;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class AssetsController extends BaseApiController
+class AssetsController extends BaseCpApiController
 {
     public function actionAssetUrls(): Response
     {

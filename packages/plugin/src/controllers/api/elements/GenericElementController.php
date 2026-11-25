@@ -4,10 +4,10 @@ namespace Solspace\Freeform\controllers\api\elements;
 
 use craft\base\ElementInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use yii\web\Response;
 
-class GenericElementController extends BaseApiController
+class GenericElementController extends BaseCpApiController
 {
     public function actionStatuses(): Response
     {

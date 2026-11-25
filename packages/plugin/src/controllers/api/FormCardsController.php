@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -21,7 +21,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class FormCardsController extends BaseApiController
+class FormCardsController extends BaseCpApiController
 {
     public function actionStats(): Response
     {

@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\controllers\api\forms;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class PagesController extends BaseApiController
+class PagesController extends BaseCpApiController
 {
     public function actionGetType(): Response
     {

@@ -13,7 +13,7 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\Notification;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -22,7 +22,7 @@ use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\SettingsService;
 
-class NoticesController extends BaseApiController
+class NoticesController extends BaseCpApiController
 {
     public function __construct(
         $id,

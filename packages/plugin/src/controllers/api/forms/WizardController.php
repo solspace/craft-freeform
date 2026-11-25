@@ -2,14 +2,14 @@
 
 namespace Solspace\Freeform\controllers\api\forms;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\FormPreviewService;
 use Solspace\Freeform\Services\FormWizardService;
 use yii\web\Response;
 
-class WizardController extends BaseApiController
+class WizardController extends BaseCpApiController
 {
     public function actionOptions(): Response
     {

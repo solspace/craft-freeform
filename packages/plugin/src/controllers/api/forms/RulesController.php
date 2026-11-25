@@ -3,11 +3,12 @@
 namespace Solspace\Freeform\controllers\api\forms;
 
 use Solspace\Freeform\Bundles\Rules\RuleProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Symfony\Component\Serializer\Serializer;
 use yii\web\Response;
 
-class RulesController extends BaseApiController
+class RulesController extends BaseCpApiController
 {
     public function __construct(
         $id,
@@ -21,6 +22,8 @@ class RulesController extends BaseApiController
 
     public function actionGet(int $formId): Response
     {
+        PermissionHelper::requireFormManagePermission($formId);
+
         $form = $this->getFormsService()->getFormById($formId);
 
         return $this->compileResponse($this->ruleProvider->getFormRules($form));
@@ -28,6 +31,8 @@ class RulesController extends BaseApiController
 
     public function actionGetNotifications(int $formId): Response
     {
+        PermissionHelper::requireFormManagePermission($formId);
+
         $form = $this->getFormsService()->getFormById($formId);
 
         return $this->compileResponse($this->ruleProvider->getFormNotificationRules($form));
@@ -35,6 +40,8 @@ class RulesController extends BaseApiController
 
     public function actionGetIntegrations(int $formId): Response
     {
+        PermissionHelper::requireFormManagePermission($formId);
+
         $form = $this->getFormsService()->getFormById($formId);
 
         return $this->compileResponse($this->ruleProvider->getFormIntegrationRules($form));

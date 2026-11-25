@@ -3,12 +3,15 @@
 namespace Solspace\Freeform\controllers\api\fields;
 
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
+use yii\web\ForbiddenHttpException;
 
-class GroupsController extends BaseApiController
+class GroupsController extends BaseCpApiController
 {
     private FieldTypesProvider $fieldTypesProvider;
 
@@ -20,6 +23,12 @@ class GroupsController extends BaseApiController
 
     protected function post(int|string|null $id = null): array|object|null
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+        if (!\Craft::$container->get(LimitedUserChecker::class)->can('layout.fieldManager')) {
+            throw new ForbiddenHttpException('User is not permitted to manage field type groups.');
+        }
+
         $groups = $this->request->getBodyParam('grouped', []);
         $hiddenTypes = $this->request->getBodyParam('hidden', []);
         FieldTypeGroupRecord::deleteAll();
@@ -45,6 +54,8 @@ class GroupsController extends BaseApiController
 
     protected function get(): object
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
         $freeform = Freeform::getInstance();
         $groups = FieldTypeGroupRecord::find()->all();
         $types = $this->fieldTypesProvider->getRegisteredTypes();

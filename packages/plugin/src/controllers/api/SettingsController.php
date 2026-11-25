@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\controllers\api;
 
 use craft\web\Request;
-use Solspace\Freeform\controllers\BaseController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\Settings;
 use yii\web\Response;
 
-class SettingsController extends BaseController
+class SettingsController extends BaseCpApiController
 {
     public function init(): void
     {

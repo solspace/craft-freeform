@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\FormCardHelper;
 use Solspace\Freeform\Library\Helpers\FormOrderHelper;
@@ -18,7 +18,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class FormGroupsController extends BaseApiController
+class FormGroupsController extends BaseCpApiController
 {
     private FormGroupsService $formGroupsService;
 

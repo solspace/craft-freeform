@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\OptionTypesProvider;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Translations\TranslationTable;
@@ -12,7 +12,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class OptionsController extends BaseApiController
+class OptionsController extends BaseCpApiController
 {
     public function __construct(
         $id,

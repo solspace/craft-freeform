@@ -2,12 +2,12 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Freeform\controllers\BaseController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\Response;
 
-class ModalController extends BaseController
+class ModalController extends BaseCpApiController
 {
     public function init(): void
     {

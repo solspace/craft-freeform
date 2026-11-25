@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.18.8 - Unreleased
+
+### Fixed
+- Fixed notification rendering when a form has an unanswered multi-select field.
+
+### Security
+- Fixed missing authorization checks in Freeform's Control Panel API. Requests now require Control Panel and Freeform access, with additional checks for form-specific data and changes to global field groups. Credit to [nullthrix](https://github.com/nullthrix) for reporting.
+
 ## 5.18.7 - 2026-11-25
 
 ### Added

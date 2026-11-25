@@ -32,6 +32,7 @@ abstract class BaseOptionsField extends AbstractField implements OptionsInterfac
     public function getLabels(): array
     {
         $labels = [];
+        $value = $this->getValue();
 
         foreach ($this->getOptions() as $option) {
             if (!$option instanceof Option) {
@@ -39,11 +40,11 @@ abstract class BaseOptionsField extends AbstractField implements OptionsInterfac
             }
 
             if ($this instanceof MultiValueInterface) {
-                if (!\in_array($option->getValue(), $this->getValue())) {
+                if (!\in_array($option->getValue(), (array) $value)) {
                     continue;
                 }
             } else {
-                if ($option->getValue() != $this->getValue()) {
+                if ($option->getValue() != $value) {
                     continue;
                 }
             }

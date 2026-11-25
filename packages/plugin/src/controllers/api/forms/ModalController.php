@@ -9,7 +9,7 @@ use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\api\FormsController;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
@@ -18,7 +18,7 @@ use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use yii\base\Event;
 
-class ModalController extends BaseApiController
+class ModalController extends BaseCpApiController
 {
     public function __construct(
         $id,

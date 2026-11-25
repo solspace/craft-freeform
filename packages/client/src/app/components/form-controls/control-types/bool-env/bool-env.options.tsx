@@ -30,15 +30,16 @@ export const useEnvOptions = (): OptionCollection => {
           label: item.name,
           value: item.name,
           hint: item.hint,
-          icon: (
-            <span
-              className={classes(
-                "status",
-                isEnvTrue(item.hint) ? "enabled" : "white",
-              )}
-              aria-hidden="true"
-            />
-          ),
+          icon:
+            item.hint === undefined ? undefined : (
+              <span
+                className={classes(
+                  "status",
+                  isEnvTrue(item.hint) ? "enabled" : "white",
+                )}
+                aria-hidden="true"
+              />
+            ),
         })),
       })) ?? [];
 

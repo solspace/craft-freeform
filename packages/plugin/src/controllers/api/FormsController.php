@@ -6,7 +6,7 @@ use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Persistence\Duplication\FormDuplicator;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\BuilderDataProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\AI\ReferenceFile;
@@ -29,7 +29,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
-class FormsController extends BaseApiController
+class FormsController extends BaseCpApiController
 {
     public const EVENT_UPSERT_FORM = 'upsert-form';
     public const EVENT_CREATE_FORM = 'create-form';

@@ -26,6 +26,11 @@ class FreeformConfig implements \JsonSerializable
         $plugin = Freeform::getInstance();
         $settingsModel = $settings->getSettingsModel();
         $edition = $plugin->edition();
+        $canOrganizeForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE);
+        $limitations = $limitedUserChecker->getAll();
+        if (!$canOrganizeForms) {
+            $limitations['layout.fieldManager'] = false;
+        }
 
         $currentSiteId = SitesHelper::getCurrentCpPageSiteId();
         $sites = \Craft::$app->sites->getEditableSites();
@@ -57,7 +62,7 @@ class FreeformConfig implements \JsonSerializable
                     'canCreate' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_CREATE),
                     'formCreationOptions' => $settingsModel->getEnabledFormCreationOptions(),
                     'defaultAiIntegration' => $settingsModel->defaultAiIntegration,
-                    'canOrganizeForms' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE),
+                    'canOrganizeForms' => $canOrganizeForms,
                     'canDelete' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_DELETE),
                     'canManageHtmlEmbeds' => PermissionHelper::isAdmin(),
                     'canUseSetupGuide' => $settings->canUseSetupGuide(),
@@ -103,7 +108,7 @@ class FreeformConfig implements \JsonSerializable
                 ),
             ],
             'limitations' => [
-                'items' => $limitedUserChecker->getAll(),
+                'items' => $limitations,
             ],
         ];
     }

@@ -5,13 +5,15 @@ namespace Solspace\Freeform\controllers\api\fields;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\FavoritesProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 use yii\base\Response;
 
-class FavoritesController extends BaseApiController
+class FavoritesController extends BaseCpApiController
 {
     private const CATEGORY = 'favorites';
 
@@ -27,6 +29,8 @@ class FavoritesController extends BaseApiController
 
     public function actionUpdate(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
         $post = $this->request->post();
 
         $ids = array_keys($post);
@@ -71,6 +75,8 @@ class FavoritesController extends BaseApiController
 
     public function actionDelete(): ?bool
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
         $this->requirePostRequest();
         $id = $this->request->post('id');
 
@@ -86,11 +92,15 @@ class FavoritesController extends BaseApiController
 
     protected function get(): array
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
         return $this->favoritesProvider->getFavoriteFields();
     }
 
     protected function post(int|string|null $id = null): array|object|null
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
         $request = $this->request;
 
         $type = $request->post('typeClass');

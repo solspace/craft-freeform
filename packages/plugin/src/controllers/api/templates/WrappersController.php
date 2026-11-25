@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\controllers\api\templates;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 
-class WrappersController extends BaseApiController
+class WrappersController extends BaseCpApiController
 {
     protected function get(): array
     {

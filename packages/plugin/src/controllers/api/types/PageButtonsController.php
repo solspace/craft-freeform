@@ -4,11 +4,11 @@ namespace Solspace\Freeform\controllers\api\types;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Attributes\Property\SectionProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use yii\web\Response;
 
-class PageButtonsController extends BaseApiController
+class PageButtonsController extends BaseCpApiController
 {
     public function __construct(
         $id,

@@ -4,11 +4,12 @@ namespace Solspace\Freeform\controllers\api\forms;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use yii\web\Response;
 
-class IntegrationsController extends BaseApiController
+class IntegrationsController extends BaseCpApiController
 {
     public function __construct(
         $id,
@@ -23,6 +24,8 @@ class IntegrationsController extends BaseApiController
 
     public function actionGet(int $formId): Response
     {
+        PermissionHelper::requireFormManagePermission($formId);
+
         $form = $this->getFormsService()->getFormById($formId);
 
         $integrations = $this->formIntegrationsProvider->getForForm($form, enabled: null);

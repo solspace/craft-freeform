@@ -8,7 +8,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiModelCatalog;
@@ -23,7 +23,7 @@ use yii\base\Event;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class IntegrationsController extends BaseApiController
+class IntegrationsController extends BaseCpApiController
 {
     private const NAVIGATION_ORDER = [
         'single' => 0,

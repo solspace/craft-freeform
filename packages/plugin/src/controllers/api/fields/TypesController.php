@@ -4,10 +4,10 @@ namespace Solspace\Freeform\controllers\api\fields;
 
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use yii\web\Response;
 
-class TypesController extends BaseApiController
+class TypesController extends BaseCpApiController
 {
     public function __construct(
         $id,

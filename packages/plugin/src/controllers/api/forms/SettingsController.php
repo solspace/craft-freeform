@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\controllers\api\forms;
 
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 
-class SettingsController extends BaseApiController
+class SettingsController extends BaseCpApiController
 {
     public function __construct(
         $id,

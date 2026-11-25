@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\controllers\api;
 
 use craft\helpers\StringHelper;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Services\ActivityHealthService;
@@ -13,7 +13,7 @@ use Solspace\Freeform\Widgets\QuickFormWidget;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
-class FormDashboardWidgetsController extends BaseApiController
+class FormDashboardWidgetsController extends BaseCpApiController
 {
     public function beforeAction($action): bool
     {

@@ -4,14 +4,14 @@ namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUsersDefaults;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUsersProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\LimitedUsersRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class LimitedUsersController extends BaseApiController
+class LimitedUsersController extends BaseCpApiController
 {
     public function __construct(
         $id,
@@ -20,9 +20,18 @@ class LimitedUsersController extends BaseApiController
         private LimitedUsersDefaults $limitedUsersDefaults,
         private LimitedUsersProvider $limitedUsersProvider,
     ) {
-        PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-
         parent::__construct($id, $module, $config);
+    }
+
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        return true;
     }
 
     public function actionDelete(int $id): Response

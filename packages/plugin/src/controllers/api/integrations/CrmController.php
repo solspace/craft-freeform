@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\controllers\api\integrations;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class CrmController extends BaseApiController
+class CrmController extends BaseCpApiController
 {
     public function actionFields(string $category): Response
     {

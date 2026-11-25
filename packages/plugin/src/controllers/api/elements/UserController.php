@@ -4,10 +4,10 @@ namespace Solspace\Freeform\controllers\api\elements;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Bundles\Integrations\Elements\AddressFieldMapping;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use yii\web\Response;
 
-class UserController extends BaseApiController
+class UserController extends BaseCpApiController
 {
     public function actionAttributeMapping(): Response
     {

@@ -7,29 +7,30 @@ use craft\db\Table;
 use craft\helpers\ChartHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
-use Solspace\Freeform\controllers\BaseController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\base\Exception;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class SubmissionsController extends BaseController
+class SubmissionsController extends BaseCpApiController
 {
     public function actionGetSubmissionData(): Response
     {
-        // Required for Dashboard widget, unnecessary for Entries Index view
-        $source = \Craft::$app->request->post('source');
-        $formId = null;
-        if ($source && str_starts_with($source, 'form:')) {
-            $formId = (int) substr($source, 5);
-        } elseif ('*' === $source) {
-            $isAdmin = PermissionHelper::isAdmin();
-            $manageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        $this->requirePostRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
-            if (!$isAdmin && !$manageAll) {
-                $formId = Freeform::getInstance()->forms->getAllowedReadFormIds();
+        $allowedFormIds = $this->getFormsService()->getAllowedReadFormIds();
+        $source = \Craft::$app->request->post('source');
+        if (\is_string($source) && str_starts_with($source, 'form:')) {
+            $formId = (int) substr($source, 5);
+            if (!\in_array($formId, array_map('intval', $allowedFormIds), true)) {
+                throw new ForbiddenHttpException('User is not permitted to view submissions for this form.');
             }
+
+            $allowedFormIds = [$formId];
         }
 
         $isSpam = \Craft::$app->request->post('isSpam');
@@ -60,9 +61,7 @@ class SubmissionsController extends BaseController
             "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
         );
 
-        if ($formId) {
-            $query->andWhere(["{$submissions}.[[formId]]" => $formId]);
-        }
+        $query->andWhere(["{$submissions}.[[formId]]" => $allowedFormIds]);
         if (null !== $isSpam) {
             $query->andWhere(["{$submissions}.[[isSpam]]" => $isSpam]);
         }

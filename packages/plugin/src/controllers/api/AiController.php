@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\controllers\api;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class AiController extends BaseApiController
+class AiController extends BaseCpApiController
 {
     public function actionSolspaceAiStatus(): Response
     {

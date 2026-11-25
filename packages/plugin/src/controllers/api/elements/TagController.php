@@ -3,10 +3,10 @@
 namespace Solspace\Freeform\controllers\api\elements;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use yii\web\Response;
 
-class TagController extends BaseApiController
+class TagController extends BaseCpApiController
 {
     public function actionGetFields(): Response
     {

@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\controllers\api\templates;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 
-class PdfController extends BaseApiController
+class PdfController extends BaseCpApiController
 {
     protected function get(): array
     {

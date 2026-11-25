@@ -5,12 +5,12 @@ namespace Solspace\Freeform\controllers\api\elements;
 use craft\models\Section;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Bundles\Integrations\Elements\AddressFieldMapping;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Library\Helpers\SectionHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class EntryController extends BaseApiController
+class EntryController extends BaseCpApiController
 {
     public function actionAttributes(): Response
     {

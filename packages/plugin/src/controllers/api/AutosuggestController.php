@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\Response;
 
-class AutosuggestController extends BaseApiController
+class AutosuggestController extends BaseCpApiController
 {
     public function actionBooleanEnv(string $value): Response
     {
@@ -29,6 +29,17 @@ class AutosuggestController extends BaseApiController
             return $this->asJson([]);
         }
 
-        return $this->asJson($cp->getEnvSuggestions());
+        $suggestions = $cp->getEnvSuggestions();
+        if (!PermissionHelper::isAdmin()) {
+            foreach ($suggestions as &$category) {
+                $category['data'] = array_map(
+                    static fn (array $item): array => ['name' => $item['name']],
+                    $category['data'],
+                );
+            }
+            unset($category);
+        }
+
+        return $this->asJson($suggestions);
     }
 }

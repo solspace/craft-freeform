@@ -6,17 +6,20 @@ use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\User;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\FieldTypes\FormFieldType;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use yii\db\Expression;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class ElementsController extends BaseApiController
+class ElementsController extends BaseCpApiController
 {
     public function actionGet(int $id): Response
     {
+        PermissionHelper::requireFormManagePermission($id);
+
         $form = $this->getFormsService()->getFormById($id);
         if (!$form) {
             throw new NotFoundHttpException("Form with ID {$id} not found");

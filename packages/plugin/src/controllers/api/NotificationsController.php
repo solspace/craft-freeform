@@ -18,7 +18,7 @@ use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsPostedContentProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
@@ -37,7 +37,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class NotificationsController extends BaseApiController
+class NotificationsController extends BaseCpApiController
 {
     public function __construct(
         $id,

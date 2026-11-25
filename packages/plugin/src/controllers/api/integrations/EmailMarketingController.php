@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\controllers\api\integrations;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class EmailMarketingController extends BaseApiController
+class EmailMarketingController extends BaseCpApiController
 {
     public function __construct(
         $id,

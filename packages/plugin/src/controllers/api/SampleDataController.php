@@ -2,12 +2,12 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\SampleDataService;
 
-class SampleDataController extends BaseApiController
+class SampleDataController extends BaseCpApiController
 {
     protected function get(): array
     {

@@ -205,6 +205,16 @@ class FormElementUsageControllerTest extends TestCase
             {
                 return $this->fields;
             }
+
+            public function getUser(): object
+            {
+                return new class {
+                    public function getIsAdmin(): bool
+                    {
+                        return true;
+                    }
+                };
+            }
         };
         $forms = $this->createMock(FormsService::class);
         $forms->method('getFormById')->willReturn($this->createMock(Form::class));

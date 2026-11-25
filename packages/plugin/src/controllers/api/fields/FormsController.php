@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\controllers\api\fields;
 
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FieldTransformer;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Services\Form\TranslationsService;
 
-class FormsController extends BaseApiController
+class FormsController extends BaseCpApiController
 {
     private const CATEGORY = 'forms';
 

@@ -4,11 +4,11 @@ namespace Solspace\Freeform\controllers\api\types;
 
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Transformers\Options\OptionTypeTransformer;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\OptionTypesProvider;
 use yii\web\Response;
 
-class OptionsController extends BaseApiController
+class OptionsController extends BaseCpApiController
 {
     public function __construct(
         $id,

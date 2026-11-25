@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Tests\Library\Templates;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Library\Templates\FormTemplateNodeVisitor;
 use Solspace\Freeform\Library\Templates\FormTemplateTwig;
 use Solspace\Freeform\Library\Templates\TemplateFieldValue;
@@ -46,6 +48,23 @@ class FormTemplateTwigTest extends TestCase
             '{% if context.object is null and craft is not defined %}{{ context.text }}/{{ context.status }}{% endif %}',
             ['context' => ['object' => new \stdClass(), 'text' => 'ok', 'status' => 'literal']],
         ));
+    }
+
+    #[TestWith([null, ''])]
+    #[TestWith([['newspaper'], 'Newspaper'])]
+    public function testProjectsCheckboxLabelsWithOrWithoutSelections(?array $value, string $expected): void
+    {
+        $field = $this->getMockBuilder(CheckboxesField::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getOptions', 'getLabel'])
+            ->getMock()
+        ;
+        $field->method('getOptions')->willReturn((new OptionCollection())->add('newspaper', 'Newspaper'));
+        if (null !== $value) {
+            $field->setValue($value);
+        }
+
+        self::assertSame($expected, FormTemplateTwig::render('{{ field.labelsAsString }}', ['field' => $field]));
     }
 
     public function testHtmlAndPlainTextCompileSeparately(): void

@@ -15,12 +15,13 @@ namespace Solspace\Freeform\controllers\api\forms;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use yii\web\Response;
 
-class NotificationsController extends BaseApiController
+class NotificationsController extends BaseCpApiController
 {
     public function __construct(
         $id,
@@ -35,6 +36,8 @@ class NotificationsController extends BaseApiController
 
     public function actionGet(int $formId): Response
     {
+        PermissionHelper::requireFormManagePermission($formId);
+
         $form = $this->getFormsService()->getFormById($formId);
         if (!$form) {
             return $this->asJson([]);
@@ -54,6 +57,8 @@ class NotificationsController extends BaseApiController
 
     public function actionGetTemplates(int $formId): Response
     {
+        PermissionHelper::requireFormManagePermission($formId);
+
         $form = $this->getFormsService()->getFormById($formId);
         if (!$form) {
             return $this->asJson([]);

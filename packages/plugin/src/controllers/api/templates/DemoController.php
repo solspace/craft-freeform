@@ -2,14 +2,14 @@
 
 namespace Solspace\Freeform\controllers\api\templates;
 
-use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\controllers\BaseCpApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Codepack\TemplateReplacer;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 
-class DemoController extends BaseApiController
+class DemoController extends BaseCpApiController
 {
     protected function post(int|string|null $id = null): array|object|null
     {

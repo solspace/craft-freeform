@@ -172,15 +172,14 @@ class Entries extends BaseOptionProvider
         $status = $translationTable->get('optionConfiguration.properties.status') ?: $this->getStatus();
         $entryTypeId = $translationTable->get('optionConfiguration.properties.entryTypeId') ?: $this->getEntryTypeId();
 
-        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
-        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+        $orderBy = $this->getQueryOrder($translationTable, $this->getOrderBy(), $this->getSort());
 
         return Entry::find()
             ->siteId($siteId)
             ->sectionId($sectionId)
             ->status($status)
             ->typeId($entryTypeId)
-            ->orderBy($orderBy.' '.$sort)
+            ->orderBy($orderBy)
             ->all()
         ;
     }

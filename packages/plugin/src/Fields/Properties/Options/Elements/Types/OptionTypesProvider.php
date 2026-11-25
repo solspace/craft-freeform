@@ -8,6 +8,8 @@ use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories\Catego
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags\Tags;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\AgeRanges\AgeRanges;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\CompanySizes\CompanySizes;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Continents\Continents;
@@ -34,6 +36,23 @@ class OptionTypesProvider
 {
     public const EVENT_REGISTER_ELEMENT_TYPES = 'register-element-types';
     public const EVENT_REGISTER_PREDEFINED_TYPES = 'register-predefined-types';
+
+    public function getType(string $source, string $class): ?OptionTypeProviderInterface
+    {
+        $types = match ($source) {
+            OptionsConfigurationInterface::SOURCE_ELEMENTS => $this->getElementTypes(),
+            OptionsConfigurationInterface::SOURCE_PREDEFINED => $this->getPredefinedTypes(),
+            default => [],
+        };
+
+        foreach ($types as $type) {
+            if ($type::class === $class) {
+                return $type;
+            }
+        }
+
+        return null;
+    }
 
     public function getElementTypes(): array
     {

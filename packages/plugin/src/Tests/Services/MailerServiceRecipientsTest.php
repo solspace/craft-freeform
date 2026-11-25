@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Library\Collections\FieldCollection;
-use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Services\MailerService;
@@ -24,10 +23,6 @@ class MailerServiceRecipientsTest extends TestCase
         $this->setTestToEmailAddress([]);
 
         $this->mailer = (new \ReflectionClass(MailerService::class))->newInstanceWithoutConstructor();
-        (new \ReflectionProperty(MailerService::class, 'isolatedTwig'))->setValue(
-            $this->mailer,
-            new IsolatedTwig(sys_get_temp_dir()),
-        );
     }
 
     protected function tearDown(): void

@@ -1,10 +1,17 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.18.7 - 2026-11-25
 
 ### Added
 - Added **Merge Forms** under **Import / Export** for Pro. Map compatible fields, add optional fields to another form, or use text rules to split and combine values when moving submissions. Review a preview before applying the merge. Large moves run in the background and can resume from the last completed batch. Empty originals moved to trash can be restored or permanently deleted from **Recently merged forms**.
 - Added **Trash** to the Forms dashboard. Deleted forms and their submissions can be restored or permanently deleted.
+- Added search to the Settings and Import / Export overviews and to the notification template lists.
+
+### Security
+
+- Restricted notification previews and test emails to users authorized to edit notifications for the relevant form and site. Form-specific notification templates now use sandboxed Twig for previews, test emails, and normal delivery. Custom templates that use Craft globals or unrestricted Twig features may need updates.
+- Fixed SQL injection in generated element option sorting. Freeform validates sort fields and directions for generated, saved, and translated configurations.
+- Fixed arbitrary PHP object construction in generated field options. Freeform accepts only registered option providers and their declared configuration properties.
 
 ## 5.18.6 - 2026-11-23
 

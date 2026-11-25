@@ -69,10 +69,14 @@ class PropertyProvider
     /**
      * Restore saved settings without generating options and other editor metadata.
      */
-    public function setStoredObjectProperties(object $object, array $properties, ?Form $form = null): void
+    public function setStoredObjectProperties(object $object, array $properties, ?Form $form = null, bool $onlyConfigurable = false): void
     {
         $collection = new PropertyCollection();
         foreach ($this->getReflection($object::class)->getProperties() as $property) {
+            if ($onlyConfigurable && ($property->isStatic() || (\PHP_VERSION_ID >= 80100 && $property->isReadOnly()))) {
+                continue;
+            }
+
             $attribute = AttributeHelper::findAttribute($property, Property::class);
             if (!$attribute) {
                 continue;
@@ -81,6 +85,10 @@ class PropertyProvider
             $attribute->handle = $property->getName();
             $this->processTransformer($property, $attribute);
             $collection->add($attribute);
+        }
+
+        if ($onlyConfigurable) {
+            $properties = array_filter($properties, static fn ($key) => null !== $collection->get($key), \ARRAY_FILTER_USE_KEY);
         }
 
         $this->applyObjectProperties($object, $properties, $collection, null, $form);

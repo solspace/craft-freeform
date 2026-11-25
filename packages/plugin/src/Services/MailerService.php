@@ -34,11 +34,11 @@ use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
-use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\SignatureHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
+use Solspace\Freeform\Library\Templates\FormTemplateTwig;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
@@ -62,7 +62,6 @@ class MailerService extends BaseService implements MailHandlerInterface
     public function __construct(
         $config,
         private RuleValidator $ruleValidator,
-        private IsolatedTwig $isolatedTwig,
     ) {
         parent::__construct($config);
     }
@@ -209,12 +208,22 @@ class MailerService extends BaseService implements MailHandlerInterface
         ?LoggerInterface $logger = null,
         ?Form $form = null
     ): Message {
-        $fromName = $this->getSystemDefault('fromName', $notification->getFromName(), $values);
+        $sandboxed = null !== $notification->getFormId();
+        $templateValues = $sandboxed ? FormTemplateTwig::prepareContext($values) : $values;
+        $render = fn (string $source, string $field, bool $escapeHtml = false): string => $this->renderNotificationString(
+            $source,
+            $templateValues,
+            $field,
+            $sandboxed,
+            $escapeHtml,
+        );
+
+        $fromName = $this->getSystemDefault('fromName', $notification->getFromName(), $templateValues, $sandboxed);
         $fromName = htmlspecialchars_decode($fromName, \ENT_QUOTES);
-        $fromEmail = $this->getSystemDefault('fromEmail', $notification->getFromEmail(), $values);
-        $text = $this->renderNotificationString($notification->getTextBody(), $values, 'Plain-text body');
-        $html = $this->renderNotificationString($notification->getBody(), $values, 'HTML body');
-        $subject = $this->renderNotificationString($notification->getSubject(), $values, 'Subject');
+        $fromEmail = $this->getSystemDefault('fromEmail', $notification->getFromEmail(), $templateValues, $sandboxed);
+        $text = $render($notification->getTextBody(), 'Plain-text body');
+        $html = $render($notification->getBody(), 'HTML body', true);
+        $subject = $render($notification->getSubject(), 'Subject');
         $subject = htmlspecialchars_decode($subject, \ENT_QUOTES);
 
         if ($notification->getWrapperId()) {
@@ -257,25 +266,26 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         if ($notification->getCc()) {
-            $cc = $this->renderNotificationString($notification->getCc(), $values, 'CC');
+            $cc = $render($notification->getCc(), 'CC');
             $cc = StringHelper::extractSeparatedValues($cc);
             if (!empty($cc)) {
-                $message->setCc($this->parseEnvInArray($cc));
+                $message->setCc($sandboxed ? $cc : $this->parseEnvInArray($cc));
             }
         }
 
         if ($notification->getBcc()) {
-            $bcc = $this->renderNotificationString($notification->getBcc(), $values, 'BCC');
+            $bcc = $render($notification->getBcc(), 'BCC');
             $bcc = StringHelper::extractSeparatedValues($bcc);
             if (!empty($bcc)) {
-                $message->setBcc($this->parseEnvInArray($bcc));
+                $message->setBcc($sandboxed ? $bcc : $this->parseEnvInArray($bcc));
             }
         }
 
         if ($notification->getReplyToEmail()) {
-            $replyToName = trim(App::parseEnv($this->renderNotificationString($notification->getReplyToName() ?? '', $values, 'Reply-To Name')));
+            $replyToName = $render($notification->getReplyToName() ?? '', 'Reply-To Name');
+            $replyToName = trim($sandboxed ? $replyToName : App::parseEnv($replyToName));
             $replyToName = htmlspecialchars_decode($replyToName, \ENT_QUOTES);
-            $replyTo = $this->getSystemDefault('replyToEmail', $notification->getReplyToEmail(), $values);
+            $replyTo = $this->getSystemDefault('replyToEmail', $notification->getReplyToEmail(), $templateValues, $sandboxed);
             if (!empty($replyTo)) {
                 if ($replyToName) {
                     $replyTo = [$replyTo => $replyToName];
@@ -289,7 +299,8 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         if ($presetAssets && Freeform::getInstance()->isPro()) {
             if (!\is_array($presetAssets) && TwigHelper::isTwigValue($presetAssets)) {
-                $presetAssets = trim(App::parseEnv($this->renderNotificationString($presetAssets, $values, 'Predefined Assets')));
+                $presetAssets = $render($presetAssets, 'Predefined Assets');
+                $presetAssets = trim($sandboxed ? $presetAssets : App::parseEnv($presetAssets));
 
                 $delimiters = [',', '.', '|', '!', '?'];
 
@@ -388,7 +399,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         $variables = [
             'form' => $form,
-            'allFields' => $form->getLayout()->getFields(),
+            'allFields' => iterator_to_array($form->getLayout()->getFields()),
         ];
 
         foreach ($form->getFields() as $field) {
@@ -396,7 +407,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         return $recipients->emailsToArray(
-            fn (string $recipient): string => $this->isolatedTwig->render($recipient, $variables),
+            static fn (string $recipient): string => FormTemplateTwig::render($recipient, $variables),
         );
     }
 
@@ -594,11 +605,33 @@ class MailerService extends BaseService implements MailHandlerInterface
         $logger?->debug('Attached signature to email', ['fileName' => $fileName]);
     }
 
-    private function getSystemDefault(string $key, string $address, array $twigVariables): string
+    private function getSystemDefault(string $key, string $address, array $twigVariables, bool $sandboxed): string
     {
         $currentSiteUid = \Craft::$app->getSites()->getCurrentSite()->uid;
         $mailSettings = App::mailSettings();
         $overrides = $mailSettings->siteOverrides[$currentSiteUid] ?? null;
+        if ($sandboxed) {
+            $generalKey = match ($key) {
+                'fromName' => 'systemName',
+                'fromEmail' => 'systemEmail',
+                'replyToEmail' => 'systemReplyToEmail',
+            };
+            $isSystemDefault = preg_match(
+                '/\A{{\s*(?:general\.'.$generalKey.'|craft\.app\.projectConfig\.get\([\'"]email\.'.$key.'[\'"]\))\s*}}\z/',
+                $address,
+            );
+            if ($isSystemDefault) {
+                return trim((string) App::parseEnv($overrides[$key] ?? $mailSettings->{$key}));
+            }
+
+            if (str_starts_with($address, '$') && 'replyToEmail' !== $key) {
+                $settings = Freeform::getInstance()->settings->getSettingsModel();
+                $configuredDefault = 'fromEmail' === $key ? $settings->defaultFromEmail : $settings->defaultFromName;
+                if ($address === $configuredDefault) {
+                    return trim((string) App::parseEnv($configuredDefault));
+                }
+            }
+        }
         if ($overrides) {
             if (!empty($overrides[$key])) {
                 if (preg_match('/app\.projectConfig\.get\([\'"]email\.'.$key.'[\'"]\)/', $address)) {
@@ -613,13 +646,17 @@ class MailerService extends BaseService implements MailHandlerInterface
             'replyToEmail' => 'Reply-To Email',
         };
 
-        return trim(App::parseEnv($this->renderNotificationString($address, $twigVariables, $field)));
+        $address = $this->renderNotificationString($address, $twigVariables, $field, $sandboxed);
+
+        return trim($sandboxed ? $address : App::parseEnv($address));
     }
 
-    private function renderNotificationString(string $template, array $variables, string $field): string
+    private function renderNotificationString(string $template, array $variables, string $field, bool $sandboxed = false, bool $escapeHtml = false): string
     {
         try {
-            return $this->renderString($template, $variables);
+            return $sandboxed
+                ? FormTemplateTwig::render($template, $variables, $escapeHtml)
+                : $this->renderString($template, $variables);
         } catch (TwigError $exception) {
             $source = $exception->getSourceContext();
             $name = 'Notification: '.$field;

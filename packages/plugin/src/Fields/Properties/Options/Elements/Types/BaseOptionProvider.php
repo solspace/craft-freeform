@@ -46,5 +46,17 @@ abstract class BaseOptionProvider implements OptionTypeProviderInterface
         return [$label, $value];
     }
 
+    protected function getQueryOrder(TranslationTable $translations, string $orderBy, string $sort): array
+    {
+        $orderBy = $translations->get('optionConfiguration.properties.orderBy') ?: $orderBy;
+        $sort = $translations->get('optionConfiguration.properties.sort') ?: $sort;
+
+        // Craft maps bare identifiers to element attributes and custom field handles.
+        $column = \is_string($orderBy) && preg_match('/\A[a-zA-Z_][a-zA-Z0-9_]*\z/', $orderBy) ? $orderBy : 'id';
+        $direction = \is_string($sort) && 0 === strcasecmp($sort, 'desc') ? \SORT_DESC : \SORT_ASC;
+
+        return [$column => $direction];
+    }
+
     abstract protected function getElements(TranslationTable $translationTable): array;
 }

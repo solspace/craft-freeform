@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Fields\Properties\Options;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\OptionTypesProvider;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 abstract class OptionsConfiguration implements OptionsConfigurationInterface
@@ -20,9 +21,12 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
         $this->typeClass = $config['typeClass'] ?? '';
         $this->properties = $config['properties'] ?? [];
 
-        if ($this->typeClass) {
-            $this->configuration = new $this->typeClass();
-            $propertyProvider->setObjectProperties($this->configuration, $this->properties);
+        if ('' !== $this->typeClass) {
+            $this->configuration = (new OptionTypesProvider())->getType($this->getSource(), $this->typeClass);
+        }
+
+        if ($this->configuration) {
+            $propertyProvider->setStoredObjectProperties($this->configuration, $this->properties, onlyConfigurable: true);
         }
     }
 

@@ -83,12 +83,11 @@ class Assets extends BaseOptionProvider
     {
         $assetSourceId = $translationTable->get('optionConfiguration.properties.assetSourceId') ?: $this->getAssetSourceId();
 
-        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
-        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+        $orderBy = $this->getQueryOrder($translationTable, $this->getOrderBy(), $this->getSort());
 
         return Asset::find()
             ->volumeId($assetSourceId)
-            ->orderBy($orderBy.' '.$sort)
+            ->orderBy($orderBy)
             ->all()
         ;
     }

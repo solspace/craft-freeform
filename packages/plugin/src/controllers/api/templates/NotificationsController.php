@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\controllers\api\templates;
 
 use Faker\Factory;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Form\Submissions\FakeDataProvider;
 use Solspace\Freeform\Bundles\Notifications\Parsers\Suggestions;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
@@ -15,11 +16,16 @@ use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\MailerService;
 use Symfony\Component\Mime\Part\DataPart;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class NotificationsController extends BaseApiController
@@ -33,12 +39,15 @@ class NotificationsController extends BaseApiController
         private FakeDataProvider $fakeDataProvider,
         private NotificationLoggerProvider $notificationLoggerProvider,
         private NotificationsPostedContentProvider $postedContentProvider,
+        private LimitedUserChecker $limitedUserChecker,
     ) {
         parent::__construct($id, $module, $config);
     }
 
     public function actionPreviewTemplate(): Response
     {
+        $this->requireTemplateEditorAccess();
+
         try {
             [$message] = $this->withPostedSiteContext(function (): array {
                 [$form, $template, $logger] = $this->extractVariables();
@@ -82,10 +91,15 @@ class NotificationsController extends BaseApiController
 
     public function actionSendTest(): Response
     {
-        $isSent = $this->withPostedSiteContext(function (): int {
-            [$form, $template, $logger] = $this->extractVariables();
+        $this->requireTemplateEditorAccess();
 
-            $recipient = $this->request->post('targetEmail');
+        $recipient = $this->request->post('targetEmail');
+        if (!\is_string($recipient) || !filter_var($recipient, \FILTER_VALIDATE_EMAIL)) {
+            throw new BadRequestHttpException('Invalid test email address.');
+        }
+
+        $isSent = $this->withPostedSiteContext(function () use ($recipient): int {
+            [$form, $template, $logger] = $this->extractVariables();
 
             $headers = [];
 
@@ -141,6 +155,50 @@ class NotificationsController extends BaseApiController
         return $suggestions->getSuggestionCategories();
     }
 
+    private function requireTemplateEditorAccess(): void
+    {
+        $this->requireCpRequest();
+        $this->requirePostRequest();
+
+        $formId = $this->validateId($this->request->post('formId'));
+        PermissionHelper::requireFormManagePermission($formId);
+        if (!$this->limitedUserChecker->can('notifications.tab')) {
+            throw new ForbiddenHttpException('User is not permitted to manage notifications for this form.');
+        }
+
+        $site = $this->request->post('site') ?? \Craft::$app->getSites()->getCurrentSite()->handle;
+        if (!\is_string($site) || '' === $site) {
+            throw new BadRequestHttpException('Invalid site.');
+        }
+        if (!\in_array($site, SitesHelper::getEditableSiteHandles(), true)) {
+            throw new ForbiddenHttpException('User is not permitted to edit this site.');
+        }
+
+        $templateId = $this->request->post('id');
+        if (null !== $templateId) {
+            $template = NotificationTemplateRecord::findOne(['id' => $this->validateId($templateId), 'formId' => $formId]);
+            if (!$template) {
+                throw new NotFoundHttpException('Form template not found.');
+            }
+
+            return;
+        }
+
+        $settings = $this->getSettingsService()->getSettingsModel();
+        if (!$settings->allowBuilderTemplateCreation || Settings::EMAIL_TEMPLATE_METHOD_GLOBAL === $settings->emailTemplateMethod) {
+            throw new ForbiddenHttpException('Form template creation is disabled.');
+        }
+    }
+
+    private function validateId(mixed $id): int
+    {
+        if ((!\is_int($id) && !\is_string($id)) || false === ($id = filter_var($id, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]))) {
+            throw new BadRequestHttpException('Invalid form or template ID.');
+        }
+
+        return $id;
+    }
+
     private function calculateSize(DataPart $attachment): int
     {
         return \strlen((string) $attachment->getBody());
@@ -149,7 +207,7 @@ class NotificationsController extends BaseApiController
     private function extractVariables(): array
     {
         $post = $this->request->post();
-        $site = $post['site'] ?? null;
+        $site = SitesHelper::isEnabled() ? ($post['site'] ?? null) : null;
         $form = $this->formsService->getFormById($post['formId'], $site);
         if (!$form) {
             throw new \RuntimeException('Form not found');
@@ -179,6 +237,7 @@ class NotificationsController extends BaseApiController
         $record = new NotificationTemplateRecord();
         $record->id = 'preview';
         $record->uid = 'preview';
+        $record->formId = $form->getId();
         $record->pdfTemplateIds = $post['pdfTemplateIds'] ?? [];
 
         $parsedPostedContent = $this->postedContentProvider->getConvertedPostWithTwigValues();

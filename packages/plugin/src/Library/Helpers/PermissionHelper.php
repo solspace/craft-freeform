@@ -87,6 +87,16 @@ class PermissionHelper
         }
     }
 
+    public static function requireFormManagePermission(int $formId): void
+    {
+        self::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        $permission = Freeform::PERMISSION_FORMS_MANAGE;
+        if (!self::checkPermission($permission) && !self::checkPermission(self::prepareNestedPermission($permission, $formId))) {
+            throw new ForbiddenHttpException('User is not permitted to manage this form.');
+        }
+    }
+
     /**
      * Fetches all nested allowed permission IDs from a nested permission set.
      */

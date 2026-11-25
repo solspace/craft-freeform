@@ -15,6 +15,7 @@ import translate from "@ff-client/utils/translations";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 
 const emptyOptions: OptionCollection = [];
 
@@ -25,6 +26,7 @@ type FieldOptions = (
 
 export const useFieldOptions: FieldOptions = (field, type) => {
   const { getOptionTranslations } = useTranslations(field);
+  const { formId } = useParams();
 
   const { optionsConfiguration, emptyOption } = useMemo(() => {
     let optionsConfiguration: OptionsConfiguration | undefined;
@@ -76,7 +78,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
   const isCustomOptions = optionsConfiguration?.source === Source.Custom;
 
   const { data, isFetching } = useQuery({
-    queryKey: ["field-options", optionsConfiguration],
+    queryKey: ["field-options", formId, optionsConfiguration],
     queryFn: async () => {
       if (!optionsConfiguration || isCustomOptions) {
         return [];
@@ -90,10 +92,10 @@ export const useFieldOptions: FieldOptions = (field, type) => {
       }
 
       try {
-        const response = await axios.post<OptionCollection>(
-          "api/options",
-          optionsConfiguration,
-        );
+        const response = await axios.post<OptionCollection>("api/options", {
+          ...optionsConfiguration,
+          formId,
+        });
         const { data } = response;
 
         return data;
@@ -104,7 +106,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
     },
     staleTime: Infinity,
     gcTime: Infinity,
-    enabled: !!optionsConfiguration && !isCustomOptions,
+    enabled: !!formId && !!optionsConfiguration && !isCustomOptions,
   });
 
   const isFetchingAsync =

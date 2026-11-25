@@ -91,13 +91,12 @@ class Users extends BaseOptionProvider
         $groupId = $translationTable->get('optionConfiguration.properties.groupId') ?: $this->getGroupId();
         $status = $translationTable->get('optionConfiguration.properties.status') ?: $this->getStatus();
 
-        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
-        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+        $orderBy = $this->getQueryOrder($translationTable, $this->getOrderBy(), $this->getSort());
 
         return User::find()
             ->groupId($groupId)
             ->status($status)
-            ->orderBy($orderBy.' '.$sort)
+            ->orderBy($orderBy)
             ->all()
         ;
     }

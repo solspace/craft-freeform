@@ -43,10 +43,12 @@ use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
+use Solspace\Freeform\Library\Templates\FormTemplateTwig;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
+use Twig\Error\Error as TwigError;
 use yii\base\Event;
 
 class Submission extends Element
@@ -176,16 +178,16 @@ class Submission extends Element
             $data[$field->getHandle()] = $field->getValue();
         }
 
-        return \Craft::$app->view->renderString(
-            $generalSettings->submissionTitle,
-            array_merge(
-                $data,
-                [
-                    'dateCreated' => $submission->dateCreated,
-                    'form' => $form,
-                ]
-            )
-        );
+        try {
+            return FormTemplateTwig::render($generalSettings->submissionTitle, array_merge($data, [
+                'dateCreated' => $submission->dateCreated,
+                'form' => $form,
+            ]));
+        } catch (TwigError $exception) {
+            \Craft::warning('Unable to render the Freeform submission title: '.$exception->getRawMessage(), __METHOD__);
+
+            return $form->getName();
+        }
     }
 
     public static function find(): SubmissionQuery

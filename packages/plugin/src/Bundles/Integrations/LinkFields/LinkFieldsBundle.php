@@ -17,12 +17,8 @@ class LinkFieldsBundle extends FeatureBundle
 {
     public function __construct()
     {
-        if (version_compare(\Craft::$app->getVersion(), '5.0', '<')) {
-            return;
-        }
-
         // Keep optional adapters outside Bundles: the bundle loader reflects every
-        // class there, including on Craft 4 and sites without Hyper or Linkit.
+        // class there, including on sites without Hyper or Linkit.
         $integrations = new ExternalIntegrations();
         if (class_exists(Link::class) && $integrations->canRegister('craft-link')) {
             Event::on(Link::class, Link::EVENT_REGISTER_LINK_TYPES, static function (RegisterComponentTypesEvent $event) {

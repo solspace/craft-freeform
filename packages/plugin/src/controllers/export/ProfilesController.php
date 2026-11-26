@@ -37,15 +37,13 @@ class ProfilesController extends BaseController
             static fn (ExportProfileModel $profile) => \in_array($profile->formId, $formIds)
         );
 
-        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5.0.0', '>=');
-
         $crumbs = [
             ['label' => Freeform::getInstance()->name, 'url' => UrlHelper::cpUrl('freeform')],
             ['label' => Freeform::t('Export'), 'url' => UrlHelper::cpUrl('freeform/export/profiles')],
             ['label' => Freeform::t('Profiles'), 'url' => UrlHelper::cpUrl('freeform/export/profiles')],
         ];
 
-        if ($isCraft5 && $site && \Craft::$app->getIsMultiSite()) {
+        if ($site && \Craft::$app->getIsMultiSite()) {
             array_unshift($crumbs, [
                 'id' => 'site-crumb',
                 'icon' => Cp::earthIcon(),
@@ -64,7 +62,6 @@ class ProfilesController extends BaseController
                 'exporters' => $exportProfileService->getExporterTypes(),
                 'selectedSite' => $site,
                 'selectableSites' => $sites,
-                'isCraft5' => $isCraft5,
                 'forms' => $forms,
                 'crumbs' => $crumbs,
                 'showSiteMenu' => true,

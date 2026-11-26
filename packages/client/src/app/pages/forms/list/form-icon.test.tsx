@@ -45,8 +45,3 @@ it("leaves existing cards without icons unchanged", () => {
   render();
   expect(host.children).toHaveLength(0);
 });
-it("ignores saved icons on Craft 4", () => {
-  version.supported = false;
-  render("<svg/>");
-  expect(host.children).toHaveLength(0);
-});

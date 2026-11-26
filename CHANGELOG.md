@@ -2,6 +2,9 @@
 
 ## 5.19.0 - Unreleased
 
+### Changed
+- Freeform 5.19 requires Craft CMS 5.12.x and PHP 8.2 or later.
+
 ### Added
 - Added authenticated MCP tools for discovering forms and sites, creating forms, editing field labels and requirements, managing per-site translations, and reading permission-scoped submissions. [#2716](https://github.com/solspace/craft-freeform/discussions/2716)
 

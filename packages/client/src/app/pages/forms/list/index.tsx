@@ -45,7 +45,6 @@ export const ListProvider: React.FC = () => {
   const [search, setSearch] = useState("");
   const [periodHost, setPeriodHost] = useState<HTMLDivElement | null>(null);
   const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
-  const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
   useWelcomeFormStart(canCreate, openAddForm);
 
@@ -79,7 +78,7 @@ export const ListProvider: React.FC = () => {
               <button
                 type="button"
                 className={classes("btn", View.Grid === view && "active")}
-                data-icon={classes(isCraft5 ? "element-cards" : "grid")}
+                data-icon="element-cards"
                 aria-label={translate("Display as cards")}
                 aria-pressed={View.Grid === view}
                 title={translate("Display as cards")}

@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
 const style = createGlobalStyle`
-  /* These control roles are absent in Craft 5 Light as well as Craft 4.
+  /* These control roles are absent in Craft 5 Light.
      CSS variables in both light-dark() branches must resolve. */
   :root:not([data-dark-mode="dark"]) {
     --ui-control-height: 34px;
@@ -12,37 +12,6 @@ const style = createGlobalStyle`
     --ui-control-selected-color: var(--white);
   }
 
-  /* Craft 4 has no appearance setting or semantic control tokens. Both
-     light-dark() branches must resolve, even when only Light is displayed. */
-  :root:not([data-dark-mode]) {
-    --pane-bg: var(--white);
-    --secondary-pane-bg: var(--gray-050);
-    --modal-bg: var(--white);
-    --input-bg: var(--white);
-    --input-border-color: rgba(96, 125, 159, .25);
-    --button-bg: var(--gray-100);
-    --button-bg--hover: var(--gray-200);
-    --button-border: none;
-    --focus-ring-inner: inset 0 0 0 2px var(--blue-700);
-    --focus-ring-light: var(--focus-ring);
-    --bg-selection-light: #e8f0fc;
-    --bg-selection-dark: #d8e7fb;
-    --border-light: var(--hairline-color);
-    --border-color: var(--gray-200);
-    --bg-color: var(--white);
-    --bg-enabled: rgba(32, 160, 123, .15);
-    --bg-success: #e1f1e7;
-    --fg-success: #246344;
-    --border-success: #a7cdb7;
-    --bg-error: #fff0f0;
-    --fg-error: var(--error-color);
-    --border-error: #e5a5a5;
-    --bg-warning: #fff5db;
-    --fg-warning: #8f6400;
-    --border-warning: #d4b56a;
-    --pane-shadow: 0 1px 3px rgba(0, 0, 0, .1);
-    --modal-shadow: 0 4px 20px rgba(0, 0, 0, .2);
-  }
 
   :root[data-dark-mode="dark"] {
     --freeform-panel-shadow: var(--modal-shadow);

@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 const setSelected = (element: HTMLLIElement, selected: boolean): void => {
   const child = element.firstElementChild;
-  // Craft 4 renders a direct anchor; Craft 5 wraps its anchor in .nav-item.
   const sidebar = element.querySelector("a");
 
   if (selected) {

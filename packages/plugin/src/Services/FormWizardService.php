@@ -187,7 +187,7 @@ class FormWizardService
             throw new \InvalidArgumentException(Freeform::t('Choose an available form type.'));
         }
         $general = ['name' => $name, 'handle' => $handle, 'type' => $formType, 'sites' => $siteIds];
-        if (version_compare(\Craft::$app->version, '5.0.0', '>=') && \in_array('icon', $options['editableSettings'], true)) {
+        if (\in_array('icon', $options['editableSettings'], true)) {
             $general['icon'] = $preset['icon'];
         }
         $behavior = [];

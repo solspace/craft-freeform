@@ -68,24 +68,6 @@ class FormStatusOptionsTest extends TestCase
         ]);
     }
 
-    public function testCraft4KeepsItsLegacyPalette(): void
-    {
-        $this->setCraftVersion('4.0.0');
-        $this->assertPalette([
-            'green' => '#27AE60',
-            'blue' => '#0D99F2',
-            'yellow' => '#F1C40E',
-            'orange' => '#F2842D',
-            'red' => '#D0021B',
-            'pink' => '#FF50F2',
-            'purple' => '#9B59B6',
-            'turquoise' => '#2CE0BD',
-            'light' => '#CCD1D6',
-            'grey' => '#98A3AE',
-            'black' => '#32475E',
-        ]);
-    }
-
     public function testLegacyColorsStillWorkOnUpgradedCraft5Sites(): void
     {
         foreach (['turquoise' => '#2CE0BD', 'light' => '#CCD1D6', 'grey' => '#98A3AE'] as $color => $hex) {

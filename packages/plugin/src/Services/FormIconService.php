@@ -20,7 +20,7 @@ class FormIconService
 
     public function getSvg(?string $name): ?string
     {
-        if (null === $name || '' === $name || !$this->isSupported() || (new IconName())->validate($name)) {
+        if (null === $name || '' === $name || (new IconName())->validate($name)) {
             return null;
         }
 
@@ -30,11 +30,6 @@ class FormIconService
         }
 
         return $this->icons[$name];
-    }
-
-    protected function isSupported(): bool
-    {
-        return version_compare(\Craft::$app->version, '5.0.0', '>=') && method_exists(Cp::class, 'iconSvg');
     }
 
     protected function renderIcon(string $name): ?string

@@ -228,11 +228,9 @@ class FormWizardServiceTest extends TestCase
         self::assertSame('briefcase', array_column($presets, 'icon', 'id')['application']);
     }
 
-    public function testStartingPointIconsRespectCraft4AndLockedSettings(): void
+    public function testStartingPointIconsRespectLockedSettings(): void
     {
         self::assertObjectNotHasProperty('icon', $this->service()->payload($this->input())->form->settings->general);
-        \Craft::$app->version = '4.16.0';
-        self::assertObjectNotHasProperty('icon', $this->service(editable: ['icon'])->payload($this->input())->form->settings->general);
     }
 
     #[TestWith([false])]

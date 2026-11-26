@@ -11,9 +11,7 @@ export const SampleSkeleton: React.FC = () => (
   </>
 );
 
-export const ListTableRowLoading: React.FC<{ showIcons?: boolean }> = ({
-  showIcons,
-}) => {
+export const ListTableRowLoading: React.FC = () => {
   const color = "#dfdfdf";
   const data = Array.from({ length: 10 }, () => ({
     value: randomSubmissions(0, Math.random() > 0.9 ? 8 : 4),
@@ -21,11 +19,9 @@ export const ListTableRowLoading: React.FC<{ showIcons?: boolean }> = ({
 
   return (
     <tr>
-      {showIcons && (
-        <td className="form-icon-column">
-          <Skeleton width={24} height={24} borderRadius={6} />
-        </td>
-      )}
+      <td className="form-icon-column">
+        <Skeleton width={24} height={24} borderRadius={6} />
+      </td>
       <td>
         <Skeleton height={20} width={150} />
       </td>

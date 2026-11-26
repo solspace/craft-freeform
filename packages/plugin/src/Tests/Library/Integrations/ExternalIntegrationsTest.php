@@ -29,11 +29,11 @@ class ExternalIntegrationsTest extends TestCase
     public function testAvailabilityDistinguishesMissingDisabledAndUnsupportedPlugins(): void
     {
         $definition = ExternalIntegrations::DEFINITIONS['ckeditor'];
-        $state = ['installed' => true, 'enabled' => true, 'craft5' => true, 'capable' => true, 'version' => '5.9.0'];
+        $state = ['installed' => true, 'enabled' => true, 'capable' => true, 'version' => '5.9.0'];
         self::assertSame('available', ExternalIntegrations::status($definition, $state));
         self::assertSame('not-installed', ExternalIntegrations::status($definition, array_replace($state, ['installed' => false])));
         self::assertSame('plugin-disabled', ExternalIntegrations::status($definition, array_replace($state, ['enabled' => false])));
-        foreach ([['version' => '5.8.0'], ['version' => '6.0.0'], ['craft5' => false], ['capable' => false]] as $change) {
+        foreach ([['version' => '5.8.0'], ['version' => '6.0.0'], ['capable' => false]] as $change) {
             self::assertSame('unsupported', ExternalIntegrations::status($definition, array_replace($state, $change)));
         }
     }
@@ -89,7 +89,7 @@ class ExternalIntegrationsTest extends TestCase
         $previous = \Craft::$app;
 
         try {
-            foreach (['4.16.0' => false, '5.2.0' => false, '5.3.0' => true, '5.12.0.1' => true, '6.0.0' => false] as $version => $supported) {
+            foreach (['5.2.0' => false, '5.3.0' => true, '5.12.0.1' => true, '6.0.0' => false] as $version => $supported) {
                 \Craft::$app = new class($version) {
                     public function __construct(private string $version) {}
 
@@ -111,7 +111,7 @@ class ExternalIntegrationsTest extends TestCase
         $service = new class($settings) extends ExternalIntegrations {
             protected function pluginState(string $id, array $definition): array
             {
-                return ['installed' => 'hyper' !== $id, 'enabled' => true, 'version' => $definition['min'], 'craft5' => true, 'capable' => true];
+                return ['installed' => 'hyper' !== $id, 'enabled' => true, 'version' => $definition['min'], 'capable' => true];
             }
         };
         $catalog = array_column($service->getCatalog(), null, 'id');
@@ -132,7 +132,7 @@ class ExternalIntegrationsTest extends TestCase
 
             protected function pluginState(string $id, array $definition): array
             {
-                $state = ['installed' => true, 'enabled' => true, 'version' => $definition['min'], 'displayVersion' => $definition['min'], 'craft5' => true, 'capable' => true];
+                $state = ['installed' => true, 'enabled' => true, 'version' => $definition['min'], 'displayVersion' => $definition['min'], 'capable' => true];
 
                 return 'neo' === $id ? array_replace($state, $this->neoState) : $state;
             }

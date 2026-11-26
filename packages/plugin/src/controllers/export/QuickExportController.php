@@ -170,7 +170,6 @@ class QuickExportController extends BaseController
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
-        $isCraft5 = version_compare(\Craft::$app->version, '5.0.0-alpha', '>=');
         $settings = $this->getExportSettings();
         $exportProfilesService = $this->getExportProfileService();
 

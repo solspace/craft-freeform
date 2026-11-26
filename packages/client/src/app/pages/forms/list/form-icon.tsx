@@ -1,4 +1,3 @@
-import config from "@config/freeform/freeform.config";
 import DOMPurify from "dompurify";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -20,7 +19,7 @@ export const FormIcon = ({
     }),
     [svg],
   );
-  if (!config.metadata.craft?.is5 || !markup.__html) return null;
+  if (!markup.__html) return null;
   return (
     <Icon
       $compact={compact}

@@ -45,14 +45,9 @@ const tooltipProps: Omit<TooltipProps, "children"> = {
 type Props = {
   form: FormWithStats;
   hasFormMonitor: boolean;
-  showIcons: boolean;
 };
 
-export const ListTableRow: React.FC<Props> = ({
-  form,
-  hasFormMonitor,
-  showIcons,
-}) => {
+export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
   const isLiteAndUp = config.editions.isAtLeast(Edition.Lite);
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
@@ -81,11 +76,9 @@ export const ListTableRow: React.FC<Props> = ({
 
   return (
     <tr>
-      {showIcons && (
-        <td className="form-icon-column">
-          <FormIcon svg={form.iconSvg} color={color} compact />
-        </td>
-      )}
+      <td className="form-icon-column">
+        <FormIcon svg={form.iconSvg} color={color} compact />
+      </td>
       <td>
         {hasTitleLink && (
           <Link to={`${id}`}>

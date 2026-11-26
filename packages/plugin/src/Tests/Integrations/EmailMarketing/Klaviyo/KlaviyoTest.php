@@ -359,9 +359,6 @@ class KlaviyoTest extends TestCase
             }
 
             $property = new \ReflectionProperty($integration, $name);
-            if (\PHP_VERSION_ID < 80100) {
-                $property->setAccessible(true);
-            }
             $property->setValue($integration, $value);
         }
 

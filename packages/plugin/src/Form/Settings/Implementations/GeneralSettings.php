@@ -147,7 +147,6 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
-    #[VisibilityFilter('Boolean(context.config.metadata.craft.is5)')]
     #[Validators\IconName]
     #[Input\IconPicker(
         label: 'Form Icon',

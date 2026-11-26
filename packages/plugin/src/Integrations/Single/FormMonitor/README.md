@@ -3,7 +3,7 @@
 ## Requirements
 
 - Freeform Pro 5.11+
-- Craft 4.x or 5.x
+- Craft 5.12.x
 
 For Form Monitor to work, your site must:
 

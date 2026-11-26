@@ -89,7 +89,7 @@ export const NativeSlideout: React.FC<Props> = ({
     panel.on("close", finishClose);
     panel.on("beforeClose", () => {
       if (disposed) return;
-      // Craft 4 waits for transitionend, which is absent when motion is disabled.
+      // A slideout without transitions may never emit transitionend.
       const styles = getComputedStyle(panel.$container[0]);
       const longestTime = (times: string): number =>
         Math.max(

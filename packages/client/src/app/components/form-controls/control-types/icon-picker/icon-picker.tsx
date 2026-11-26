@@ -158,7 +158,6 @@ const IconPicker: React.FC<ControlType<IconProperty>> = ({
   updateValue,
   context,
 }) => {
-  if (!config.metadata.craft.is5) return null;
   return (
     <Control property={property} errors={errors} context={context}>
       <CraftIconPicker

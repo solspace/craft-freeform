@@ -86,16 +86,9 @@ export const useFreeformNavigation = (): void => {
 
 const findLink = (path: string): HTMLAnchorElement | null => {
   // Craft 5
-  let link = document.querySelector<HTMLAnchorElement>(
+  const link = document.querySelector<HTMLAnchorElement>(
     `ul.nav-item__subnav li a[href*="${path}"]`,
   );
-
-  if (!link) {
-    // Craft 4
-    link = document.querySelector<HTMLAnchorElement>(
-      `ul.subnav li a[href*="${path}"]`,
-    );
-  }
 
   return link;
 };

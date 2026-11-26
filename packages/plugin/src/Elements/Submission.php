@@ -885,61 +885,6 @@ class Submission extends Element
         return parent::searchKeywords($attribute);
     }
 
-    // Craft 4
-    protected function tableAttributeHtml(string $attribute): string
-    {
-        if ('status' === $attribute) {
-            return $this->statusAttributeHtml(Html::encode($this->getStatusModel()->name));
-        }
-
-        if ('userId' === $attribute) {
-            $user = $this->getAuthor();
-
-            return $user ? \Craft::$app->view->renderTemplate('_elements/element', ['element' => $user]) : '';
-        }
-
-        if ('spamReasons' === $attribute) {
-            $spamReasons = $this->getSpamReasons();
-            if (empty($spamReasons)) {
-                return '';
-            }
-
-            $reasons = [];
-            foreach ($spamReasons as $reason) {
-                $reasons[] = $reason->getType();
-            }
-
-            $translatedReasons = [];
-            $reasons = array_unique($reasons);
-            $reasons = array_filter($reasons);
-            foreach ($reasons as $reason) {
-                $translatedReasons[] = Freeform::t($reason);
-            }
-
-            return StringHelper::implodeRecursively(', ', $translatedReasons);
-        }
-
-        $value = $this->{$attribute};
-
-        if (\is_array($value)) {
-            return Html::decode(StringHelper::implodeRecursively(', ', $value));
-        }
-
-        if ($value instanceof FieldInterface) {
-            $event = new RenderTableValueEvent($value, $this);
-            $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
-
-            if (null !== $event->getOutput()) {
-                return $event->getOutput();
-            }
-
-            return Html::encode($value);
-        }
-
-        return parent::tableAttributeHtml($attribute);
-    }
-
-    // Craft 5
     protected function attributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {

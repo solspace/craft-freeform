@@ -54,36 +54,30 @@ class ColorHelper
         ];
     }
 
-    public static function getCraftColor(string $statusColor): Color|string
+    public static function getCraftColor(string $statusColor): Color
     {
-        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
-
-        if ($isCraft5) {
-            return match ($statusColor) {
-                'red' => Color::Red,
-                'orange' => Color::Orange,
-                'amber' => Color::Amber,
-                'rose' => Color::Rose,
-                'pink' => Color::Pink,
-                'lime' => Color::Lime,
-                'emerald' => Color::Emerald,
-                'teal' => Color::Teal,
-                'green' => Color::Green,
-                'yellow' => Color::Yellow,
-                'violet' => Color::Violet,
-                'indigo' => Color::Indigo,
-                'fuchsia' => Color::Fuchsia,
-                'purple' => Color::Purple,
-                'cyan' => Color::Cyan,
-                'sky' => Color::Sky,
-                'blue' => Color::Blue,
-                'gray' => Color::Gray,
-                'white' => Color::White,
-                'black' => Color::Black,
-                default => Color::Gray,
-            };
-        }
-
-        return $statusColor;
+        return match ($statusColor) {
+            'red' => Color::Red,
+            'orange' => Color::Orange,
+            'amber' => Color::Amber,
+            'rose' => Color::Rose,
+            'pink' => Color::Pink,
+            'lime' => Color::Lime,
+            'emerald' => Color::Emerald,
+            'teal' => Color::Teal,
+            'green' => Color::Green,
+            'yellow' => Color::Yellow,
+            'violet' => Color::Violet,
+            'indigo' => Color::Indigo,
+            'fuchsia' => Color::Fuchsia,
+            'purple' => Color::Purple,
+            'cyan' => Color::Cyan,
+            'sky' => Color::Sky,
+            'blue' => Color::Blue,
+            'gray', 'grey', 'light', 'turquoise' => Color::Gray,
+            'white' => Color::White,
+            'black' => Color::Black,
+            default => Color::Gray,
+        };
     }
 }

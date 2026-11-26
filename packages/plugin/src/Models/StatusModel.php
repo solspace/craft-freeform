@@ -90,11 +90,7 @@ class StatusModel extends Model implements \Stringable, \JsonSerializable
 
     public function getColorHex(): string
     {
-        if (version_compare(\Craft::$app->getVersion(), '5', '>=')) {
-            return self::$craft5HexMap[$this->color] ?? self::$hexMap[$this->color] ?? '#FFFFFF';
-        }
-
-        return self::$hexMap[$this->color] ?? '#FFFFFF';
+        return self::$craft5HexMap[$this->color] ?? self::$hexMap[$this->color] ?? '#FFFFFF';
     }
 
     public function safeAttributes(): array

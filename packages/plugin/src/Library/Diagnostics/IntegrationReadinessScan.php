@@ -228,7 +228,6 @@ class IntegrationReadinessScan
 
     private function parseEnv(string $value): bool|string|null
     {
-        // Craft 4 preserves an unresolved $VARIABLE, while Craft 5 returns null.
         // Read exact environment references consistently before checking readiness.
         return StringHelper::isEnvVariable($value) ? App::env(substr($value, 1)) : App::parseEnv($value);
     }

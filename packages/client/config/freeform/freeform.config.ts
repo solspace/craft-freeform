@@ -33,7 +33,6 @@ type Config = {
   };
   metadata: {
     craft: {
-      is5: boolean;
       version: string;
       locale: string;
       is: SemverCompare;

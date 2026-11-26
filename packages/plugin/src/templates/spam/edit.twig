@@ -8,7 +8,7 @@
 {% set actionUrl = 'freeform/spam-submissions/allow' %}
 {% set redirectUrl = 'freeform/spam' %}
 
-{% if isCraft5 and selectableSites is defined and selectableSites|length %}
+{% if selectableSites is defined and selectableSites|length %}
   {% set rootCrumb = {
     label: selectedSite.name,
     url: url('freeform'),
@@ -30,12 +30,6 @@
     { label: "Spam"|t('freeform'), url: url('freeform/spam') },
     { label: form.name, url: url('freeform/spam', { source: 'form:' ~ form.id }) }
   ] %}
-{% endif %}
-
-{% if not isCraft5 %}
-  {% set contextMenu %}
-    {% include '_includes/revisionmenu' with {element: submission, showDrafts: false, hasMoreRevisions: false} %}
-  {% endset %}
 {% endif %}
 
 {% block actionButton %}

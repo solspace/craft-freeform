@@ -17,18 +17,17 @@ export const FormBody = styled.div`
 `;
 
 export const FormIdentity = styled.div<{
-  $hasBadge: boolean;
   $hasMenu: boolean;
   $hasMonitor: boolean;
 }>`
   flex: 1;
   min-width: 0;
-  --card-title-end-space: ${({ $hasBadge, $hasMenu }) => ($hasMenu ? 28 : 0) + ($hasBadge ? 35 : 0) + ($hasBadge && $hasMenu ? 8 : 0) + ($hasBadge || $hasMenu ? 12 : 0)}px;
+  --card-title-end-space: ${({ $hasMenu }) => ($hasMenu ? 83 : 47)}px;
   --card-header-end-space: ${({ $hasMonitor }) => ($hasMonitor ? "0px" : "var(--card-title-end-space)")};
   h2 { padding-inline-end: var(--card-header-end-space); }
   [data-card-description] { max-width: calc(100% - var(--card-header-end-space)); }
   @media (pointer: coarse) {
-    --card-title-end-space: ${({ $hasBadge, $hasMenu }) => ($hasMenu ? 44 : 0) + ($hasBadge ? 35 : 0) + ($hasBadge && $hasMenu ? 8 : 0) + ($hasBadge || $hasMenu ? 12 : 0)}px;
+    --card-title-end-space: ${({ $hasMenu }) => ($hasMenu ? 99 : 47)}px;
   }
 
 `;

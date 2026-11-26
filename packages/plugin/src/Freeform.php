@@ -21,7 +21,6 @@ use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
 use craft\services\Fields;
-use craft\services\Mcp;
 use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
@@ -114,7 +113,6 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\Notifications\NotificationWrappersService;
 use Solspace\Freeform\Services\NotificationsService;
-use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
@@ -177,7 +175,6 @@ use yii\web\View;
  * @property AiService                   $ai
  * @property FormGenerationService       $formGeneration
  * @property DiagnosticsService          $diagnostics
- * @property PreflightService            $preflight
  * @property TypesService                $formTypes
  * @property TranslationsService         $translations
  */
@@ -293,9 +290,7 @@ class Freeform extends Plugin
         $this->initContainerItems();
         $this->initBundles();
 
-        if (\defined(Mcp::class.'::EVENT_REGISTER_CAPABILITY_TYPES')) {
-            McpRegistration::register();
-        }
+        McpRegistration::register();
 
         if ($this->isPro() && $this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();
@@ -361,26 +356,24 @@ class Freeform extends Plugin
      */
     public function afterInstall(): void
     {
-        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
-
         $status = StatusRecord::create();
         $status->name = 'Pending';
         $status->handle = 'pending';
-        $status->color = $isCraft5 ? 'orange' : 'light';
+        $status->color = 'orange';
         $status->sortOrder = 1;
         $status->save();
 
         $status = StatusRecord::create();
         $status->name = 'Open';
         $status->handle = 'open';
-        $status->color = $isCraft5 ? 'teal' : 'green';
+        $status->color = 'teal';
         $status->sortOrder = 2;
         $status->save();
 
         $status = StatusRecord::create();
         $status->name = 'Closed';
         $status->handle = 'closed';
-        $status->color = $isCraft5 ? 'red' : 'grey';
+        $status->color = 'red';
         $status->sortOrder = 3;
         $status->save();
 
@@ -702,7 +695,6 @@ class Freeform extends Plugin
                 'notes' => NotesService::class,
                 'notifications' => NotificationsService::class,
                 'notificationWrappers' => NotificationWrappersService::class,
-                'preflight' => PreflightService::class,
                 'relations' => RelationsService::class,
                 'settings' => SettingsService::class,
                 'spamSubmissions' => SpamSubmissionsService::class,
@@ -790,14 +782,6 @@ class Freeform extends Plugin
                         ['siteId' => $newId],
                         ['siteId' => $oldId, 'elementId' => $ids]
                     )->execute();
-
-                    if (version_compare(\Craft::$app->version, '5.0.0', '<')) {
-                        \Craft::$app->db->createCommand()->update(
-                            '{{%content}}',
-                            ['siteId' => $newId],
-                            ['siteId' => $oldId, 'elementId' => $ids]
-                        )->execute();
-                    }
                 }
             }
         );

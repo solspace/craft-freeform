@@ -106,12 +106,6 @@ class PropertyProvider
             return;
         }
 
-        $accessible = $reflectionProperty->isPublic();
-
-        if (\PHP_VERSION_ID < 80100) {
-            $reflectionProperty->setAccessible(true);
-        }
-
         if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
             $value = null;
         }
@@ -119,10 +113,6 @@ class PropertyProvider
         try {
             $reflectionProperty->setValue($object, $value);
         } catch (\TypeError) {
-        }
-
-        if (!$accessible && \PHP_VERSION_ID < 80100) {
-            $reflectionProperty->setAccessible(false);
         }
     }
 
@@ -136,11 +126,6 @@ class PropertyProvider
 
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
-            $accessible = $property->isPublic();
-            if (\PHP_VERSION_ID < 80100) {
-                $property->setAccessible(true);
-            }
-
             $attribute = AttributeHelper::findAttribute($property, Property::class);
             $section = AttributeHelper::findAttribute($property, Section::class);
             if (!$attribute) {
@@ -183,10 +168,6 @@ class PropertyProvider
             }
 
             $collection->add($attribute);
-
-            if (!$accessible && \PHP_VERSION_ID < 80100) {
-                $property->setAccessible(false);
-            }
         }
 
         return $collection;

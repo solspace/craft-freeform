@@ -10,9 +10,6 @@ vi.mock("@config/freeform/freeform.config", () => ({
   default: {
     metadata: {
       craft: {
-        get is5() {
-          return version.major >= 5;
-        },
         is: { atLeast: (value: string) => version.major >= Number(value[0]) },
       },
     },
@@ -73,12 +70,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("ignores icons completely on Craft 4", () => {
-  version.major = 4;
-  draw("envelope");
-  expect(host.children).toHaveLength(0);
-  expect(LegacyPicker.instances).toHaveLength(0);
-});
 it("preserves saved icons, handles selection/removal, and synchronizes undo without extra changes", () => {
   draw("envelope");
   const picker = LegacyPicker.instances[0];

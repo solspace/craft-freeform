@@ -54,10 +54,10 @@ class SignatureFieldBundleTest extends TestCase
         self::assertTrue(is_subclass_of(SignatureFieldBundle::class, BundleInterface::class));
     }
 
-    public function testIsDiscoverableByTheBundleLoaderAndRendersInBothCraftIndexPaths(): void
+    public function testRendersTheSignatureInTheElementIndex(): void
     {
         if (!class_exists(Element::class)) {
-            self::markTestSkipped('Requires the supported Craft 4/5 element API.');
+            self::markTestSkipped('Requires the supported Craft 5 element API.');
         }
         $bundle = new SignatureFieldBundle();
         self::assertInstanceOf(BundleInterface::class, $bundle);
@@ -68,11 +68,9 @@ class SignatureFieldBundleTest extends TestCase
         $submission->method('behaviors')->willReturn([]);
 
         try {
-            foreach (['tableAttributeHtml', 'attributeHtml'] as $method) {
-                $html = (new \ReflectionMethod(Submission::class, $method))->invoke($submission, 'field:123');
-                self::assertStringContainsString('<img', $html);
-                self::assertStringContainsString('data-freeform-signature-preview', $html);
-            }
+            $html = (new \ReflectionMethod(Submission::class, 'attributeHtml'))->invoke($submission, 'field:123');
+            self::assertStringContainsString('<img', $html);
+            self::assertStringContainsString('data-freeform-signature-preview', $html);
         } finally {
             Event::off(Submission::class, Submission::EVENT_RENDER_TABLE_VALUE, [$bundle, 'renderTableValue']);
         }
@@ -81,7 +79,7 @@ class SignatureFieldBundleTest extends TestCase
     public function testAnExplicitlyEmptyRendererDoesNotFallBackToRawSignatureCode(): void
     {
         if (!class_exists(Element::class)) {
-            self::markTestSkipped('Requires the supported Craft 4/5 element API.');
+            self::markTestSkipped('Requires the supported Craft 5 element API.');
         }
         $bundle = new SignatureFieldBundle();
         $field = $this->createMock(SignatureField::class);
@@ -91,9 +89,7 @@ class SignatureFieldBundleTest extends TestCase
         $submission->method('behaviors')->willReturn([]);
 
         try {
-            foreach (['tableAttributeHtml', 'attributeHtml'] as $method) {
-                self::assertSame('', (new \ReflectionMethod(Submission::class, $method))->invoke($submission, 'field:123'));
-            }
+            self::assertSame('', (new \ReflectionMethod(Submission::class, 'attributeHtml'))->invoke($submission, 'field:123'));
         } finally {
             Event::off(Submission::class, Submission::EVENT_RENDER_TABLE_VALUE, [$bundle, 'renderTableValue']);
         }

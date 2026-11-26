@@ -4,11 +4,6 @@ import styled from "styled-components";
 
 export const ContentContainer = styled.div`
   min-width: 0;
-
-  &.craft-4 {
-    max-width: calc(100% - 250px) !important;
-    width: calc(100% - 250px) !important;
-  }
 `;
 
 export const MainContainer = styled.div`

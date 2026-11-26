@@ -12,7 +12,7 @@ Features vary by edition. [Compare Express, Lite, and Pro](https://docs.solspace
 
 ## Getting started
 
-Freeform 5 supports Craft CMS 5.9+ and 4.17+. For requirements and setup instructions, see [Installing and updating](https://docs.solspace.com/craft/freeform/v5/setup/installing-updating/).
+Freeform 5.19 requires Craft CMS 5.12.x and PHP 8.2 or later. For requirements and setup instructions, see [Installing and updating](https://docs.solspace.com/craft/freeform/v5/setup/installing-updating/).
 
 - [Craft Plugin Store](https://plugins.craftcms.com/freeform)
 - [Freeform 5 documentation](https://docs.solspace.com/craft/freeform/v5/)

@@ -5,16 +5,10 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
 import { ListTable } from "./list.table";
 
-const version = vi.hoisted(() => ({ supported: true }));
 vi.mock("@config/freeform/freeform.config", () => ({
   Edition: { Lite: "lite" },
   default: {
     metadata: {
-      craft: {
-        get is5() {
-          return version.supported;
-        },
-      },
       freeform: { canCreate: true, canDelete: false },
     },
     editions: { isAtLeast: () => false },
@@ -88,7 +82,6 @@ const form = (withIcon = true, monitoring = false) =>
 afterEach(() => {
   act(() => root?.unmount());
   host?.remove();
-  version.supported = true;
   vi.unstubAllGlobals();
 });
 it("puts a colored icon first, with no visible heading", () => {
@@ -128,20 +121,4 @@ it("includes the icon column in loading and empty states", () => {
     ),
   );
   expect(host.querySelector("tbody td")!.getAttribute("colspan")).toBe("8");
-});
-it("omits the column entirely on Craft 4", () => {
-  version.supported = false;
-  render([form()]);
-  expect(host.querySelectorAll("th")).toHaveLength(7);
-  expect(host.querySelector("th")!.textContent).toBe("Name");
-  expect(host.querySelector("tbody tr")!.children).toHaveLength(7);
-  expect(host.querySelector(".form-icon-column")).toBeNull();
-  act(() =>
-    root.render(
-      <MemoryRouter>
-        <ListTable forms={[]} />
-      </MemoryRouter>,
-    ),
-  );
-  expect(host.querySelector("tbody td")!.getAttribute("colspan")).toBe("7");
 });

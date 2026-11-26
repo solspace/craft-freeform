@@ -106,7 +106,6 @@ export const Card: React.FC<Props> = ({
   const isTall = size.endsWith("2");
   const { id, name, description, dateArchived, settings, formMonitor } = form;
   const { color } = settings.general;
-  const hasBadge = config.metadata.craft.is5;
 
   const isArchiving =
     archiveMutation.isPending && archiveMutation.context === id;
@@ -191,7 +190,6 @@ export const Card: React.FC<Props> = ({
       <CardBody>
         <FormBody>
           <FormIdentity
-            $hasBadge={hasBadge}
             $hasMenu={!!onResize}
             $hasMonitor={!!formMonitor?.enabled && !!formMonitorLink}
           >

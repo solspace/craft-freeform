@@ -24,20 +24,7 @@ class FieldTransformer
         foreach ($editableProperties as $property) {
             $reflectionProperty = new \ReflectionProperty($field, $property->handle);
 
-            $isAccessible = $reflectionProperty->isPublic();
-            if (!$isAccessible) {
-                if (\PHP_VERSION_ID < 80100) {
-                    $reflectionProperty->setAccessible(true);
-                }
-            }
-
             $value = $reflectionProperty->getValue($field);
-
-            if (!$isAccessible) {
-                if (\PHP_VERSION_ID < 80100) {
-                    $reflectionProperty->setAccessible(false);
-                }
-            }
 
             if ($property->transformer) {
                 $value = $property->transformer->reverseTransform($value);

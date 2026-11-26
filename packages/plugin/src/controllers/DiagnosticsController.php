@@ -219,26 +219,6 @@ class DiagnosticsController extends BaseController
         return $this->scanReadiness('queue');
     }
 
-    public function actionCraftPreflight(): Response
-    {
-        \Craft::$app->view->registerAssetBundle(DiagnosticsBundle::class);
-
-        $preflight = Freeform::getInstance()->preflight;
-
-        [$warnings, $suggestions] = $this->compileBanners($preflight->getItems());
-
-        return $this->renderTemplate(
-            'freeform/settings/_craft-preflight',
-            [
-                'warnings' => $warnings,
-                'suggestions' => $suggestions,
-                'notices' => $notices,
-                'bannerCounts' => $bannerCounts,
-                'readOnly' => false,
-            ]
-        );
-    }
-
     private function scanReadiness(string $kind): Response
     {
         $this->requirePostRequest();

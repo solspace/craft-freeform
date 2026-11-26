@@ -56,7 +56,7 @@ class ExternalIntegrations
     public function canRegister(string $id): bool
     {
         $definition = self::DEFINITIONS[$id] ?? null;
-        if (!$definition || version_compare(\Craft::$app->getVersion(), '5.0', '<') || version_compare(\Craft::$app->getVersion(), '6.0', '>=')) {
+        if (!$definition) {
             return false;
         }
         $version = null === $definition['package'] ? \Craft::$app->getVersion()
@@ -99,7 +99,7 @@ class ExternalIntegrations
 
     public static function isCompatible(array $definition, array $state): bool
     {
-        return $state['installed'] && $state['craft5'] && $state['capable']
+        return $state['installed'] && $state['capable']
             && version_compare($state['version'], $definition['min'], '>=')
             && version_compare($state['version'], $definition['max'], '<');
     }
@@ -152,7 +152,7 @@ class ExternalIntegrations
 
         $displayVersion = $native ? $craft : ($installed && InstalledVersions::isInstalled($definition['package']) ? InstalledVersions::getPrettyVersion($definition['package']) : '');
 
-        return ['installed' => $installed, 'enabled' => $enabled, 'version' => $version ?? '0', 'displayVersion' => $displayVersion, 'craft5' => version_compare($craft, '5.0', '>=') && version_compare($craft, '6.0', '<'), 'capable' => $capable];
+        return ['installed' => $installed, 'enabled' => $enabled, 'version' => $version ?? '0', 'displayVersion' => $displayVersion, 'capable' => $capable];
     }
 
     private function settings(): ?Settings

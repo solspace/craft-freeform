@@ -3,11 +3,9 @@ import StringInput from "@components/form-controls/control-types/string/string";
 import Textarea from "@components/form-controls/control-types/textarea/textarea";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
-import config from "@config/freeform/freeform.config";
 import { useSaveShortcut } from "@ff-client/hooks/use-save-shortcut";
 import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import { PropertyType } from "@ff-client/types/properties";
-import classes from "@ff-client/utils/classes";
 import { notifications } from "@ff-client/utils/notifications";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
@@ -47,7 +45,6 @@ export const LimitedUsersDetail: React.FC = () => {
   const [presetUndo, setPresetUndo] = useState<Item[] | null>(null);
   const [presetMessage, setPresetMessage] = useState("");
   const mutation = useLimitedUsersMutation(id);
-  const isCraft5 = config.metadata.craft.is5;
 
   useSidebarSelect("freeform/settings");
 
@@ -171,10 +168,7 @@ export const LimitedUsersDetail: React.FC = () => {
       <MainContainer id="main-content" className="has-sidebar">
         <SettingsSidebar activeKey="limited-users" />
 
-        <ContentContainer
-          id="content-container"
-          className={classes(!isCraft5 && "craft-4")}
-        >
+        <ContentContainer id="content-container">
           <div id="content" className="content-pane" style={{ padding: 0 }}>
             <GroupWrapper>
               <PermissionPresets

@@ -16,44 +16,36 @@ class OptionTypeIconHelper
         }
 
         $icons = [
-            'Assets' => ['image', 'photo'],
-            'Entries' => ['newspaper', 'newspaper'],
-            'Users' => ['user-group', 'users'],
-            'Categories' => ['sitemap', 'tree'],
-            'Tags' => ['tags', 'tags'],
-            'States' => ['map-location-dot', 'world'],
-            'Provinces' => ['map-location-dot', 'world'],
-            'Countries' => ['earth-americas', 'globe'],
-            'Nationalities' => ['flag', 'user'],
-            'Languages' => ['language', 'globe'],
-            'Currencies' => ['coins', 'shopping-cart'],
-            'Numbers' => ['hashtag', 'hash'],
-            'Years' => ['calendar', 'clock'],
-            'Months' => ['calendar-days', 'clock'],
-            'Days' => ['calendar-day', 'clock'],
-            'DaysOfWeek' => ['calendar-week', 'clock'],
-            'Timezones' => ['earth-americas', 'world'],
-            'AgeRanges' => ['users', 'users'],
-            'CompanySizes' => ['building', 'users'],
-            'Continents' => ['earth-americas', 'globe'],
-            'EmploymentStatuses' => ['briefcase', 'user'],
-            'Industries' => ['industry', 'tools'],
-            'RegionalSubdivisions' => ['map', 'world'],
-            'SurveyScales' => ['star', 'sliders'],
-            'TimeIntervals' => ['clock', 'clock'],
+            'Assets' => 'image',
+            'Entries' => 'newspaper',
+            'Users' => 'user-group',
+            'Categories' => 'sitemap',
+            'Tags' => 'tags',
+            'States' => 'map-location-dot',
+            'Provinces' => 'map-location-dot',
+            'Countries' => 'earth-americas',
+            'Nationalities' => 'flag',
+            'Languages' => 'language',
+            'Currencies' => 'coins',
+            'Numbers' => 'hashtag',
+            'Years' => 'calendar',
+            'Months' => 'calendar-days',
+            'Days' => 'calendar-day',
+            'DaysOfWeek' => 'calendar-week',
+            'Timezones' => 'earth-americas',
+            'AgeRanges' => 'users',
+            'CompanySizes' => 'building',
+            'Continents' => 'earth-americas',
+            'EmploymentStatuses' => 'briefcase',
+            'Industries' => 'industry',
+            'RegionalSubdivisions' => 'map',
+            'SurveyScales' => 'star',
+            'TimeIntervals' => 'clock',
         ];
         if (!isset($icons[$name])) {
             return null;
         }
-        [$icon, $legacyIcon] = $icons[$name];
-        $svg = \Craft::$container->get(FormIconService::class)->getSvg($icon);
-        if ($svg) {
-            return $svg;
-        }
 
-        // Craft 4 ships its system icons as standalone SVGs.
-        $path = \Craft::getAlias('@app/icons/'.$legacyIcon.'.svg');
-
-        return is_file($path) ? file_get_contents($path) : null;
+        return \Craft::$container->get(FormIconService::class)->getSvg($icons[$name]);
     }
 }

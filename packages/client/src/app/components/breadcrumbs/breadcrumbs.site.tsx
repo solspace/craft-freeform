@@ -3,14 +3,13 @@ import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import classes from "@ff-client/utils/classes";
 import { type FC, useState } from "react";
 
-import { Crumb, PopupMenu, TriggerButton } from "./breadcrumbs.site.style";
+import { PopupMenu, TriggerButton } from "./breadcrumbs.site.style";
 
 export const SiteCrumb: FC = () => {
   const [open, setOpen] = useState(false);
   const { current, list, change } = useSiteContext();
 
   const {
-    metadata: { craft },
     sites: { enabled },
   } = config;
 
@@ -18,17 +17,12 @@ export const SiteCrumb: FC = () => {
     return null;
   }
 
-  const craft4 = !craft.is5;
-  const craft5 = craft.is5;
-
   if (list.length <= 1) {
     return null;
   }
 
   return (
-    <Crumb
-      className={classes("crumb", craft4 && "craft-4", craft5 && "craft-5")}
-    >
+    <li className="crumb craft-5">
       <a id="site-crumb" className="crumb-link">
         <span className="cp-icon puny">
           <svg
@@ -76,6 +70,6 @@ export const SiteCrumb: FC = () => {
           </ul>
         </PopupMenu>
       </TriggerButton>
-    </Crumb>
+    </li>
   );
 };

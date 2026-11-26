@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Tests\Library;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Services\FormIconService;
 use Twig\Environment;
@@ -25,18 +24,9 @@ class CodepackFormBrowserTest extends TestCase
         \Craft::$app = $this->previousCraftApp;
     }
 
-    #[TestWith([true, 1])]
-    #[TestWith([false, 0])]
-    public function testSelectedIconsAndFallbacksRenderInTheSharedBrowser(bool $supported, int $expectedIcons): void
+    public function testSelectedIconsAndFallbacksRenderInTheSharedBrowser(): void
     {
-        $icons = new class($supported) extends FormIconService {
-            public function __construct(private bool $supported) {}
-
-            protected function isSupported(): bool
-            {
-                return $this->supported;
-            }
-
+        $icons = new class extends FormIconService {
             protected function renderIcon(string $name): ?string
             {
                 return 'envelope' === $name ? '<svg data-selected-icon="true" viewBox="0 0 24 24"><path d="M3 5h18v14H3z"/></svg>' : null;
@@ -72,8 +62,8 @@ class CodepackFormBrowserTest extends TestCase
             'browserSubmissionsUrl' => '/demo/submissions',
         ]);
 
-        self::assertSame($expectedIcons, substr_count($html, 'data-selected-icon="true"'));
-        self::assertSame(4 - $expectedIcons, substr_count($html, 'stroke-width="1.5"><rect x="5"'));
+        self::assertSame(1, substr_count($html, 'data-selected-icon="true"'));
+        self::assertSame(3, substr_count($html, 'stroke-width="1.5"><rect x="5"'));
         self::assertStringContainsString('Contact &lt;team&gt;', $html);
         self::assertStringContainsString('href="/demo/forms/basic-light/contact-0"', $html);
         self::assertStringNotContainsString('&lt;svg', $html);

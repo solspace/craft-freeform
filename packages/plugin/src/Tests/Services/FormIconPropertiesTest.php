@@ -63,13 +63,12 @@ class FormIconPropertiesTest extends TestCase
         self::assertSame('envelope', $this->form('envelope')->getIcon());
     }
 
-    #[TestWith(['', true])]
-    #[TestWith(['../icon', true])]
-    #[TestWith(['<svg/>', true])]
-    #[TestWith(['envelope', false])]
-    public function testUnavailableOrInvalidIconsReturnNull(string $name, bool $supported): void
+    #[TestWith([''])]
+    #[TestWith(['../icon'])]
+    #[TestWith(['<svg/>'])]
+    public function testEmptyOrInvalidIconsReturnNull(string $name): void
     {
-        $icons = $this->icons($supported);
+        $icons = $this->icons();
         $icons->expects(self::never())->method('renderIcon');
         $form = $this->form($name);
         self::assertSame($name, $form->getIcon());
@@ -84,10 +83,9 @@ class FormIconPropertiesTest extends TestCase
         self::assertNull($this->form('missing')->getIconSvg());
     }
 
-    private function icons(bool $supported = true): FormIconService
+    private function icons(): FormIconService
     {
-        $icons = $this->getMockBuilder(FormIconService::class)->onlyMethods(['isSupported', 'renderIcon'])->getMock();
-        $icons->method('isSupported')->willReturn($supported);
+        $icons = $this->getMockBuilder(FormIconService::class)->onlyMethods(['renderIcon'])->getMock();
         $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods([])->getMock();
         $plugin->set('formIcons', $icons);
         \Yii::$app = (object) ['loadedModules' => [Freeform::class => $plugin]];

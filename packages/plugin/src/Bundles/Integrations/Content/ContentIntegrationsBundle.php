@@ -28,11 +28,9 @@ class ContentIntegrationsBundle extends FeatureBundle
             $event->roots['freeform-integrations'] = __DIR__.'/Templates';
         });
 
-        if (version_compare(\Craft::$app->getVersion(), '5.0', '>=')) {
-            $this->registerEditors();
-        }
+        $this->registerEditors();
 
-        if (version_compare(\Craft::$app->getVersion(), '5.0', '<') || !class_exists(NodeTypes::class) || !(new ExternalIntegrations())->canRegister('navigation')) {
+        if (!class_exists(NodeTypes::class) || !(new ExternalIntegrations())->canRegister('navigation')) {
             return;
         }
 

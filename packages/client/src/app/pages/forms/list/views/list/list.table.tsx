@@ -22,23 +22,20 @@ export const ListTable: React.FC<Props> = ({
   const openAddForm = useAddFormModal();
   const { canCreate } = config.metadata.freeform;
 
-  const showIcons = config.metadata.craft.is5;
   const hasFormMonitor = forms?.some((form) => form.formMonitor?.enabled);
 
-  const columnCount = 7 + (hasFormMonitor ? 2 : 0) + (showIcons ? 1 : 0);
+  const columnCount = 8 + (hasFormMonitor ? 2 : 0);
 
   return (
     <TableScrollWrapper>
       <Table className="table data">
         <thead>
           <tr>
-            {showIcons && (
-              <th
-                scope="col"
-                className="form-icon-column"
-                aria-label={translate("Form Icon")}
-              />
-            )}
+            <th
+              scope="col"
+              className="form-icon-column"
+              aria-label={translate("Form Icon")}
+            />
             <th>{translate("Name")}</th>
             <th>{translate("Handle")}</th>
             <th>{translate("Description")}</th>
@@ -53,10 +50,10 @@ export const ListTable: React.FC<Props> = ({
         <tbody>
           {isFetching && forms === undefined && (
             <>
-              <ListTableRowLoading showIcons={showIcons} />
-              <ListTableRowLoading showIcons={showIcons} />
-              <ListTableRowLoading showIcons={showIcons} />
-              <ListTableRowLoading showIcons={showIcons} />
+              <ListTableRowLoading />
+              <ListTableRowLoading />
+              <ListTableRowLoading />
+              <ListTableRowLoading />
             </>
           )}
 
@@ -103,7 +100,6 @@ export const ListTable: React.FC<Props> = ({
               <ListTableRow
                 key={form.id}
                 form={form}
-                showIcons={showIcons}
                 hasFormMonitor={hasFormMonitor}
               />
             ))}

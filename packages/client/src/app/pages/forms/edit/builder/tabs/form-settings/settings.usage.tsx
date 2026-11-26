@@ -64,7 +64,7 @@ export const FormUsage = () => {
   const { data: notificationTypes } = useQueryNotificationTypes();
   const [chartDays, setChartDays] = useState<FormStatsDays>(90);
   const stats = useQueryFormStats(form.id, chartDays);
-  const usage = useQueryFormUsage(config.metadata.craft.is5);
+  const usage = useQueryFormUsage();
   const [showAllElements, setShowAllElements] = useState(false);
   const elements = usage.data?.pages.flatMap((page) => page.items) ?? [];
   const elementTotal = usage.data?.pages[0]?.total ?? 0;
@@ -218,7 +218,7 @@ export const FormUsage = () => {
       `${translate("Submissions")}: ${count(stats.data?.totals.submissions)}`,
       `${translate("Spam")} (${translate(spamDescription)}): ${count(stats.data?.totals.spam)}`,
       `${activityPeriodLabel(stats.data?.days ?? chartDays)} (UTC): ${translate("Submissions")}: ${count(recent?.submissions)}, ${translate("Stored spam")}: ${count(recent?.spam)}`,
-      `${translate("Usage in Elements")}: ${config.metadata.craft.is5 ? count(elementTotal) : translate("Requires Craft 5")}`,
+      `${translate("Usage in Elements")}: ${count(elementTotal)}`,
       ...(elementTotal > elements.length
         ? [
             translate("Showing {count} of {total}", {
@@ -272,11 +272,7 @@ export const FormUsage = () => {
               type="button"
               className="btn"
               onClick={copyDiagnostics}
-              disabled={
-                !form.id ||
-                stats.isPending ||
-                (config.metadata.craft.is5 && usage.isPending)
-              }
+              disabled={!form.id || stats.isPending || usage.isPending}
             >
               <i
                 className={
@@ -459,140 +455,138 @@ export const FormUsage = () => {
           )}
         </UsagePanel>
 
-        {config.metadata.craft.is5 && (
-          <UsagePanel
-            className="usage-elements-panel"
-            data-empty={!!usage.data && elementTotal === 0}
-            aria-labelledby="usage-elements-title"
-          >
-            <div className="section-heading">
-              <div className="heading-label">
-                <h2 id="usage-elements-title">
-                  {translate("Usage in Elements")}
-                </h2>
-                {usage.data && (
-                  <span className="count">{elementTotal.toLocaleString()}</span>
-                )}
-              </div>
-              {usage.data && elementTotal === 0 && (
-                <p className="muted usage-empty">
-                  {translate(
-                    "This form is currently not attached to any elements.",
-                  )}
-                </p>
+        <UsagePanel
+          className="usage-elements-panel"
+          data-empty={!!usage.data && elementTotal === 0}
+          aria-labelledby="usage-elements-title"
+        >
+          <div className="section-heading">
+            <div className="heading-label">
+              <h2 id="usage-elements-title">
+                {translate("Usage in Elements")}
+              </h2>
+              {usage.data && (
+                <span className="count">{elementTotal.toLocaleString()}</span>
               )}
             </div>
-            {usage.isPending && form.id && (
-              <p className="muted" role="status">
-                {translate("Loading element usage…")}
-              </p>
-            )}
-            {usage.isError && (
-              <p className="error" role="alert">
-                {translate("Could not load element usage.")}{" "}
-                <button
-                  type="button"
-                  className="btn small"
-                  onClick={() =>
-                    usage.isFetchNextPageError
-                      ? usage.fetchNextPage()
-                      : usage.refetch()
-                  }
-                >
-                  {translate("Retry")}
-                </button>
-              </p>
-            )}
-            {!!elements.length && (
-              <>
-                <div className="element-table" id="usage-elements-list">
-                  <table
-                    className="usage-elements-table"
-                    aria-label={translate("Usage in Elements")}
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">{translate("Element")}</th>
-                        <th scope="col">{translate("Type")}</th>
-                        <th scope="col">{translate("Status")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visibleElements.map((item) => (
-                        <tr key={item.id} className="element-row">
-                          <th scope="row">
-                            <div
-                              className="chip small element usage-element"
-                              data-id={item.id}
-                            >
-                              <div className="chip-content">
-                                <a href={item.url} className="label-link">
-                                  <span>{item.title}</span>
-                                </a>
-                              </div>
-                            </div>
-                          </th>
-                          <td>{item.type}</td>
-                          <td>
-                            <span className="usage-status">
-                              <span
-                                className={classes(
-                                  "status",
-                                  item.status.toLowerCase(),
-                                )}
-                                aria-hidden="true"
-                              />
-                              {translate(item.status)}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {elementTotal > 5 && (
-                  <div className="element-usage-controls">
-                    {(usage.hasNextPage || !showAllElements) && (
-                      <button
-                        type="button"
-                        className="btn small element-usage-toggle"
-                        aria-controls="usage-elements-list"
-                        disabled={usage.isFetchingNextPage}
-                        onClick={() => {
-                          setShowAllElements(true);
-                          if (showAllElements || elements.length <= 5) {
-                            void usage.fetchNextPage();
-                          }
-                        }}
-                      >
-                        {usage.isFetchingNextPage
-                          ? translate("Loading element usage…")
-                          : translate("Show more")}
-                      </button>
-                    )}
-                    {showAllElements && elements.length > 5 && (
-                      <button
-                        type="button"
-                        className="btn small element-usage-toggle"
-                        aria-expanded="true"
-                        aria-controls="usage-elements-list"
-                        onClick={() => setShowAllElements(false)}
-                      >
-                        {translate("Show fewer")}
-                      </button>
-                    )}
-                    <span className="muted" role="status">
-                      {translate("Showing {count} of {total}", {
-                        count: visibleElements.length.toLocaleString(),
-                        total: elementTotal.toLocaleString(),
-                      })}
-                    </span>
-                  </div>
+            {usage.data && elementTotal === 0 && (
+              <p className="muted usage-empty">
+                {translate(
+                  "This form is currently not attached to any elements.",
                 )}
-              </>
+              </p>
             )}
-          </UsagePanel>
-        )}
+          </div>
+          {usage.isPending && form.id && (
+            <p className="muted" role="status">
+              {translate("Loading element usage…")}
+            </p>
+          )}
+          {usage.isError && (
+            <p className="error" role="alert">
+              {translate("Could not load element usage.")}{" "}
+              <button
+                type="button"
+                className="btn small"
+                onClick={() =>
+                  usage.isFetchNextPageError
+                    ? usage.fetchNextPage()
+                    : usage.refetch()
+                }
+              >
+                {translate("Retry")}
+              </button>
+            </p>
+          )}
+          {!!elements.length && (
+            <>
+              <div className="element-table" id="usage-elements-list">
+                <table
+                  className="usage-elements-table"
+                  aria-label={translate("Usage in Elements")}
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">{translate("Element")}</th>
+                      <th scope="col">{translate("Type")}</th>
+                      <th scope="col">{translate("Status")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {visibleElements.map((item) => (
+                      <tr key={item.id} className="element-row">
+                        <th scope="row">
+                          <div
+                            className="chip small element usage-element"
+                            data-id={item.id}
+                          >
+                            <div className="chip-content">
+                              <a href={item.url} className="label-link">
+                                <span>{item.title}</span>
+                              </a>
+                            </div>
+                          </div>
+                        </th>
+                        <td>{item.type}</td>
+                        <td>
+                          <span className="usage-status">
+                            <span
+                              className={classes(
+                                "status",
+                                item.status.toLowerCase(),
+                              )}
+                              aria-hidden="true"
+                            />
+                            {translate(item.status)}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {elementTotal > 5 && (
+                <div className="element-usage-controls">
+                  {(usage.hasNextPage || !showAllElements) && (
+                    <button
+                      type="button"
+                      className="btn small element-usage-toggle"
+                      aria-controls="usage-elements-list"
+                      disabled={usage.isFetchingNextPage}
+                      onClick={() => {
+                        setShowAllElements(true);
+                        if (showAllElements || elements.length <= 5) {
+                          void usage.fetchNextPage();
+                        }
+                      }}
+                    >
+                      {usage.isFetchingNextPage
+                        ? translate("Loading element usage…")
+                        : translate("Show more")}
+                    </button>
+                  )}
+                  {showAllElements && elements.length > 5 && (
+                    <button
+                      type="button"
+                      className="btn small element-usage-toggle"
+                      aria-expanded="true"
+                      aria-controls="usage-elements-list"
+                      onClick={() => setShowAllElements(false)}
+                    >
+                      {translate("Show fewer")}
+                    </button>
+                  )}
+                  <span className="muted" role="status">
+                    {translate("Showing {count} of {total}", {
+                      count: visibleElements.length.toLocaleString(),
+                      total: elementTotal.toLocaleString(),
+                    })}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+        </UsagePanel>
 
         <DiagnosticsGrid>
           <UsagePanel aria-labelledby="form-configuration-title">

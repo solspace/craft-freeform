@@ -14,24 +14,9 @@ use yii\di\Container;
 #[CoversClass(IconName::class)]
 class FormIconServiceTest extends TestCase
 {
-    public function testCraft4IgnoresEvenSavedIcons(): void
-    {
-        $previous = \Craft::$app;
-        \Craft::$app = (object) ['version' => '4.16.0'];
-        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['renderIcon'])->getMock();
-        $service->expects(self::never())->method('renderIcon');
-
-        try {
-            self::assertNull($service->getSvg('envelope'));
-        } finally {
-            \Craft::$app = $previous;
-        }
-    }
-
     public function testOnlySystemIconNamesAreResolvedAndRepeatedIconsAreCached(): void
     {
-        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['isSupported', 'renderIcon'])->getMock();
-        $service->method('isSupported')->willReturn(true);
+        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['renderIcon'])->getMock();
         $service->expects(self::once())->method('renderIcon')->with('envelope')->willReturn('<svg/>');
         foreach (['', null, '../envelope', '/etc/passwd', '@appicons/envelope.svg', '<svg/>', 'https://example.test/icon.svg', str_repeat('a', 101)] as $invalid) {
             self::assertNull($service->getSvg($invalid));
@@ -42,8 +27,7 @@ class FormIconServiceTest extends TestCase
 
     public function testNumericIconNamesIncludingZeroAreSupported(): void
     {
-        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['isSupported', 'renderIcon'])->getMock();
-        $service->method('isSupported')->willReturn(true);
+        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['renderIcon'])->getMock();
         $service->expects(self::once())->method('renderIcon')->with('0')->willReturn('<svg/>');
         self::assertSame('<svg/>', $service->getSvg('0'));
     }
@@ -68,8 +52,7 @@ class FormIconServiceTest extends TestCase
 
     public function testUnknownIconsFallBackToNoIcon(): void
     {
-        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['isSupported', 'renderIcon'])->getMock();
-        $service->method('isSupported')->willReturn(true);
+        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['renderIcon'])->getMock();
         $service->expects(self::once())->method('renderIcon')->willReturn('');
         self::assertNull($service->getSvg('unknown-icon'));
         self::assertNull($service->getSvg('unknown-icon'));

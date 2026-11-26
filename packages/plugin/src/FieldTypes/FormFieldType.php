@@ -35,13 +35,6 @@ class FormFieldType extends Field
         return '@freeform/icon-mask.svg';
     }
 
-    // Craft 4
-    public function getContentColumnType(): string
-    {
-        return Schema::TYPE_INTEGER;
-    }
-
-    // Craft 5
     public static function dbType(): array|string|null
     {
         return Schema::TYPE_INTEGER;

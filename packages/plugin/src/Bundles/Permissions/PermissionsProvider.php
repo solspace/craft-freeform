@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Permissions;
 
 use craft\elements\User;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 
 class PermissionsProvider
 {
@@ -33,7 +34,7 @@ class PermissionsProvider
 
     public function isConsole(): bool
     {
-        return \Craft::$app->request->getIsConsoleRequest();
+        return PermissionHelper::isConsole();
     }
 
     public function getCurrentUser(): ?User

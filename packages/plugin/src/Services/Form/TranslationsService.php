@@ -108,6 +108,11 @@ class TranslationsService extends BaseService
         }
     }
 
+    public function clearFormCache(int $formId): void
+    {
+        unset($this->translationCache[$formId], $this->translationTableCache[$formId]);
+    }
+
     private function decodeTranslations(string $translations): object
     {
         $decoded = json_decode($translations);

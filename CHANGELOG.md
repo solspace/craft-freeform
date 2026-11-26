@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.19.0 - Unreleased
+
+### Added
+- Added authenticated MCP tools for discovering forms and sites, creating forms, editing field labels and requirements, managing per-site translations, and reading permission-scoped submissions. [#2716](https://github.com/solspace/craft-freeform/discussions/2716)
+
 ## 5.18.8 - Unreleased
 
 ### Fixed

@@ -149,16 +149,16 @@ class PermissionHelper
      */
     public static function isAdmin(): bool
     {
-        if (self::isConsole() && !self::$authenticatedUserContext) {
+        if (self::isConsole()) {
             return true;
         }
 
         return \Craft::$app->getUser()->getIsAdmin();
     }
 
-    private static function isConsole(): bool
+    public static function isConsole(): bool
     {
-        return \Craft::$app->request->getIsConsoleRequest();
+        return !self::$authenticatedUserContext && \Craft::$app->request->getIsConsoleRequest();
     }
 
     private static function permissionsEnabled(): bool

@@ -21,6 +21,7 @@ use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
 use craft\services\Fields;
+use craft\services\Mcp;
 use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
@@ -29,6 +30,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Notifica
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Bundles\Form\FormUserProvider;
+use Solspace\Freeform\Bundles\Mcp\McpRegistration;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Rules\RuleProvider;
 use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
@@ -290,6 +292,10 @@ class Freeform extends Plugin
         $this->initPaymentAssets();
         $this->initContainerItems();
         $this->initBundles();
+
+        if (\defined(Mcp::class.'::EVENT_REGISTER_CAPABILITY_TYPES')) {
+            McpRegistration::register();
+        }
 
         if ($this->isPro() && $this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();

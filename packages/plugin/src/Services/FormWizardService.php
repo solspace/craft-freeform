@@ -20,6 +20,7 @@ use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FormWizard\PresetCatalog;
 use Solspace\Freeform\Library\DataObjects\FormWizard\PreviewForm;
+use Solspace\Freeform\Library\FileUploads\UploadVolumePolicy;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
@@ -46,7 +47,7 @@ class FormWizardService
             && $this->limitations->can('layout.quickSetupStartingPoints');
     }
 
-    public function options(): array
+    public function options(?int $uploadVolumeId = null): array
     {
         $available = [];
         $restricted = [];
@@ -60,7 +61,7 @@ class FormWizardService
 
                 continue;
             }
-            if ('file' === $short && !$this->uploadSource()) {
+            if ('file' === $short && !$this->uploadSource($uploadVolumeId)) {
                 continue;
             }
             $editableProperties = [];
@@ -138,9 +139,9 @@ class FormWizardService
     }
 
     /** Only explicit wizard choices are accepted; arbitrary types/settings never reach persistence. */
-    public function payload(array $input, bool $preview = false): \stdClass
+    public function payload(array $input, bool $preview = false, bool $useFieldHandles = false, ?int $uploadVolumeId = null): \stdClass
     {
-        $options = $this->options();
+        $options = $this->options($uploadVolumeId);
         $name = $this->text($input['name'] ?? '', 100);
         if ('' === $name && !$preview) {
             throw new \InvalidArgumentException(Freeform::t('Enter a name for your form.'));
@@ -257,7 +258,7 @@ class FormWizardService
             $suggested = $definitions[$key] ?? [];
             $props = array_replace($props, ['label' => $label, 'handle' => 'field'.$index, 'required' => true === ($field['required'] ?? false)]);
             // Stable preset handles are readable; user-added fields get safe generated handles.
-            $props['handle'] = isset($definitions[$key]) ? $key : 'customField'.$index;
+            $props['handle'] = $useFieldHandles || isset($definitions[$key]) ? $key : 'customField'.$index;
             $props['instructions'] = $this->text($field['instructions'] ?? ($suggested['instructions'] ?? ''), 500);
             $props['browserAutofill'] = match ($key) {
                 'firstName' => 'given-name', 'lastName' => 'family-name', 'email' => 'email',
@@ -283,7 +284,7 @@ class FormWizardService
                 $props['minMaxValues'] = ['attendees' === $key ? 1 : 0, null];
             }
             if ('file' === $type) {
-                $props['assetSourceId'] = $this->uploadSource();
+                $props['assetSourceId'] = $this->uploadSource($uploadVolumeId);
                 $props['fileKinds'] = ['pdf'];
                 $props['maxFileSizeKB'] = 5120;
                 $props['fileCount'] = 1;
@@ -348,16 +349,20 @@ class FormWizardService
         return $payload;
     }
 
-    public function create(array $input): Form
+    public function create(array $input, bool $useFieldHandles = false, ?int $uploadVolumeId = null): Form
     {
-        $payload = $this->payload($input);
+        $payload = $this->payload($input, useFieldHandles: $useFieldHandles, uploadVolumeId: $uploadVolumeId);
         $event = new PersistFormEvent($payload);
         $transaction = \Craft::$app->db->beginTransaction();
         $createdTemplates = [];
+        $requestedHandle = $payload->form->settings->general->handle;
 
         try {
             Event::trigger(FormsController::class, FormsController::EVENT_CREATE_FORM, $event);
             if (!$event->hasErrors() && $event->getForm()) {
+                if ($useFieldHandles && $event->getForm()->getHandle() !== $requestedHandle) {
+                    throw new \InvalidArgumentException(Freeform::t('This form handle already exists. Choose another handle.'));
+                }
                 foreach ($payload->notifications as $notification) {
                     if ($notification->createTemplate ?? false) {
                         $template = $this->notificationTemplates->create($event->getForm(), Admin::class === $notification->className ? 'admin' : 'confirmation');
@@ -488,11 +493,15 @@ class FormWizardService
         return $defaults;
     }
 
-    private function uploadSource(): ?int
+    private function uploadSource(?int $uploadVolumeId = null): ?int
     {
         $defaults = $this->fieldDefaults(PresetCatalog::TYPES['file']);
-        $source = $defaults['assetSourceId'] ?? null;
+        $source = $uploadVolumeId ?? $defaults['assetSourceId'] ?? null;
         $volume = $source ? \Craft::$app->volumes->getVolumeById($source) : null;
+
+        if ($uploadVolumeId && !\Craft::$container->get(UploadVolumePolicy::class)->allowsSource($uploadVolumeId)) {
+            return null;
+        }
 
         return $volume && \Craft::$app->user->checkPermission('saveAssets:'.$volume->uid) ? $volume->id : null;
     }

@@ -13,6 +13,7 @@ class PresetCatalog
         'textarea' => Fields\TextareaField::class,
         'dropdown' => Fields\DropdownField::class,
         'radios' => Fields\RadiosField::class,
+        'checkbox' => Fields\CheckboxField::class,
         'checkboxes' => Fields\CheckboxesField::class,
         'number' => Fields\NumberField::class,
         'phone' => Fields\Pro\PhoneField::class,

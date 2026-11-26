@@ -6,6 +6,8 @@ use Solspace\Freeform\Bundles\Permissions\PermissionsProvider;
 
 class LimitedUserChecker
 {
+    private array $permissionIds = [];
+
     public function __construct(
         private PermissionsProvider $permissions,
         private LimitedUserSettingsProvider $settingsProvider,
@@ -71,12 +73,10 @@ class LimitedUserChecker
 
     private function getFirstPermissionSettings(): ?array
     {
-        static $id;
+        $userId = $this->permissions->getCurrentUser()?->id ?? 0;
 
-        if (null === $id) {
-            $id = $this->permissions->getFirstPermissionId('freeform-limitedusers');
-        }
-
-        return $this->settingsProvider->getSettings($id);
+        return $this->settingsProvider->getSettings(
+            $this->permissionIds[$userId] ??= $this->permissions->getFirstPermissionId('freeform-limitedusers')
+        );
     }
 }

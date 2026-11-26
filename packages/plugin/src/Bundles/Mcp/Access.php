@@ -26,6 +26,9 @@ final class Access
             throw new ToolCallException('You do not have access to this Freeform capability.');
         }
 
+        // Craft may have cached editable sites before attaching the MCP user.
+        \Craft::$app->getSites()->refreshSites();
+
         try {
             return PermissionHelper::asAuthenticatedUser($operation);
         } catch (\InvalidArgumentException $exception) {

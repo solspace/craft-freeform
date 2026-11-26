@@ -11,7 +11,6 @@ return [
     'Compatible version' => 'Compatibele versie',
     'Content tools' => 'Contenttools',
     'Content Integrations' => 'Contentintegraties',
-    'Content integrations require Craft 5.' => 'Contentintegraties vereisen Craft 5.',
     'Disable all' => 'Alles uitschakelen',
     'Enable all' => 'Alles inschakelen',
     'Freeform logo' => 'Freeform-logo',

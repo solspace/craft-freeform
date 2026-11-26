@@ -11,7 +11,6 @@ return [
     'Compatible version' => 'Version compatible',
     'Content tools' => 'Outils de contenu',
     'Content Integrations' => 'Intégrations de contenu',
-    'Content integrations require Craft 5.' => 'Les intégrations de contenu nécessitent Craft 5.',
     'Disable all' => 'Tout désactiver',
     'Enable all' => 'Tout activer',
     'Freeform logo' => 'Logo Freeform',

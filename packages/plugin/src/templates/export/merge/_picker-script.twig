@@ -139,7 +139,7 @@ const enhancePicker = (select) => {
     $(select).selectize({
         plugins: [
             'auto_position',
-            {% if craft.app.version starts with '5' %}'selectize-plugin-a11y',{% endif %}
+            'selectize-plugin-a11y',
         ],
         dropdownParent: 'body',
         dropdownClass: 'selectize-dropdown ff-merge-picker-menu',

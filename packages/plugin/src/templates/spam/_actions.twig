@@ -1,9 +1,5 @@
 {% macro actionIcon(operation) %}
-    {% if craft.app.version >= '5.0.0' %}
-        {{ svg('@appicons/' ~ (operation == 'approve' ? 'check' : 'xmark') ~ '.svg') }}
-    {% else %}
-        <span data-icon="{{ operation == 'approve' ? 'check' : 'remove' }}"></span>
-    {% endif %}
+    {{ svg('@appicons/' ~ (operation == 'approve' ? 'check' : 'xmark') ~ '.svg') }}
 {% endmacro %}
 {% macro actionContent(operation, label) %}
     {% import _self as reviewUi %}

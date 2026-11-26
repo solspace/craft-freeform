@@ -67,9 +67,8 @@ class ActivityTemplateTest extends TestCase
 
     #[TestWith(['submissions'])]
     #[TestWith(['events'])]
-    public function testActivityRendersWithCraft4HelpersAndAccessibleViewButtons(string $view): void
+    public function testActivityRendersAccessibleViewButtons(string $view): void
     {
-        // Craft 4 has neither iconSvg() nor the forms.buttonGroup() macro.
         $twig = new Environment(new ArrayLoader([
             'activity' => file_get_contents(__DIR__.'/../../../templates/activity/index.twig'),
             'freeform/_layouts/main' => '{% block actionButton %}{% endblock %}{% block content %}{% endblock %}',

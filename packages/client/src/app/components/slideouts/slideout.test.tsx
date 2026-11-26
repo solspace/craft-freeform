@@ -88,7 +88,7 @@ describe("native Craft manager slideout", () => {
     );
     expect(panel.close).toHaveBeenCalledOnce();
   });
-  it("finishes closing on Craft 4 when no transition event fires", () => {
+  it("finishes closing when no transition event fires", () => {
     vi.useFakeTimers();
     const onClose = vi.fn();
     const panel = setup(

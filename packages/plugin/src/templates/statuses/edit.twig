@@ -74,9 +74,6 @@
 
     {% set colorField %}
         {% set colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'gray', 'black'] %}
-        {% if craft.app.version < '5.0.0' %}
-            {% set colors = ['green', 'orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
-        {% endif %}
         {% set legacyColor = status.color and status.color not in colors %}
         {% if legacyColor %}
             {% set colors = colors|merge([status.color]) %}

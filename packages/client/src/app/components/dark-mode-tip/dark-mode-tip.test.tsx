@@ -34,7 +34,7 @@ afterEach(() => {
   localStorage.clear();
 });
 
-it("keeps all placements hidden when the server excludes Craft 4, non-admins, installed plugins, or prior dismissal", () => {
+it("hides the tip when the server marks it as hidden", () => {
   tip.visible = false;
   act(() => root.render(<DarkModeTip />));
   expect(host.querySelector("aside")).toBeNull();

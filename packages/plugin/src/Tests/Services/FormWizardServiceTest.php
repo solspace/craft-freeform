@@ -50,7 +50,7 @@ class FormWizardServiceTest extends TestCase
         \Craft::$app = $this->previousApp;
     }
 
-    #[TestWith(['Freeform 5.18 Craft 4 compatibility QA'])]
+    #[TestWith(['Freeform 5.19 (QA)'])]
     #[TestWith(['Quote / Event: 5.18'])]
     #[TestWith(['Demande d’inscription – été'])]
     #[TestWith(['!!!'])]

@@ -11,8 +11,6 @@ use Solspace\Freeform\Library\Helpers\DarkModeTipHelper;
  */
 class DarkModeTipHelperTest extends TestCase
 {
-    #[TestWith(['4.17.0', true, false, false, false])]
-    #[TestWith(['4.99.0', true, false, false, false])]
     #[TestWith(['5.8.9', true, false, false, false])]
     #[TestWith(['5.9.0', true, false, false, true])]
     #[TestWith(['5.12.0.1', true, false, false, true])]

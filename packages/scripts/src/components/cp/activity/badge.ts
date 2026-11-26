@@ -41,7 +41,6 @@ export function initializeActivityBadge(
           wrapper.append(badge, label);
           suffix.append(wrapper);
         } else {
-          // Craft 4 and earlier Craft 5 control panels use a flat link.
           link.append(badge, label);
         }
       }

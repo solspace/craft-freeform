@@ -13,21 +13,18 @@ use Twig\TwigFilter;
  */
 class StatusColorPickerTest extends TestCase
 {
-    #[TestWith(['5.11.0', 'red', 20])]
-    #[TestWith(['5.11.0', 'white', 20])]
-    #[TestWith(['5.11.0', 'grey', 21])]
-    #[TestWith(['5.11.0', 'light', 21])]
-    #[TestWith(['5.11.0', 'turquoise', 21])]
-    #[TestWith(['4.16.0', 'turquoise', 11])]
-    #[TestWith(['4.16.0', 'red', 11])]
-    public function testExistingStatusColorsRemainSelectedWithoutChangingTheirStoredName(string $version, string $color, int $count): void
+    #[TestWith(['red', 20])]
+    #[TestWith(['white', 20])]
+    #[TestWith(['grey', 21])]
+    #[TestWith(['light', 21])]
+    #[TestWith(['turquoise', 21])]
+    public function testExistingStatusColorsRemainSelectedWithoutChangingTheirStoredName(string $color, int $count): void
     {
         $source = file_get_contents(__DIR__.'/../../templates/statuses/edit.twig');
         preg_match('/{% set colorField %}(.*?){% endset %}/s', $source, $match);
         $twig = new Environment(new ArrayLoader(['picker' => $match[1]]), ['strict_variables' => true, 'autoescape' => 'html']);
         $twig->addFilter(new TwigFilter('t', static fn ($text) => $text));
         $html = $twig->render('picker', [
-            'craft' => ['app' => ['version' => $version]],
             'status' => ['color' => $color, 'colorHex' => '#98a3ae'],
         ]);
 

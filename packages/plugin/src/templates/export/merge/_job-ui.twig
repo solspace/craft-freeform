@@ -2,7 +2,7 @@
     {% set statuses = {reviewing: 'Preparing review', ready: 'Ready for review', moving: 'In progress', paused: 'Paused', done: 'Complete', stopped: 'Stopped'} %}
     {% set colors = {reviewing: 'blue', ready: 'blue', moving: 'blue', paused: 'orange', done: 'teal', stopped: 'gray'} %}
     {% set indicators = {paused: 'pending', done: 'live', stopped: 'disabled'} %}
-    <span class="ff-merge-status{{ craft.app.version starts with '5' ? ' status-label ' ~ colors[key] }}">
+    <span class="ff-merge-status status-label {{ colors[key] }}">
         <span class="status {{ indicators[key] ?? colors[key] }}" aria-hidden="true"></span>
         <span class="status-label-text">{{ statuses[key]|t('freeform') }}</span>
     </span>

@@ -76,19 +76,15 @@
         </div>
         {% if settings.getErrors('externalIntegrations') %}<p class="error">{{ settings.getErrors('externalIntegrations')|join(' ') }}</p>{% endif %}
 
-        {% if craft.app.version starts with '5.' %}
-            {{ forms.iconPickerField({
-                id: 'external-integration-icon',
-                name: 'settings[externalIntegrationIcon]',
-                label: 'Integration Icon'|t('freeform'),
-                instructions: 'Choose the icon shown for Freeform across content integrations.'|t('freeform'),
-                value: settings.externalIntegrationIcon ?: null,
-                static: readOnly,
-                errors: settings.getErrors('externalIntegrationIcon'),
-            }) }}
-        {% else %}
-            <p class="light">{{ 'Content integrations require Craft 5.'|t('freeform') }}</p>
-        {% endif %}
+        {{ forms.iconPickerField({
+            id: 'external-integration-icon',
+            name: 'settings[externalIntegrationIcon]',
+            label: 'Integration Icon'|t('freeform'),
+            instructions: 'Choose the icon shown for Freeform across content integrations.'|t('freeform'),
+            value: settings.externalIntegrationIcon ?: null,
+            static: readOnly,
+            errors: settings.getErrors('externalIntegrationIcon'),
+        }) }}
     </section>
 
     <section class="ff-content-section" aria-labelledby="ff-field-container-heading">
@@ -182,14 +178,12 @@
     {% endcss %}
 
     {% set suggestedIcons = [] %}
-    {% if craft.app.version starts with '5.' %}
-        {% for name in ['clipboard-list', 'clipboard-check', 'file-pen', 'pen-to-square', 'list-check', 'file-lines', 'rectangle-list', 'table-list', 'input-text', 'square-check'] %}
-            {% set svg = craft.freeform.formIcon(name) %}
-            {% if svg %}
-                {% set suggestedIcons = suggestedIcons|merge([{name: name, svg: svg ~ ''}]) %}
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+    {% for name in ['clipboard-list', 'clipboard-check', 'file-pen', 'pen-to-square', 'list-check', 'file-lines', 'rectangle-list', 'table-list', 'input-text', 'square-check'] %}
+        {% set svg = craft.freeform.formIcon(name) %}
+        {% if svg %}
+            {% set suggestedIcons = suggestedIcons|merge([{name: name, svg: svg ~ ''}]) %}
+        {% endif %}
+    {% endfor %}
 
     {% js %}
         (() => {

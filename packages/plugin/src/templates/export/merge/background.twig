@@ -129,11 +129,7 @@
                     {{ 'You can leave this page and check progress later from Merge Forms.'|t('freeform') }}
                 {% endif %}
             {% endset %}
-            {% if craft.app.version starts with '5' %}
-                <div class="pane tip"><p>{{ note }}</p></div>
-            {% else %}
-                <p class="notice with-icon">{{ note }}</p>
-            {% endif %}
+            <div class="pane tip"><p>{{ note }}</p></div>
         {% endif %}
 
         {% if canStop %}

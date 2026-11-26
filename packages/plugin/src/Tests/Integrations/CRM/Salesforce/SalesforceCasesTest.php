@@ -229,10 +229,6 @@ class SalesforceCasesTest extends TestCase
 
     public function testUploadedFilesAreLinkedToEachNewCaseWithoutReusingPreviousSubmissionFiles(): void
     {
-        if (!class_exists(AssetQuery::class)) {
-            self::markTestSkipped('File upload coverage requires the supported Craft 4 or 5 AssetQuery.');
-        }
-
         $asset = $this->createConfiguredMock(Asset::class, ['getFilename' => 'support.txt', 'getContents' => 'Support attachment']);
         $asset->id = 101;
         $asset->title = 'Support attachment';

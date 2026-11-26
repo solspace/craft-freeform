@@ -12,12 +12,16 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
+use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
+use Solspace\Freeform\Fields\Properties\Options\Custom\Custom;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 
 final class SubmissionTools
 {
+    private const SUMMARY_GROUPS = ['day', 'week', 'month', 'status', 'site', 'choice'];
+
     private const CONTENT_TYPES = [
         FieldInterface::TYPE_TEXT,
         FieldInterface::TYPE_TEXTAREA,
@@ -80,6 +84,97 @@ final class SubmissionTools
                 'toDate' => $to,
                 'total' => (int) self::query($form, $site, $from, $to)->skipContent(true)->count(),
             ];
+        });
+    }
+
+    /**
+     * @param list<string> $sites Editable site handles. Each site must allow access to this form’s submissions.
+     * @param null|string  $field Required for choice grouping. Use a field with saved custom choices.
+     */
+    #[McpTool(name: 'freeform.submissions.summarize', description: 'Count submissions by day, week, month, status, site or configured choice. Choice counts below five are withheld. Returns aggregates only.', annotations: new ToolAnnotations(readOnlyHint: true))]
+    #[RequiresPermission('accessCp')]
+    #[RequiresPermission('accessPlugin-freeform')]
+    #[RequiresPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)]
+    public function summarize(
+        string $form,
+        #[Schema(items: ['type' => 'string'], minItems: 1, maxItems: 10)]
+        array $sites,
+        #[Schema(enum: self::SUMMARY_GROUPS)]
+        string $groupBy,
+        ?string $fromDate = null,
+        ?string $toDate = null,
+        ?string $field = null,
+    ): array {
+        return Access::run(Freeform::PERMISSION_SUBMISSIONS_ACCESS, static function () use ($form, $sites, $groupBy, $fromDate, $toDate, $field): array {
+            if (!$sites || !array_is_list($sites) || \count($sites) > 10 || !\in_array($groupBy, self::SUMMARY_GROUPS, true)
+                || (('choice' === $groupBy) !== (null !== $field))) {
+                throw new ToolCallException('Choose up to 10 sites and a supported grouping. Supply a field only for choice grouping.');
+            }
+            [$from, $to] = self::window($fromDate, $toDate);
+            if ((new \DateTimeImmutable($from))->diff(new \DateTimeImmutable($to))->days > 366) {
+                throw new ToolCallException('Use a date range of at most 366 days.');
+            }
+
+            $rows = [];
+            foreach (array_unique($sites, \SORT_REGULAR) as $siteHandle) {
+                if (!\is_string($siteHandle)) {
+                    throw new ToolCallException('Supply site handles from freeform.sites.list.');
+                }
+                $site = Access::site($siteHandle);
+                $target = Access::form($form, $site, submissions: true);
+                $query = self::query($target, $site, $from, $to)->skipContent(null === $field);
+                if ('site' === $groupBy) {
+                    $rows[] = ['site' => $site->handle, 'group' => $site->handle, 'count' => (int) $query->count()];
+
+                    continue;
+                }
+
+                $choiceField = null;
+                $choices = [];
+                if (null !== $field) {
+                    $choiceField = $target->getLayout()->getFields()->get($field);
+                    $configuration = $choiceField instanceof GeneratedOptionsInterface ? $choiceField->getOptionConfiguration() : null;
+                    if (!$configuration instanceof Custom || ($choiceField instanceof EncryptionInterface && $choiceField->isEncrypted())) {
+                        throw new ToolCallException('Choose a non-encrypted field with custom choices.');
+                    }
+                    foreach ($configuration->toArray()['options'] as $option) {
+                        if (empty($option['optgroup']) && '' !== (string) $option['value']) {
+                            $choices[(string) $option['value']] = strip_tags((string) $option['label']);
+                        }
+                    }
+                }
+
+                $counts = [];
+                foreach ($query->each(200) as $submission) {
+                    $groups = match ($groupBy) {
+                        'choice' => (array) $submission->getFormFieldValue($choiceField),
+                        'status' => [$submission->statusId ?? 'none'],
+                        'week' => [$submission->dateCreated->format('o-\WW')],
+                        'month' => [$submission->dateCreated->format('Y-m')],
+                        default => [$submission->dateCreated->format('Y-m-d')],
+                    };
+                    foreach (array_unique(array_filter($groups, 'is_scalar')) as $group) {
+                        if (!$choiceField || \array_key_exists((string) $group, $choices)) {
+                            $counts[$group] = ($counts[$group] ?? 0) + 1;
+                        }
+                    }
+                }
+                ksort($counts);
+                foreach ($counts as $group => $count) {
+                    if (!$choiceField || $count >= 5) {
+                        $row = ['site' => $site->handle, 'group' => (string) $group, 'count' => $count];
+                        if ($choiceField) {
+                            $row['label'] = $choices[$group];
+                        } elseif ('status' === $groupBy) {
+                            $status = 'none' === $group ? null : Freeform::getInstance()->statuses->getStatusById((int) $group);
+                            $row['label'] = $status?->name ?? 'No status';
+                        }
+                        $rows[] = $row;
+                    }
+                }
+            }
+
+            return ['form' => $form, 'groupBy' => $groupBy, 'fromDate' => $from, 'toDate' => $to, 'buckets' => $rows];
         });
     }
 

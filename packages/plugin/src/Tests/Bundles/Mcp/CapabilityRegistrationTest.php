@@ -22,7 +22,7 @@ class CapabilityRegistrationTest extends TestCase
         Event::trigger(Mcp::class, Mcp::EVENT_REGISTER_CAPABILITY_TYPES, $event);
 
         $tools = (new CapabilityRegistry($event->types))->definitions()->getTools();
-        self::assertCount(16, $tools);
+        self::assertCount(26, $tools);
         self::assertSame(
             ['handle', 'type', 'label'],
             $tools['freeform.forms.create']->tool->inputSchema['properties']['fields']['items']['required'],
@@ -51,7 +51,11 @@ class CapabilityRegistrationTest extends TestCase
         self::assertFalse($tools['freeform.fields.request-removal']->tool->annotations->destructiveHint);
         self::assertTrue($tools['freeform.fields.remove']->tool->annotations->destructiveHint);
         self::assertSame(['reviewId'], $tools['freeform.fields.remove']->tool->inputSchema['required']);
-        $writes = ['freeform.forms.create', 'freeform.fields.update', 'freeform.fields.add', 'freeform.fields.request-removal', 'freeform.fields.remove', 'freeform.translations.save'];
+        $writes = [
+            'freeform.forms.create', 'freeform.fields.update', 'freeform.fields.add', 'freeform.fields.request-removal', 'freeform.fields.remove', 'freeform.translations.save',
+            'freeform.forms.duplicate', 'freeform.pages.update', 'freeform.pages.add', 'freeform.fields.move', 'freeform.rules.set-field',
+            'freeform.forms.update-success', 'freeform.notifications.draft',
+        ];
         foreach ($tools as $name => $reference) {
             $method = new \ReflectionMethod(...$reference->handler);
             self::assertSame([], $method->getAttributes(PublicMcp::class), $name);

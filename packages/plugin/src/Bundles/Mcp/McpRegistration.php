@@ -15,6 +15,8 @@ final class McpRegistration
             Mcp::EVENT_REGISTER_CAPABILITY_TYPES,
             static function (RegisterComponentTypesEvent $event): void {
                 $event->types[] = FormTools::class;
+                $event->types[] = LayoutTools::class;
+                $event->types[] = WorkflowTools::class;
                 $event->types[] = TranslationTools::class;
                 $event->types[] = SubmissionTools::class;
             },

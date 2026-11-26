@@ -16,6 +16,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
@@ -29,6 +30,7 @@ use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
@@ -73,33 +75,56 @@ class FormDuplicator
 
     public function clone(int $id): bool
     {
-        $form = $this->cloneForm($id);
-        if (!$form) {
-            return false;
-        }
-
-        $this->warmUpLayout($id);
-
-        $this->cloneLayouts($form);
-        $this->clonePages($form);
-        $this->cloneRows($form);
-        $this->cloneFields($form);
-        $this->cloneTranslations($id, $form);
-        $this->cloneSites($id, $form);
-        $this->cloneNotifications($id, $form);
-        $this->cloneRules($id, $form);
-        $this->cloneIntegrations($id, $form);
-        $this->updatePermissions($id, $form);
-
-        $form = $this->formsService->getFormById($form->id);
-
-        $contentManager = new ContentManager($form, $this->fields);
-        $contentManager->performDatabaseColumnAlterations();
-
-        return true;
+        return null !== $this->duplicate($id);
     }
 
-    private function cloneForm(int $id): ?FormRecord
+    public function copyForTesting(int $id, string $name, string $handle): ?int
+    {
+        return $this->duplicate($id, ['name' => $name, 'handle' => $handle]);
+    }
+
+    private function duplicate(int $id, ?array $testCopy = null): ?int
+    {
+        $form = $this->cloneForm($id, $testCopy);
+        if (!$form) {
+            return null;
+        }
+
+        try {
+            $this->warmUpLayout($id);
+            $this->cloneLayouts($form);
+            $this->clonePages($form);
+            $this->cloneRows($form);
+            $this->cloneFields($form);
+            $this->cloneTranslations($id, $form);
+            $this->cloneSites($id, $form);
+            $this->cloneNotifications($id, $form, null !== $testCopy);
+            $this->cloneRules($id, $form);
+            $this->cloneIntegrations($id, $form, null !== $testCopy);
+            $copy = $this->formsService->getFormById($form->id);
+            (new ContentManager($copy, $this->fields))->performDatabaseColumnAlterations();
+
+            if (null === $testCopy) {
+                $this->updatePermissions($id, $form);
+            } elseif (!PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE)) {
+                $user = \Craft::$app->getUser();
+                $permissions = \Craft::$app->getUserPermissions();
+                $userId = $user->getId();
+                $permission = PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_FORMS_MANAGE, $form->id);
+                $permissions->saveUserPermissions($userId, [...$permissions->getPermissionsByUserId($userId), $permission]);
+            }
+        } catch (\Throwable $exception) {
+            if (null !== $testCopy) {
+                $this->formsService->deleteById($form->id);
+            }
+
+            throw $exception;
+        }
+
+        return (int) $form->id;
+    }
+
+    private function cloneForm(int $id, ?array $testCopy): ?FormRecord
     {
         $formRecord = FormRecord::findOne(['id' => $id]);
         if (!$formRecord) {
@@ -110,7 +135,9 @@ class FormDuplicator
         $clone->setAttributes($formRecord->getAttributes(), false);
         $clone->uid = StringHelper::UUID();
         $clone->id = null;
-        [$clone->name, $clone->handle] = $this->formsService->getUniqueNameAndHandle($formRecord->name, $formRecord->handle);
+        [$clone->name, $clone->handle] = $testCopy
+            ? [$testCopy['name'], $testCopy['handle']]
+            : $this->formsService->getUniqueNameAndHandle($formRecord->name, $formRecord->handle);
 
         $metadata = JsonHelper::decode($clone->metadata);
         unset($metadata->{FormRecord::RETAINED_FIELD_IDS});
@@ -120,9 +147,7 @@ class FormDuplicator
         $metadata->general->allowHtmlEmbeds = false;
         $clone->metadata = json_encode($metadata);
 
-        $clone->save();
-
-        if ($clone->hasErrors()) {
+        if (!$clone->save()) {
             return null;
         }
 
@@ -260,17 +285,37 @@ class FormDuplicator
         }
     }
 
-    private function cloneNotifications(int $originalId, FormRecord $form): void
+    private function cloneNotifications(int $originalId, FormRecord $form, bool $disableDelivery): void
     {
+        $templates = [];
+        if ($disableDelivery) {
+            foreach (NotificationTemplateRecord::findAll(['formId' => $originalId]) as $template) {
+                $copy = new NotificationTemplateRecord();
+                $copy->setAttributes($template->getAttributes(), false);
+                $copy->id = null;
+                $copy->formId = $form->id;
+                $copy->handle = 'copy_'.str_replace('-', '', StringHelper::UUID());
+                if (!$copy->save()) {
+                    throw new \RuntimeException('Could not copy a form-specific notification template.');
+                }
+                $templates[$template->id] = $copy->id;
+            }
+        }
         $records = FormNotificationRecord::findAll(['formId' => $originalId]);
         foreach ($records as $record) {
             $clone = new FormNotificationRecord();
             $clone->setAttributes($record->getAttributes());
             $clone->formId = $form->id;
             $clone->uid = StringHelper::UUID();
+            if ($disableDelivery) {
+                $clone->enabled = false;
+            }
             $clone->save();
 
             $metadata = json_decode($clone->metadata);
+            if (isset($metadata->template) && \is_scalar($metadata->template) && isset($templates[$metadata->template])) {
+                $metadata->template = $templates[$metadata->template];
+            }
 
             switch ($clone->class) {
                 case Conditional::class:
@@ -346,7 +391,7 @@ class FormDuplicator
         }
     }
 
-    private function cloneIntegrations(int $originalId, FormRecord $form): void
+    private function cloneIntegrations(int $originalId, FormRecord $form, bool $disableDelivery): void
     {
         $integrationClassMap = IntegrationRecord::find()
             ->select(['class'])
@@ -360,6 +405,9 @@ class FormDuplicator
             $clone->setAttributes($record->getAttributes());
             $clone->formId = $form->id;
             $clone->uid = StringHelper::UUID();
+            if ($disableDelivery) {
+                $clone->enabled = false;
+            }
 
             $metadata = json_decode($clone->metadata);
 
@@ -462,6 +510,7 @@ class FormDuplicator
 
     private function warmUpLayout(int $formId): void
     {
+        $this->fieldUidMap = $this->pageUidMap = [];
         $this->layouts = $this->fetchRecords(FormLayoutRecord::class, $formId);
         $this->layoutsUids = $this->fetchRecords(FormLayoutRecord::class, $formId, 'uid');
         $this->pages = $this->fetchRecords(FormPageRecord::class, $formId);

@@ -137,6 +137,32 @@ final class Access
         }
     }
 
+    public static function editForm(string $handle, string $siteHandle, callable $operation): array
+    {
+        return self::run(Freeform::PERMISSION_FORMS_ACCESS, static function () use ($handle, $siteHandle, $operation): array {
+            $site = self::site($siteHandle);
+            $id = self::form($handle, $site)->getId();
+
+            return self::withLayoutLock($id, static function () use ($handle, $site, $id, $operation): array {
+                $form = self::form($handle, $site);
+                if ($form->getId() !== $id) {
+                    throw new ToolCallException('The target form changed. Read it again before editing.');
+                }
+                self::requireAllFormSites($form);
+
+                $result = \Craft::$app->getDb()->transaction(static function () use ($form, $operation): array {
+                    $result = $operation($form);
+                    self::recordChange($form);
+
+                    return $result;
+                });
+                self::afterSave($form);
+
+                return $result;
+            });
+        });
+    }
+
     public static function text(mixed $value, int $max, bool $required = false): string
     {
         if (!\is_string($value) || mb_strlen($value) > $max || trim(strip_tags($value)) !== trim($value)

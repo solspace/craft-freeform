@@ -35,10 +35,7 @@ final class TranslationTools
                     continue;
                 }
 
-                $missing = 0;
-                foreach (self::catalog($form, (int) $site->id)['strings'] as $string) {
-                    $missing += (int) $string['missing'];
-                }
+                $missing = self::missingCount($form, (int) $site->id);
                 if ($missing) {
                     $forms[] = ['form' => $form->getHandle(), 'missing' => $missing, 'enabled' => Freeform::getInstance()->translations->isTranslationsEnabled($form)];
                 }
@@ -46,6 +43,11 @@ final class TranslationTools
 
             return ['site' => $site->handle, 'language' => $site->language, 'forms' => $forms];
         });
+    }
+
+    public static function missingCount(Form $form, int $siteId): int
+    {
+        return array_sum(array_column(self::catalog($form, $siteId)['strings'], 'missing'));
     }
 
     #[McpTool(name: 'freeform.translations.get', description: 'Get source text, stored translations, missing keys and a revision for one form and target site.', annotations: new ToolAnnotations(readOnlyHint: true))]

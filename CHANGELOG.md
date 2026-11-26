@@ -1,12 +1,16 @@
 # Solspace Freeform Changelog
 
-## 5.19.0 - Unreleased
-
-### Changed
-- Freeform 5.19 requires Craft CMS 5.12.x and PHP 8.2 or later.
+## 5.19.0
 
 ### Added
-- Added authenticated MCP tools for discovering forms and sites, creating forms, editing field labels and requirements, managing per-site translations, and reading permission-scoped submissions. [#2716](https://github.com/solspace/craft-freeform/discussions/2716)
+- Added **Model Context Protocol (MCP) support** through Craft’s authenticated MCP server.
+  - **Form building.** Discover forms and sites, build and edit multipage forms, manage per-site translations, edit layouts and conditional rules, and populate choices from Craft elements or Freeform’s predefined lists.
+  - **Launch and delivery.** Audit forms before launch, create test copies with delivery disabled, configure success behavior, preview emails, save disabled notification drafts, and inspect integration field mappings and recent delivery activity.
+  - **Impact previews and approval.** Review the impact of removing fields or choices, switching choice sources, or changing supported field types. These changes require approval in the Craft control panel by default.
+  - **Submission reporting.** Retrieve permission-scoped submission counts, summaries, and metadata. Access to individual submission answers is off by default and can be enabled by an admin.
+
+### Changed
+- **New system requirements.** Freeform 5.19 requires **Craft CMS 5.12.x** and **PHP 8.2 or later**. Support for Craft 4, earlier Craft 5 versions, and PHP versions below 8.2 has ended for this release series.
 
 ## 5.18.8 - Unreleased
 

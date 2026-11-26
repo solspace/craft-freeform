@@ -16,8 +16,6 @@ class SettingsSearchIndex
             'Default View',
             'Form Creation Options',
             'Allow Starting Points in Quick Setup',
-            'Require confirmation for destructive MCP actions',
-            'Allow MCP clients to read submission answers',
             'Default AI Integration for Form Creation',
             'Plugin Badge',
             'Site-Aware Forms',

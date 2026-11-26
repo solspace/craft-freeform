@@ -208,11 +208,11 @@
 
 	<hr>
 
-    {% if currentUser.admin %}
+    {% if craft.freeformServices.settings.showMcpSettings() %}
         <h2>{{ 'MCP'|t('freeform') }}</h2>
         {{ forms.lightswitchField({
             label: 'Require confirmation for destructive MCP actions'|t('freeform'),
-            instructions: 'Require approval in Craft before an MCP client can remove a field. Turning this off lets authorized MCP clients complete the removal after preparing an impact preview.'|t('freeform'),
+            instructions: 'Require approval in Craft before an MCP client can remove a field or its choices, switch a choice source, or change a field type. Turning this off allows authorized clients to apply these changes after preparing an impact preview.'|t('freeform'),
             id: 'requireMcpDestructiveConfirmation',
             name: 'settings[requireMcpDestructiveConfirmation]',
             on: settings.requireMcpDestructiveConfirmation,

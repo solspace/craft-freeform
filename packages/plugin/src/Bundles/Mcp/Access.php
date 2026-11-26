@@ -168,7 +168,7 @@ final class Access
         if (!\is_string($value) || mb_strlen($value) > $max || trim(strip_tags($value)) !== trim($value)
             || str_contains($value, '{{') || str_contains($value, '{%') || str_contains($value, '{#')
             || ($required && '' === trim($value))) {
-            throw new ToolCallException("Use plain text of at most {$max} characters.");
+            throw new ToolCallException(Freeform::t('Use plain text of at most {max} characters.', ['max' => $max]));
         }
 
         return trim($value);

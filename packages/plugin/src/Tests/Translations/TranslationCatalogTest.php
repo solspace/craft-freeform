@@ -59,4 +59,28 @@ class TranslationCatalogTest extends TestCase
             }
         }
     }
+
+    #[TestWith(['en'])]
+    #[TestWith(['de'])]
+    #[TestWith(['fr'])]
+    #[TestWith(['it'])]
+    #[TestWith(['nl'])]
+    public function testMcpReviewCountsFormatInEachBundledLanguage(string $language): void
+    {
+        $catalog = require __DIR__.'/../../translations/'.$language.'/freeform.php';
+        foreach ([
+            '{count, plural, =0{No stored submission rows are affected.} one{# stored submission row may be affected.} other{# stored submission rows may be affected.}}',
+            '{count, plural, =0{No submission rows currently have stored content for this field.} one{# submission row currently has stored content for this field.} other{# submission rows currently have stored content for this field.}}',
+            '{count, plural, one{# conditional rule reference} other{# conditional rule references}}',
+        ] as $message) {
+            foreach ([0, 1, 2] as $count) {
+                $formatted = \MessageFormatter::formatMessage($language, $catalog[$message], ['count' => $count]);
+                self::assertIsString($formatted, $language.': '.$message);
+                self::assertStringNotContainsString('{', $formatted);
+                if (0 !== $count) {
+                    self::assertStringContainsString((string) $count, $formatted);
+                }
+            }
+        }
+    }
 }

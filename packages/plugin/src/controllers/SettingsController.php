@@ -229,7 +229,7 @@ class SettingsController extends BaseController
             $postData[$setting] = match ($postData[$setting]) {
                 true, 1, '1' => true,
                 false, 0, '0', '' => false,
-                default => throw new BadRequestHttpException('Invalid MCP security setting.'),
+                default => throw new BadRequestHttpException(Freeform::t('Invalid MCP security setting.')),
             };
         }
 

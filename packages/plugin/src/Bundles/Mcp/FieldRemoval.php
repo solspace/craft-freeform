@@ -36,15 +36,17 @@ final class FieldRemoval
                 throw new ToolCallException('Could not create the private Craft review link.');
             }
 
+            $reviewLabel = $confirmationRequired ? '⚠️ '.Freeform::t('Approval required in Craft') : Freeform::t('Review in Craft');
+            $impact['consequences'] = array_map(Freeform::t(...), $impact['consequences']);
             $preview = $impact + [
                 'status' => $confirmationRequired ? 'confirmation_required' : 'ready_for_removal',
                 'confirmationRequired' => $confirmationRequired,
                 'reviewUrl' => UrlHelper::cpUrl('freeform/forms/mcp-field-removal', ['review' => $token]),
-                'reviewLabel' => $confirmationRequired ? '⚠️ Approval required in Craft' : 'Review in Craft',
+                'reviewLabel' => $reviewLabel,
                 'expiresInSeconds' => self::TTL,
                 'instructions' => $confirmationRequired
-                    ? 'Explain the consequences, then show the reviewUrl as a clickable link labeled “⚠️ Approval required in Craft”. The field is still present.'
-                    : 'Report the consequences. If the user requested removal, use freeform.fields.remove with the reviewId. The field is still present.',
+                    ? Freeform::t('Explain the consequences, then show the reviewUrl as a clickable link labeled “{label}”. The field is still present.', ['label' => $reviewLabel])
+                    : Freeform::t('Report the consequences. If the user requested removal, use freeform.fields.remove with the reviewId. The field is still present.'),
             ];
             if (!$confirmationRequired) {
                 $preview['reviewId'] = $token;

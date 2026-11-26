@@ -1,7 +1,7 @@
 {% extends 'freeform/_layouts/main' %}
 {% hook 'freeform.prepareCpTemplate' %}
 
-{% set title = 'Review Field Removal'|t('freeform') %}
+{% set title = (fieldChange ? 'Review Field Change' : 'Review Field Removal')|t('freeform') %}
 {% set selectedSubnavItem = 'forms' %}
 {% set crumbs = [{label: 'Forms'|t('freeform'), url: cpUrl('freeform/forms')}] %}
 
@@ -10,10 +10,24 @@
         <p class="error">{{ error|t('freeform') }}</p>
     {% else %}
         {% import 'freeform/_components/status-icon' as statusIcons %}
+        {% set sourceLabels = {entries: 'Entries', categories: 'Categories', tags: 'Tags', assets: 'Assets', predefined: 'Predefined', custom: 'Custom'} %}
+        {% set fieldTypeLabels = {text: 'Text', textarea: 'Textarea', email: 'Email', number: 'Number', website: 'Website'} %}
         <section class="ff-mcp-removal-warning" aria-labelledby="ff-mcp-removal-heading">
-            <h2 id="ff-mcp-removal-heading">{{ statusIcons.icon('warning') }}{{ 'Remove “{field}” from “{form}”?'|t('freeform', {field: impact.label ?: impact.field, form: impact.form}) }}</h2>
+            <h2 id="ff-mcp-removal-heading">{{ statusIcons.icon('warning') }}{{ (fieldChange ? 'Change “{field}” on “{form}”?' : 'Remove “{field}” from “{form}”?')|t('freeform', {field: impact.label ?: impact.field, form: impact.form}) }}</h2>
+            {% if fieldChange %}
+                {% if impact.operation == 'remove-choices' %}
+                    <p>{{ 'Remove these stored choice values'|t('freeform') }} <strong>{{ impact.change.removedValues|join(', ') }}</strong></p>
+                {% elseif impact.operation == 'switch-source' %}
+                    <p>{{ 'New choice source'|t('freeform') }} <strong>{{ sourceLabels[impact.change.optionSource.type]|t('freeform') }}{% if impact.change.optionSource.handle is defined %} · {{ impact.change.optionSource.handle }}{% endif %}</strong></p>
+                {% elseif impact.operation == 'change-type' %}
+                    <p>{{ 'Field Type'|t('freeform') }} <strong>{{ fieldTypeLabels[impact.change.fromType]|t('freeform') }} → {{ fieldTypeLabels[impact.change.toType]|t('freeform') }}</strong></p>
+                {% endif %}
+                {% if impact.ruleReferences %}
+                    <p>{{ '{count, plural, one{# conditional rule reference} other{# conditional rule references}}'|t('freeform', {count: impact.ruleReferences}) }}</p>
+                {% endif %}
+            {% endif %}
             {% if impact.submissionRowsWithStoredContent is not null %}
-                <p>{{ '{count, plural, =0{No submission rows currently have stored content for this field.} one{# submission row currently has stored content for this field.} other{# submission rows currently have stored content for this field.}}'|t('freeform', {count: impact.submissionRowsWithStoredContent}) }}</p>
+                <p>{{ (fieldChange ? '{count, plural, =0{No stored submission rows are affected.} one{# stored submission row may be affected.} other{# stored submission rows may be affected.}}' : '{count, plural, =0{No submission rows currently have stored content for this field.} one{# submission row currently has stored content for this field.} other{# submission rows currently have stored content for this field.}}')|t('freeform', {count: impact.submissionRowsWithStoredContent}) }}</p>
             {% endif %}
             <ul class="bullets">
                 {% for consequence in impact.consequences %}
@@ -21,17 +35,17 @@
                 {% endfor %}
             </ul>
         </section>
-        <form id="ff-mcp-field-removal" method="post" action="{{ cpUrl('freeform/forms/mcp-field-removal') }}">
+        <form id="ff-mcp-field-removal" method="post" action="{{ cpUrl(fieldChange ? 'freeform/forms/mcp-field-change' : 'freeform/forms/mcp-field-removal') }}">
             {{ csrfInput() }}
             {{ hiddenInput('review', token) }}
             <p>
                 <label class="ff-mcp-removal-acknowledgment">
                     {{ input('checkbox', 'confirmRemoval', '1', {required: true}) }}
-                    <span>{{ 'I understand the consequences and want to remove this field.'|t('freeform') }}</span>
+                    <span>{{ (fieldChange ? 'I understand the consequences and want to apply this change.' : 'I understand the consequences and want to remove this field.')|t('freeform') }}</span>
                 </label>
             </p>
             <div class="buttons">
-                <button type="submit" class="btn submit" disabled>{{ 'Remove field'|t('freeform') }}</button>
+                <button type="submit" class="btn submit" disabled>{{ (fieldChange ? 'Apply field change' : 'Remove field')|t('freeform') }}</button>
                 <a class="btn" href="{{ cpUrl('freeform/forms/' ~ impact.formId) }}">{{ 'Cancel'|t('app') }}</a>
             </div>
         </form>

@@ -35,7 +35,7 @@ final class LayoutTools
         Condition::TYPE_IS_NOT_EMPTY,
     ];
 
-    #[McpTool(name: 'freeform.forms.duplicate', description: 'Duplicate a manageable form and its layout and rules for testing. The copy has notifications, integrations and public HTML embeds disabled.', annotations: new ToolAnnotations(destructiveHint: false))]
+    #[McpTool(name: 'freeform.forms.duplicate', description: 'Duplicate a manageable form and its layout and rules for testing. The copy has notifications, delivery integrations and public HTML embeds disabled.', annotations: new ToolAnnotations(destructiveHint: false))]
     #[RequiresPermission('accessCp')]
     #[RequiresPermission('accessPlugin-freeform')]
     #[RequiresPermission(Freeform::PERMISSION_FORMS_CREATE)]

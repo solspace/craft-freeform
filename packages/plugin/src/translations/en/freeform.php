@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php', require __DIR__.'/setup.php', require __DIR__.'/content-integrations.php', [
+return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php', require __DIR__.'/setup.php', require __DIR__.'/content-integrations.php', require __DIR__.'/mcp.php', [
     'Prefer a darker workspace?' => 'Prefer a darker workspace?',
     'darkMode by Solspace adds dark mode to Craft’s control panel, including Freeform. It’s free.' => 'darkMode by Solspace adds dark mode to Craft’s control panel, including Freeform. It’s free.',
     'Explore darkMode' => 'Explore darkMode',

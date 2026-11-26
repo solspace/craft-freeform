@@ -17,6 +17,7 @@ use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Integrations\DeliveryIntegrations;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
@@ -101,12 +102,13 @@ class FormDuplicator
             $this->cloneNotifications($id, $form, null !== $testCopy);
             $this->cloneRules($id, $form);
             $this->cloneIntegrations($id, $form, null !== $testCopy);
+            if (null === $testCopy) {
+                $this->updatePermissions($id, $form);
+            }
             $copy = $this->formsService->getFormById($form->id);
             (new ContentManager($copy, $this->fields))->performDatabaseColumnAlterations();
 
-            if (null === $testCopy) {
-                $this->updatePermissions($id, $form);
-            } elseif (!PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE)) {
+            if (null !== $testCopy && !PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE)) {
                 $user = \Craft::$app->getUser();
                 $permissions = \Craft::$app->getUserPermissions();
                 $userId = $user->getId();
@@ -401,17 +403,17 @@ class FormDuplicator
 
         $records = FormIntegrationRecord::findAll(['formId' => $originalId]);
         foreach ($records as $record) {
+            $className = $integrationClassMap[$record->integrationId];
             $clone = new FormIntegrationRecord();
             $clone->setAttributes($record->getAttributes());
             $clone->formId = $form->id;
             $clone->uid = StringHelper::UUID();
-            if ($disableDelivery) {
+            if ($disableDelivery && DeliveryIntegrations::includes($className)) {
                 $clone->enabled = false;
             }
 
             $metadata = json_decode($clone->metadata);
 
-            $className = $integrationClassMap[$record->integrationId];
             $properties = $this->propertyProvider->getEditableProperties($className);
 
             foreach ($properties as $property) {
@@ -444,7 +446,26 @@ class FormDuplicator
             }
 
             $clone->metadata = json_encode($metadata);
-            $clone->save();
+            if (!$clone->save() && $disableDelivery) {
+                throw new \RuntimeException('Could not copy an integration configuration.');
+            }
+            unset($integrationClassMap[$record->integrationId]);
+        }
+        if ($disableDelivery) {
+            foreach ($integrationClassMap as $id => $className) {
+                if (!DeliveryIntegrations::includes($className)) {
+                    continue;
+                }
+                $override = new FormIntegrationRecord();
+                $override->formId = $form->id;
+                $override->integrationId = $id;
+                $override->enabled = false;
+                $override->uid = StringHelper::UUID();
+                $override->metadata = '{}';
+                if (!$override->save()) {
+                    throw new \RuntimeException('Could not disable inherited delivery on the copy.');
+                }
+            }
         }
     }
 

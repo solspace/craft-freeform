@@ -47,6 +47,12 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->pluginName;
     }
 
+    public function showMcpSettings(): bool
+    {
+        return \Craft::$app->getUser()->getIsAdmin()
+            && \Craft::$app->get('mcp')->getSettings()->enabled;
+    }
+
     public function isFreeformHoneypotEnabled(?Form $form = null): bool
     {
         if ($this->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
@@ -405,6 +411,9 @@ class SettingsService extends BaseService
 
             [$icon, $description] = $details[$handle] ?? ['settings', null];
             $additionalLabels = [];
+            if ('general' === $handle && $this->showMcpSettings()) {
+                $additionalLabels = ['Require confirmation for destructive MCP actions', 'Allow MCP clients to read submission answers'];
+            }
             if ('form-behavior' === $handle) {
                 $additionalLabels = match ($this->getSettingsModel()->sessionContext) {
                     Settings::CONTEXT_TYPE_SESSION, Settings::CONTEXT_TYPE_DATABASE => ['Freeform Session Context', 'Session Length', 'Amount of active forms per user'],

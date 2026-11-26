@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.19.0 - Unreleased
+## 5.20.0 - Unreleased
 
 ### Added
 - Added a Pro-only **Page** form type with a movable Form area, nested layouts, and multi-step forms that keep surrounding content visible.

@@ -16,6 +16,7 @@ use Solspace\Freeform\Bundles\Form\Types\Surveys\Survey;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Countries\Countries;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\DataObjects\FormWizard\PresetCatalog;
@@ -479,6 +480,18 @@ class FormWizardServiceTest extends TestCase
         self::assertSame($rating->rowUid, $feedback->rowUid);
     }
 
+    public function testLiveDropdownChoicesKeepTheirSourceInTheBuilderPayload(): void
+    {
+        $input = array_replace($this->input(), [
+            'fields' => [['key' => 'country', 'type' => 'dropdown', 'label' => 'Country']],
+        ]);
+        $source = ['source' => 'predefined', 'typeClass' => Countries::class, 'properties' => []];
+        $payload = $this->service(availableTypes: ['dropdown'])->payload($input, useFieldHandles: true, fieldSettings: [
+            'country' => ['optionConfiguration' => $source],
+        ]);
+        self::assertSame($source + ['emptyOption' => 'Please select'], $payload->layout->fields[0]->properties->optionConfiguration);
+    }
+
     public function testNamedPagesKeepTheirOwnLayoutAndNavigation(): void
     {
         $input = $this->input();
@@ -604,6 +617,9 @@ class FormWizardServiceTest extends TestCase
             $handles = ['label', 'handle', 'required', 'instructions', 'defaultValue'];
             if (PresetCatalog::TYPES['radios'] === $class) {
                 $handles = array_merge($handles, ['oneLine', 'optionConfiguration']);
+            }
+            if (PresetCatalog::TYPES['dropdown'] === $class) {
+                $handles[] = 'optionConfiguration';
             }
             if (PresetCatalog::TYPES['phone'] === $class) {
                 $handles = array_merge($handles, ['international', 'allowedCountries', 'pattern', 'useJsMask']);

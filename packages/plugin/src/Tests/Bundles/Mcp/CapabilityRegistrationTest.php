@@ -22,7 +22,7 @@ class CapabilityRegistrationTest extends TestCase
         Event::trigger(Mcp::class, Mcp::EVENT_REGISTER_CAPABILITY_TYPES, $event);
 
         $tools = (new CapabilityRegistry($event->types))->definitions()->getTools();
-        self::assertCount(15, $tools);
+        self::assertCount(16, $tools);
         self::assertSame(
             ['handle', 'type', 'label'],
             $tools['freeform.forms.create']->tool->inputSchema['properties']['fields']['items']['required'],
@@ -32,6 +32,9 @@ class CapabilityRegistrationTest extends TestCase
         self::assertSame(10, $fieldSchema['maxStars']['maximum']);
         self::assertSame(['full', 'half', 'third', 'quarter'], $fieldSchema['width']['enum']);
         self::assertSame(1, $fieldSchema['page']['minimum']);
+        self::assertSame(['type', 'handle'], $fieldSchema['optionSource']['required']);
+        self::assertSame($fieldSchema['optionSource'], $tools['freeform.fields.add']->tool->inputSchema['properties']['field']['properties']['optionSource']);
+        self::assertTrue($tools['freeform.fields.option-sources']->tool->annotations->readOnlyHint);
         self::assertArrayHasKey('pageLabels', $tools['freeform.forms.create']->tool->inputSchema['properties']);
         self::assertSame(
             ['handle', 'type', 'label'],

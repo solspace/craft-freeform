@@ -346,16 +346,19 @@ class FormWizardService
                 $props['fileCount'] = 1;
                 $props['showUploadRequirements'] = true;
             }
+            $props = array_replace($props, $fieldSettings[$key] ?? []);
             if (\in_array($type, ['dropdown', 'radios', 'checkboxes'], true)) {
-                $choices = $field['options'] ?? [];
-                if (!\is_array($choices) || !\count($choices) || \count($choices) > 50) {
-                    throw new \InvalidArgumentException(Freeform::t('Add between 1 and 50 choices to each choice field.'));
+                if (!isset($fieldSettings[$key]['optionConfiguration'])) {
+                    $choices = $field['options'] ?? [];
+                    if (!\is_array($choices) || !\count($choices) || \count($choices) > 50) {
+                        throw new \InvalidArgumentException(Freeform::t('Add between 1 and 50 choices to each choice field.'));
+                    }
+                    $choices = array_map(fn ($choice) => $this->text($choice, 150), $choices);
+                    if (\in_array('', $choices, true) || \count(array_unique($choices)) !== \count($choices)) {
+                        throw new \InvalidArgumentException(Freeform::t('Give each choice a unique, nonempty label.'));
+                    }
+                    $props['optionConfiguration'] = ['source' => 'custom', 'useCustomValues' => false, 'options' => array_map(static fn ($choice) => ['label' => $choice, 'value' => $choice, 'optgroup' => false], $choices)];
                 }
-                $choices = array_map(fn ($choice) => $this->text($choice, 150), $choices);
-                if (\in_array('', $choices, true) || \count(array_unique($choices)) !== \count($choices)) {
-                    throw new \InvalidArgumentException(Freeform::t('Give each choice a unique, nonempty label.'));
-                }
-                $props['optionConfiguration'] = ['source' => 'custom', 'useCustomValues' => false, 'options' => array_map(static fn ($choice) => ['label' => $choice, 'value' => $choice, 'optgroup' => false], $choices)];
                 if ('dropdown' === $type) {
                     $props['optionConfiguration']['emptyOption'] = Freeform::t('Please select');
                     $props['defaultValue'] = '';
@@ -365,7 +368,6 @@ class FormWizardService
                 }
             }
             // Keep only properties exposed by this edition; fallback fields cannot retain Pro settings.
-            $props = array_replace($props, $fieldSettings[$key] ?? []);
             $props = array_intersect_key($props, $this->fieldDefaults($class));
             foreach ($this->properties->getEditableProperties($class) as $property) {
                 if (!$property->visible || $property->disabled) {

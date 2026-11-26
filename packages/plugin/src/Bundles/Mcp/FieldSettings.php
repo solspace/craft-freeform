@@ -14,7 +14,17 @@ final class FieldSettings
         'label' => ['type' => 'string'],
         'required' => ['type' => 'boolean'],
         'instructions' => ['type' => 'string'],
-        'options' => ['type' => 'array', 'items' => ['type' => 'string']],
+        'options' => ['type' => 'array', 'items' => ['type' => 'string'], 'description' => 'Custom choices. Use either options or optionSource for a choice field.'],
+        'optionSource' => [
+            'type' => 'object',
+            'description' => 'Live choice source from freeform.fields.option-sources. Use instead of custom options.',
+            'required' => ['type', 'handle'],
+            'additionalProperties' => false,
+            'properties' => [
+                'type' => ['type' => 'string', 'enum' => ChoiceSources::TYPES],
+                'handle' => ['type' => 'string'],
+            ],
+        ],
         'placeholder' => ['type' => 'string', 'description' => 'Plain-text placeholder for supported fields.'],
         'maxLength' => ['type' => 'integer', 'minimum' => 0, 'description' => 'Character limit for supported fields. Use 0 for no limit.'],
         'maxStars' => ['type' => 'integer', 'minimum' => RatingField::MIN_VALUE, 'maximum' => RatingField::MAX_VALUE, 'description' => 'Star count for rating fields only.'],

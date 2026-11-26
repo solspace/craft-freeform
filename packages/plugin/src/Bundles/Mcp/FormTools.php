@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Mcp;
 
 use craft\db\Query;
 use craft\mcp\attributes\RequiresPermission;
+use craft\models\Site;
 use Mcp\Capability\Attribute\McpTool;
 use Mcp\Capability\Attribute\Schema;
 use Mcp\Exception\ToolCallException;
@@ -18,6 +19,7 @@ use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Properties\Options\Custom\Custom;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfiguration;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Freeform;
@@ -104,6 +106,9 @@ final class FormTools
                     unset($properties['maxStars']);
                 }
                 $fieldSettings[$type['value']] = array_keys(array_intersect($properties, $type['editableProperties']));
+                if (\in_array($type['value'], ChoiceSources::FIELD_TYPES, true) && \in_array('optionConfiguration', $type['editableProperties'], true)) {
+                    $fieldSettings[$type['value']][] = 'optionSource';
+                }
             }
 
             return [
@@ -116,12 +121,26 @@ final class FormTools
         });
     }
 
+    #[McpTool(name: 'freeform.fields.option-sources', description: 'Discover allowed Craft element sources and Freeform predefined lists for dropdown, radio and checkbox fields. Pass a result’s type and handle as optionSource when creating or adding a field.', annotations: new ToolAnnotations(readOnlyHint: true))]
+    #[RequiresPermission('accessCp')]
+    #[RequiresPermission('accessPlugin-freeform')]
+    #[RequiresPermission(Freeform::PERMISSION_FORMS_ACCESS)]
+    public function optionSources(string $site): array
+    {
+        return Access::run(Freeform::PERMISSION_FORMS_ACCESS, static function () use ($site): array {
+            $site = Access::site($site);
+            Access::requireEditorOption('layout.fields');
+
+            return ['site' => $site->handle, 'sources' => ChoiceSources::catalog($site)];
+        });
+    }
+
     /**
      * @param list<array{handle: string, type: string, label: string, required?: bool, instructions?: string, options?: list<string>, placeholder?: string, maxLength?: int, maxStars?: int, width?: string}> $fields          Ordered fields. Use freeform.forms.creation-options to discover types and editable settings. Supply options for dropdown, radios and checkboxes.
      * @param list<string>                                                                                                                                                                                    $additionalSites Optional additional editable Craft site handles. Requires Site-Aware Forms.
      * @param null|int                                                                                                                                                                                        $uploadVolumeId  Asset volume for file fields, selected from freeform.forms.creation-options. File fields accept one PDF of up to 5 MB.
      */
-    #[McpTool(name: 'freeform.forms.create', description: 'Create a form from validated field types. For multiple pages, supply ordered pageLabels and assign each field a page number.', annotations: new ToolAnnotations(destructiveHint: false))]
+    #[McpTool(name: 'freeform.forms.create', description: 'Create a form from validated field types. Use optionSource from freeform.fields.option-sources for element or predefined choices. For multiple pages, supply ordered pageLabels and assign fields a page number.', annotations: new ToolAnnotations(destructiveHint: false))]
     #[RequiresPermission('accessCp')]
     #[RequiresPermission('accessPlugin-freeform')]
     #[RequiresPermission(Freeform::PERMISSION_FORMS_CREATE)]
@@ -146,7 +165,8 @@ final class FormTools
         array $pageLabels = [],
     ): array {
         return Access::run(Freeform::PERMISSION_FORMS_CREATE, static function () use ($name, $handle, $site, $fields, $uploadVolumeId, $additionalSites, $pageLabels): array {
-            $siteIds = [(int) Access::site($site)->id];
+            $site = Access::site($site);
+            $siteIds = [(int) $site->id];
             if (!array_is_list($additionalSites) || \count($additionalSites) > 30) {
                 throw new ToolCallException('Choose up to 30 additional sites.');
             }
@@ -172,7 +192,7 @@ final class FormTools
                 Access::requireEditorOption('layout.multiPageForms');
             }
             $pageLabels = array_map(static fn ($label) => Access::text($label, 100, true), $pageLabels);
-            [$wizardFields, $fieldSettings] = self::prepareFields($fields, $uploadVolumeId, max(1, \count($pageLabels)));
+            [$wizardFields, $fieldSettings] = self::prepareFields($fields, $site, $uploadVolumeId, max(1, \count($pageLabels)));
             if ($pageLabels && \count(array_unique(array_column($wizardFields, 'page'))) !== \count($pageLabels)) {
                 throw new ToolCallException('Add at least one field to every page.');
             }
@@ -270,7 +290,7 @@ final class FormTools
      * @param int      $page           One-based page number from freeform.forms.get.
      * @param null|int $uploadVolumeId File field volume from freeform.forms.creation-options.
      */
-    #[McpTool(name: 'freeform.fields.add', description: 'Add a field in a new row at the end of an existing form page. Read the form first to choose its page number.', annotations: new ToolAnnotations(destructiveHint: false))]
+    #[McpTool(name: 'freeform.fields.add', description: 'Add a field in a new row at the end of an existing form page. Read the form first to choose its page number. Use optionSource from freeform.fields.option-sources for element or predefined choices.', annotations: new ToolAnnotations(destructiveHint: false))]
     #[RequiresPermission('accessCp')]
     #[RequiresPermission('accessPlugin-freeform')]
     #[RequiresPermission(Freeform::PERMISSION_FORMS_ACCESS)]
@@ -302,7 +322,7 @@ final class FormTools
                     throw new ToolCallException('This form has reached its edition’s field limit.');
                 }
 
-                [$fields, $settings] = self::prepareFields([$field], $uploadVolumeId);
+                [$fields, $settings] = self::prepareFields([$field], $site, $uploadVolumeId);
                 $layoutUid = $target->getLayout()->getUid();
                 $layout = FormLayoutRecord::findOne(['formId' => $form->getId(), 'uid' => $layoutUid]);
                 if (!$layout || !$layoutUid) {
@@ -389,7 +409,7 @@ final class FormTools
         }
     }
 
-    private static function prepareFields(array $fields, ?int $uploadVolumeId, int $pageCount = 1): array
+    private static function prepareFields(array $fields, Site $site, ?int $uploadVolumeId, int $pageCount = 1): array
     {
         $wizardFields = [];
         $fieldSettings = [];
@@ -411,7 +431,17 @@ final class FormTools
                 throw new ToolCallException('Choose a page number within the form layout.');
             }
             $handles[strtolower($key)] = true;
-            if (\in_array($type, ['dropdown', 'radios', 'checkboxes'], true)) {
+            $choiceField = \in_array($type, ChoiceSources::FIELD_TYPES, true);
+            if (\array_key_exists('optionSource', $field)) {
+                $property = \Craft::$container->get(PropertyProvider::class)->getEditableProperties(PresetCatalog::TYPES[$type])->get('optionConfiguration');
+                if (!$choiceField || !$property || !$property->visible || $property->disabled || !$property->matchesEdition()) {
+                    throw new ToolCallException('This field does not support live choice sources.');
+                }
+                if (\array_key_exists('options', $field)) {
+                    throw new ToolCallException('Supply either custom options or optionSource for a choice field.');
+                }
+                $fieldSettings[$key]['optionConfiguration'] = ChoiceSources::configuration($field['optionSource'], $site);
+            } elseif ($choiceField) {
                 Access::requireEditorOption('layout.options.custom');
             }
             $settings = array_intersect_key($field, FieldSettings::ADDITIONAL_PROPERTIES);
@@ -463,8 +493,13 @@ final class FormTools
         if ($field instanceof RatingField) {
             $description['maxStars'] = $field->getMaxValue();
         }
-        if ($field instanceof GeneratedOptionsInterface && ($configuration = $field->getOptionConfiguration()) instanceof Custom) {
-            $description['customOptions'] = $configuration->toArray()['options'];
+        if ($field instanceof GeneratedOptionsInterface) {
+            $configuration = $field->getOptionConfiguration();
+            if ($configuration instanceof Custom) {
+                $description['customOptions'] = $configuration->toArray()['options'];
+            } elseif ($configuration instanceof OptionsConfiguration && $configuration->getTypeClass()) {
+                $description['optionSource'] = ChoiceSources::describe($configuration);
+            }
         }
 
         return $description;

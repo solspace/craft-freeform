@@ -113,6 +113,7 @@ class FormDuplicator
         [$clone->name, $clone->handle] = $this->formsService->getUniqueNameAndHandle($formRecord->name, $formRecord->handle);
 
         $metadata = JsonHelper::decode($clone->metadata);
+        unset($metadata->{FormRecord::RETAINED_FIELD_IDS});
         $metadata->general->name = $clone->name;
         $metadata->general->handle = $clone->handle;
         // A clone receives a new public URL, which must be enabled separately.

@@ -78,6 +78,23 @@ class FormPersistenceTest extends TestCase
         self::assertSame($form, $event->getForm());
     }
 
+    public function testBuilderSavePreservesOnlyTheStoredRetainedFieldIds(): void
+    {
+        [$bundle, , $record, $event] = $this->fixture(metadata: '{"retainedFieldIds":[42]}');
+        $event->getPayload()->form->settings->retainedFieldIds = [9];
+        $metadata = null;
+        $record->method('__set')->willReturnCallback(static function (string $attribute, mixed $value) use (&$metadata): void {
+            if ('metadata' === $attribute) {
+                $metadata = $value;
+            }
+        });
+        $record->expects(self::once())->method('save')->willReturn(true);
+
+        $this->update($bundle, $event, $record);
+        self::assertFalse($event->hasErrors());
+        self::assertSame([42], $metadata[FormRecord::RETAINED_FIELD_IDS]);
+    }
+
     public function testDisallowedUploadDestinationDoesNotWriteFormOrLoadPersistedValues(): void
     {
         [$bundle, $forms, $record, $event] = $this->fixture();
@@ -105,7 +122,7 @@ class FormPersistenceTest extends TestCase
         self::assertNull($event->getForm());
     }
 
-    private function fixture(bool $isNew = false): array
+    private function fixture(bool $isNew = false, string $metadata = '{}'): array
     {
         $forms = $this->createMock(FormsService::class);
         $settings = $this->createMock(SettingsProvider::class);
@@ -120,7 +137,10 @@ class FormPersistenceTest extends TestCase
             ->onlyMethods(['__get', '__set', 'getIsNewRecord', 'save', 'getErrors'])
             ->getMock()
         ;
-        $record->method('__get')->with('id')->willReturn($isNew ? null : 7);
+        $record->method('__get')->willReturnMap([
+            ['id', $isNew ? null : 7],
+            ['metadata', $metadata],
+        ]);
         $record->method('getIsNewRecord')->willReturn($isNew);
         $event = new PersistFormEvent((object) [
             'form' => (object) [

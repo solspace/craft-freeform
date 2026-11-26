@@ -104,6 +104,8 @@ class Settings extends Model
     public array|string $formCreationOptions = self::FORM_CREATION_OPTIONS;
     public bool $allowQuickSetupStartingPoints = true;
     public string $defaultAiIntegration = '';
+    public bool $requireMcpDestructiveConfirmation = true;
+    public bool $allowMcpSubmissionValues = false;
 
     /** '*' allows all volumes, 'none' allows none, and arrays contain volume handles. */
     public array|string $allowedUploadVolumes = '*';
@@ -300,6 +302,7 @@ class Settings extends Model
             ['formTemplateDirectory', 'folderExists'],
             ['formCreationOptions', 'validateFormCreationOptions', 'skipOnEmpty' => false],
             ['defaultAiIntegration', 'string', 'max' => 64],
+            [['requireMcpDestructiveConfirmation', 'allowMcpSubmissionValues'], 'boolean'],
             ['allowedUploadVolumes', 'validateAllowedUploadVolumes', 'skipOnEmpty' => false],
             ['activityMode', 'in', 'range' => ActivityPolicy::MODES, 'skipOnEmpty' => false],
             ['loggingStyle', 'in', 'range' => ['activity', 'classic', 'none'], 'skipOnEmpty' => false],

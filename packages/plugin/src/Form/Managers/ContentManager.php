@@ -9,6 +9,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager\TableInfo;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\FormRecord;
 use yii\db\Schema;
 
 class ContentManager
@@ -43,6 +44,13 @@ class ContentManager
 
         $this->renameFieldColumns();
         $this->deleteUnusedFieldColumns();
+        $this->createNewFieldColumns();
+    }
+
+    /** Add storage for newly appended fields without changing existing columns. */
+    public function addFieldColumns(): void
+    {
+        $this->ensureContentTableCreated();
         $this->createNewFieldColumns();
     }
 
@@ -147,7 +155,8 @@ class ContentManager
     {
         $table = $this->table;
 
-        $usedFieldIds = [];
+        $formMetadata = FormRecord::find()->select('metadata')->where(['id' => $this->form->getId()])->scalar();
+        $usedFieldIds = JsonHelper::decode($formMetadata)->{FormRecord::RETAINED_FIELD_IDS} ?? [];
         foreach ($this->fields as $field) {
             if ($this->isNoStorage($field) || null === $field->id) {
                 continue;

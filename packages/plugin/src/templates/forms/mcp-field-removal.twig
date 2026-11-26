@@ -1,0 +1,97 @@
+{% extends 'freeform/_layouts/main' %}
+{% hook 'freeform.prepareCpTemplate' %}
+
+{% set title = 'Review Field Removal'|t('freeform') %}
+{% set selectedSubnavItem = 'forms' %}
+{% set crumbs = [{label: 'Forms'|t('freeform'), url: cpUrl('freeform/forms')}] %}
+
+{% block content %}
+    {% if error is defined %}
+        <p class="error">{{ error|t('freeform') }}</p>
+    {% else %}
+        {% import 'freeform/_components/status-icon' as statusIcons %}
+        <section class="ff-mcp-removal-warning" aria-labelledby="ff-mcp-removal-heading">
+            <h2 id="ff-mcp-removal-heading">{{ statusIcons.icon('warning') }}{{ 'Remove “{field}” from “{form}”?'|t('freeform', {field: impact.label ?: impact.field, form: impact.form}) }}</h2>
+            {% if impact.submissionRowsWithStoredContent is not null %}
+                <p>{{ '{count, plural, =0{No submission rows currently have stored content for this field.} one{# submission row currently has stored content for this field.} other{# submission rows currently have stored content for this field.}}'|t('freeform', {count: impact.submissionRowsWithStoredContent}) }}</p>
+            {% endif %}
+            <ul class="bullets">
+                {% for consequence in impact.consequences %}
+                    <li>{{ consequence|t('freeform') }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <form id="ff-mcp-field-removal" method="post" action="{{ cpUrl('freeform/forms/mcp-field-removal') }}">
+            {{ csrfInput() }}
+            {{ hiddenInput('review', token) }}
+            <p>
+                <label class="ff-mcp-removal-acknowledgment">
+                    {{ input('checkbox', 'confirmRemoval', '1', {required: true}) }}
+                    <span>{{ 'I understand the consequences and want to remove this field.'|t('freeform') }}</span>
+                </label>
+            </p>
+            <div class="buttons">
+                <button type="submit" class="btn submit" disabled>{{ 'Remove field'|t('freeform') }}</button>
+                <a class="btn" href="{{ cpUrl('freeform/forms/' ~ impact.formId) }}">{{ 'Cancel'|t('app') }}</a>
+            </div>
+        </form>
+
+        {% css %}
+            .ff-mcp-removal-warning {
+                --ff-removal-accent: var(--fg-warning, #92400e);
+                padding: 1rem 1.25rem;
+                margin-block-end: 1.25rem;
+                border: 1px solid color-mix(in srgb, var(--ff-removal-accent) 40%, transparent);
+                border-inline-start: 4px solid var(--ff-removal-accent);
+                border-radius: var(--medium-border-radius, 8px);
+                background: color-mix(in srgb, var(--ff-removal-accent) 8%, var(--pane-bg, #fff));
+            }
+            :root[data-dark-mode="dark"] .ff-mcp-removal-warning {
+                --ff-removal-accent: var(--fg-warning, #fbbf58);
+            }
+            .ff-mcp-removal-warning h2 {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                margin-block: 0 .625rem;
+                color: var(--ff-removal-accent);
+                overflow-wrap: anywhere;
+            }
+            .ff-mcp-removal-warning .ff-status-icon {
+                flex: none;
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+            .ff-mcp-removal-warning .bullets {
+                margin-block-end: 0;
+            }
+            .ff-mcp-removal-acknowledgment {
+                display: inline-flex;
+                align-items: baseline;
+                gap: .5rem;
+            }
+            .ff-mcp-removal-acknowledgment input {
+                flex: none;
+                margin: 0;
+                align-self: center;
+            }
+            #ff-mcp-field-removal .btn.submit:disabled {
+                opacity: .45;
+                cursor: not-allowed;
+            }
+        {% endcss %}
+
+        {% js %}
+            (() => {
+                const form = document.querySelector('#ff-mcp-field-removal');
+                const checkbox = form.querySelector('input[name="confirmRemoval"]');
+                const removeButton = form.querySelector('button[type="submit"]');
+                const syncConfirmation = () => { removeButton.disabled = !checkbox.checked; };
+
+                checkbox.addEventListener('change', syncConfirmation);
+                window.addEventListener('pageshow', syncConfirmation);
+                syncConfirmation();
+            })();
+        {% endjs %}
+    {% endif %}
+{% endblock %}

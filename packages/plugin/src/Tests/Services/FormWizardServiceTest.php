@@ -453,6 +453,51 @@ class FormWizardServiceTest extends TestCase
         $this->service()->payload($input);
     }
 
+    public function testValidatedFieldSettingsOverrideWizardDefaults(): void
+    {
+        $input = [
+            'purpose' => 'other',
+            'name' => 'Rating feedback',
+            'siteIds' => [1],
+            'fields' => [
+                ['key' => 'rating', 'type' => 'rating', 'label' => 'Rating', 'width' => 'half'],
+                ['key' => 'feedback', 'type' => 'text', 'label' => 'Feedback', 'width' => 'half'],
+            ],
+        ];
+        $service = $this->service(availableTypes: ['text', 'rating']);
+        $baseline = $service->payload($input);
+        self::assertSame(5, $baseline->layout->fields[0]->properties->maxValue);
+
+        $payload = $service->payload($input, useFieldHandles: true, fieldSettings: [
+            'rating' => ['maxValue' => 10],
+            'feedback' => ['placeholder' => 'Your feedback', 'maxLength' => 120],
+        ]);
+        [$rating, $feedback] = $payload->layout->fields;
+        self::assertSame(10, $rating->properties->maxValue);
+        self::assertSame('Your feedback', $feedback->properties->placeholder);
+        self::assertSame(120, $feedback->properties->maxLength);
+        self::assertSame($rating->rowUid, $feedback->rowUid);
+    }
+
+    public function testNamedPagesKeepTheirOwnLayoutAndNavigation(): void
+    {
+        $input = $this->input();
+        foreach ($input['fields'] as $index => &$field) {
+            $field['page'] = $index < 2 ? 0 : 1;
+        }
+        unset($field);
+        $payload = $this->service()->payload($input, useFieldHandles: true, pageLabels: ['Contact', 'Feedback']);
+        [$first, $last] = $payload->layout->pages;
+        self::assertSame(['Contact', 'Feedback'], array_column($payload->layout->pages, 'label'));
+        self::assertSame(['Continue', 'Submit'], [$first->buttons->submitLabel, $last->buttons->submitLabel]);
+        self::assertFalse($first->buttons->back);
+        self::assertTrue($last->buttons->back);
+        self::assertNotSame($first->layoutUid, $last->layoutUid);
+        $rowLayouts = array_column($payload->layout->rows, 'layoutUid', 'uid');
+        $fieldLayouts = array_map(static fn ($field) => $rowLayouts[$field->rowUid], $payload->layout->fields);
+        self::assertSame([$first->layoutUid, $first->layoutUid, $last->layoutUid, $last->layoutUid], $fieldLayouts);
+    }
+
     public function testRowsCannotContainMoreThanFourFields(): void
     {
         $input = $this->input();
@@ -562,6 +607,12 @@ class FormWizardServiceTest extends TestCase
             }
             if (PresetCatalog::TYPES['phone'] === $class) {
                 $handles = array_merge($handles, ['international', 'allowedCountries', 'pattern', 'useJsMask']);
+            }
+            if (PresetCatalog::TYPES['rating'] === $class) {
+                $handles[] = 'maxValue';
+            }
+            if (PresetCatalog::TYPES['text'] === $class) {
+                $handles = array_merge($handles, ['placeholder', 'maxLength']);
             }
             foreach ($handles as $handle) {
                 $property = $this->getMockBuilder(Text::class)->onlyMethods(['matchesEdition'])->getMock();

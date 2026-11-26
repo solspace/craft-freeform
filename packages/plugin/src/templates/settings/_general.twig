@@ -208,6 +208,27 @@
 
 	<hr>
 
+    {% if currentUser.admin %}
+        <h2>{{ 'MCP'|t('freeform') }}</h2>
+        {{ forms.lightswitchField({
+            label: 'Require confirmation for destructive MCP actions'|t('freeform'),
+            instructions: 'Require approval in Craft before an MCP client can remove a field. Turning this off lets authorized MCP clients complete the removal after preparing an impact preview.'|t('freeform'),
+            id: 'requireMcpDestructiveConfirmation',
+            name: 'settings[requireMcpDestructiveConfirmation]',
+            on: settings.requireMcpDestructiveConfirmation,
+            disabled: readOnly,
+        }) }}
+        {{ forms.lightswitchField({
+            label: 'Allow MCP clients to read submission answers'|t('freeform'),
+            instructions: 'Counts and submission metadata remain available when this is off. Turning it on allows MCP clients, including read-only connections with the right Craft permissions, to retrieve selected answers that may contain personal information.'|t('freeform'),
+            id: 'allowMcpSubmissionValues',
+            name: 'settings[allowMcpSubmissionValues]',
+            on: settings.allowMcpSubmissionValues,
+            disabled: readOnly,
+        }) }}
+        <hr>
+    {% endif %}
+
     <h2>{{ "File Uploads"|t('freeform') }}</h2>
 
     {% set uploadVolumeOptions = [] %}

@@ -96,7 +96,7 @@ class FormPersistence extends FeatureBundle
         if ($limitErrors) {
             $event->addErrorsToResponse('form', ['behavior' => $limitErrors]);
         }
-        $record->metadata = $metadata;
+        $record->replaceSettingsMetadata($metadata);
         $record->type = $metadata['general']->type ?? Regular::class;
 
         $user = \Craft::$app->getUser()->getIdentity();

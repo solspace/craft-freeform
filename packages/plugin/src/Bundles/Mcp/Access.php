@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Bundles\Mcp;
 
 use craft\models\Site;
 use Mcp\Exception\ToolCallException;
-use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
@@ -109,12 +108,14 @@ final class Access
 
     public static function afterSave(Form $form): void
     {
-        Freeform::getInstance()->forms->clearFormCache();
-        \Craft::$container->get(FieldProvider::class)->clearCache();
+        $plugin = Freeform::getInstance();
+        $plugin->forms->clearFormCache();
+        $plugin->formLayouts->clearCache();
+        $updated = $plugin->forms->getFormById($form->getId(), site: $form->getSiteHandle());
         Event::trigger(
             FormsController::class,
             FormsController::EVENT_AFTER_SAVE_FORM,
-            (new PersistFormEvent((object) ['form' => (object) []], $form->getId()))->setForm($form),
+            (new PersistFormEvent((object) ['form' => (object) []], $form->getId()))->setForm($updated ?? $form),
         );
     }
 
@@ -128,6 +129,7 @@ final class Access
 
         try {
             Freeform::getInstance()->forms->clearFormCache();
+            Freeform::getInstance()->formLayouts->clearCache();
 
             return $operation();
         } finally {

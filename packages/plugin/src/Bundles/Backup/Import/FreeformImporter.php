@@ -167,7 +167,7 @@ class FreeformImporter
             }
 
             $serialized = $this->serializer->serialize($form->settings, 'json');
-            $formRecord->metadata = $serialized;
+            $formRecord->replaceSettingsMetadata($serialized);
 
             $formRecord->save();
 
@@ -239,7 +239,7 @@ class FreeformImporter
                 );
 
                 $form->settings->getGeneral()->sites = array_filter($updatedSiteIds);
-                $formRecord->metadata = $this->serializer->serialize($form->settings, 'json');
+                $formRecord->replaceSettingsMetadata($this->serializer->serialize($form->settings, 'json'));
                 $formRecord->save();
 
                 foreach ($formSites as $formSite) {

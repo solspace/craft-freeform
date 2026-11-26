@@ -22,17 +22,33 @@ class CapabilityRegistrationTest extends TestCase
         Event::trigger(Mcp::class, Mcp::EVENT_REGISTER_CAPABILITY_TYPES, $event);
 
         $tools = (new CapabilityRegistry($event->types))->definitions()->getTools();
-        self::assertCount(12, $tools);
+        self::assertCount(15, $tools);
         self::assertSame(
             ['handle', 'type', 'label'],
             $tools['freeform.forms.create']->tool->inputSchema['properties']['fields']['items']['required'],
         );
+        $fieldSchema = $tools['freeform.forms.create']->tool->inputSchema['properties']['fields']['items']['properties'];
+        self::assertSame(3, $fieldSchema['maxStars']['minimum']);
+        self::assertSame(10, $fieldSchema['maxStars']['maximum']);
+        self::assertSame(['full', 'half', 'third', 'quarter'], $fieldSchema['width']['enum']);
+        self::assertSame(1, $fieldSchema['page']['minimum']);
+        self::assertArrayHasKey('pageLabels', $tools['freeform.forms.create']->tool->inputSchema['properties']);
+        self::assertSame(
+            ['handle', 'type', 'label'],
+            $tools['freeform.fields.add']->tool->inputSchema['properties']['field']['required'],
+        );
+        $fieldUpdate = $tools['freeform.fields.update']->tool->inputSchema['properties'];
+        self::assertArrayHasKey('maxStars', $fieldUpdate);
+        self::assertArrayHasKey('placeholder', $fieldUpdate);
         self::assertSame(
             ['key', 'text'],
             $tools['freeform.translations.save']->tool->inputSchema['properties']['translations']['items']['required'],
         );
 
-        $writes = ['freeform.forms.create', 'freeform.fields.update', 'freeform.translations.save'];
+        self::assertFalse($tools['freeform.fields.request-removal']->tool->annotations->destructiveHint);
+        self::assertTrue($tools['freeform.fields.remove']->tool->annotations->destructiveHint);
+        self::assertSame(['reviewId'], $tools['freeform.fields.remove']->tool->inputSchema['required']);
+        $writes = ['freeform.forms.create', 'freeform.fields.update', 'freeform.fields.add', 'freeform.fields.request-removal', 'freeform.fields.remove', 'freeform.translations.save'];
         foreach ($tools as $name => $reference) {
             $method = new \ReflectionMethod(...$reference->handler);
             self::assertSame([], $method->getAttributes(PublicMcp::class), $name);

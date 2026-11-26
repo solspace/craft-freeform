@@ -9,6 +9,26 @@ use Solspace\Freeform\Models\Settings;
 #[CoversClass(Settings::class)]
 class SettingsTest extends TestCase
 {
+    public function testDestructiveMcpConfirmationDefaultsToOnAndAcceptsAnExplicitOptOut(): void
+    {
+        $settings = $this->normalize([]);
+        self::assertTrue($settings->requireMcpDestructiveConfirmation);
+        $settings->setAttributes(['requireMcpDestructiveConfirmation' => false]);
+        self::assertFalse($settings->requireMcpDestructiveConfirmation);
+        self::assertTrue($settings->validate(['requireMcpDestructiveConfirmation']));
+        $settings->setAttributes(['requireMcpDestructiveConfirmation' => true]);
+        self::assertTrue($settings->requireMcpDestructiveConfirmation);
+    }
+
+    public function testMcpSubmissionValuesDefaultToOffAndAcceptAnExplicitOptIn(): void
+    {
+        $settings = $this->normalize([]);
+        self::assertFalse($settings->allowMcpSubmissionValues);
+        $settings->setAttributes(['allowMcpSubmissionValues' => true]);
+        self::assertTrue($settings->allowMcpSubmissionValues);
+        self::assertTrue($settings->validate(['allowMcpSubmissionValues']));
+    }
+
     public function testLoggingStylesPreservePreferencesWhileEnablingOnlyTheSelectedSystem(): void
     {
         $settings = $this->normalize(['activityEnabled' => 'true', 'technicalFileLogging' => 'true', 'loggingLevel' => 'debug', 'activityMode' => 'custom']);

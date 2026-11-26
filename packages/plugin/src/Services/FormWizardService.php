@@ -139,7 +139,7 @@ class FormWizardService
     }
 
     /** Only explicit wizard choices are accepted; arbitrary types/settings never reach persistence. */
-    public function payload(array $input, bool $preview = false, bool $useFieldHandles = false, ?int $uploadVolumeId = null): \stdClass
+    public function payload(array $input, bool $preview = false, bool $useFieldHandles = false, ?int $uploadVolumeId = null, array $fieldSettings = [], array $pageLabels = []): \stdClass
     {
         $options = $this->options($uploadVolumeId);
         $name = $this->text($input['name'] ?? '', 100);
@@ -230,14 +230,70 @@ class FormWizardService
                 throw new \InvalidArgumentException(Freeform::t('Enter a redirect URL beginning with /, https://, or http://.'));
             }
         }
-        $layoutUid = StringHelper::UUID();
+        $fieldsByPage = array_fill(0, max(1, \count($pageLabels)), []);
+        foreach ($fields as $field) {
+            $page = $pageLabels ? ($field['page'] ?? 0) : 0;
+            if (!\is_int($page) || !\array_key_exists($page, $fieldsByPage)) {
+                throw new \InvalidArgumentException(Freeform::t('Choose a valid page for every field.'));
+            }
+            $fieldsByPage[$page][] = $field;
+        }
+
+        $layouts = $pages = $rows = $persistFields = [];
+        foreach ($fieldsByPage as $index => $pageFields) {
+            $layoutUid = StringHelper::UUID();
+            [$pageRows, $pagePersistFields] = $this->buildFieldLayout(
+                $pageFields,
+                $layoutUid,
+                $options,
+                $definitions,
+                $useFieldHandles,
+                $uploadVolumeId,
+                $fieldSettings,
+            );
+            $layouts[] = (object) ['uid' => $layoutUid];
+            $pages[] = (object) [
+                'uid' => StringHelper::UUID(),
+                'layoutUid' => $layoutUid,
+                'order' => $index,
+                'label' => $pageLabels[$index] ?? Freeform::t('Page 1'),
+                'buttons' => (object) [
+                    'layout' => $index ? 'back|submit' : 'submit',
+                    'submitLabel' => Freeform::t($index === \count($fieldsByPage) - 1 ? 'Submit' : 'Continue'),
+                    'back' => $index > 0,
+                    'save' => false,
+                ],
+            ];
+            array_push($rows, ...$pageRows);
+            array_push($persistFields, ...$pagePersistFields);
+        }
+
+        $payload = (object) [
+            'form' => (object) ['uid' => StringHelper::UUID(), 'type' => $formType, 'settings' => (object) ['general' => (object) $general, 'behavior' => (object) $behavior]],
+            'layout' => (object) [
+                'layouts' => $layouts,
+                'pages' => $pages,
+                'rows' => $rows, 'fields' => $persistFields,
+            ],
+        ];
+        if (!$preview) {
+            $payload->notifications = $this->notifications($input, $options, $persistFields);
+        }
+
+        return $payload;
+    }
+
+    /** Build the row and field records without persisting a form. */
+    public function buildFieldLayout(array $fields, string $layoutUid, array $options, array $definitions = [], bool $useFieldHandles = false, ?int $uploadVolumeId = null, array $fieldSettings = []): array
+    {
         $rows = [];
         $persistFields = [];
         $keys = [];
-        $explicitRows = (bool) array_filter($input['fields'], static fn ($field) => isset($field['rowId']));
+        $explicitRows = (bool) array_filter($fields, static fn ($field) => isset($field['rowId']));
         $seenRows = [];
         $rowWidth = null;
         $rowSize = 0;
+        $handlePattern = $useFieldHandles ? '/^[a-zA-Z][a-zA-Z0-9_]*$/D' : '/^[a-zA-Z][a-zA-Z0-9]*$/D';
         foreach ($fields as $index => $field) {
             if (!\is_array($field)) {
                 throw new \InvalidArgumentException(Freeform::t('Review the selected fields.'));
@@ -245,7 +301,7 @@ class FormWizardService
             $key = $this->text($field['key'] ?? '', 60);
             $type = $field['type'] ?? '';
             if (!\in_array($type, array_column($options['fieldTypes'], 'value'), true)
-                || !preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $key) || isset($keys[$key])) {
+                || !preg_match($handlePattern, $key) || isset($keys[$key])) {
                 throw new \InvalidArgumentException(Freeform::t('A selected field is unavailable. Reopen guided setup and try again.'));
             }
             $keys[$key] = true;
@@ -309,6 +365,7 @@ class FormWizardService
                 }
             }
             // Keep only properties exposed by this edition; fallback fields cannot retain Pro settings.
+            $props = array_replace($props, $fieldSettings[$key] ?? []);
             $props = array_intersect_key($props, $this->fieldDefaults($class));
             foreach ($this->properties->getEditableProperties($class) as $property) {
                 if (!$property->visible || $property->disabled) {
@@ -334,24 +391,14 @@ class FormWizardService
             ++$rowSize;
             $persistFields[] = (object) ['uid' => StringHelper::UUID(), 'rowUid' => end($rows)->uid, 'typeClass' => $class, 'order' => $index, 'properties' => (object) $props];
         }
-        $payload = (object) [
-            'form' => (object) ['uid' => StringHelper::UUID(), 'type' => $formType, 'settings' => (object) ['general' => (object) $general, 'behavior' => (object) $behavior]],
-            'layout' => (object) [
-                'layouts' => [(object) ['uid' => $layoutUid]],
-                'pages' => [(object) ['uid' => StringHelper::UUID(), 'layoutUid' => $layoutUid, 'order' => 0, 'label' => Freeform::t('Page 1'), 'buttons' => (object) ['layout' => 'submit', 'submitLabel' => Freeform::t('Submit'), 'back' => false, 'save' => false]]],
-                'rows' => $rows, 'fields' => $persistFields,
-            ],
-        ];
-        if (!$preview) {
-            $payload->notifications = $this->notifications($input, $options, $persistFields);
-        }
 
-        return $payload;
+        return [$rows, $persistFields];
     }
 
-    public function create(array $input, bool $useFieldHandles = false, ?int $uploadVolumeId = null): Form
+    /** @param array<string, array<string, mixed>> $fieldSettings Settings validated by the caller, keyed by field handle. */
+    public function create(array $input, bool $useFieldHandles = false, ?int $uploadVolumeId = null, array $fieldSettings = [], array $pageLabels = []): Form
     {
-        $payload = $this->payload($input, useFieldHandles: $useFieldHandles, uploadVolumeId: $uploadVolumeId);
+        $payload = $this->payload($input, useFieldHandles: $useFieldHandles, uploadVolumeId: $uploadVolumeId, fieldSettings: $fieldSettings, pageLabels: $pageLabels);
         $event = new PersistFormEvent($payload);
         $transaction = \Craft::$app->db->beginTransaction();
         $createdTemplates = [];

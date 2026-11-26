@@ -33,6 +33,7 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use Solspace\Freeform\Services\SettingsService;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class SettingsController extends BaseController
@@ -217,6 +218,20 @@ class SettingsController extends BaseController
         }
 
         $postData = \Craft::$app->request->post('settings', []);
+
+        foreach (['requireMcpDestructiveConfirmation', 'allowMcpSubmissionValues'] as $setting) {
+            if (!\array_key_exists($setting, $postData)) {
+                continue;
+            }
+
+            $this->requireCpRequest();
+            $this->requireAdmin();
+            $postData[$setting] = match ($postData[$setting]) {
+                true, 1, '1' => true,
+                false, 0, '0', '' => false,
+                default => throw new BadRequestHttpException('Invalid MCP security setting.'),
+            };
+        }
 
         if (\array_key_exists('purgableFormIds', $postData)) {
             $purgableFormIds = $postData['purgableFormIds'];

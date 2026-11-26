@@ -168,7 +168,7 @@ class LayoutPersistence extends FeatureBundle
             $record->rowId = $this->getRecordId($form, FormRowRecord::class, $item->rowUid);
             $record->order = $item->order ?? 0;
             $record->type = $item->typeClass;
-            $record->metadata = $this->getValidatedMetadata($item, $event);
+            $record->metadata = FieldMetadata::validate($this->propertyProvider, $item, $event);
             $record->setLayoutHandles($handles);
             $record->save();
 
@@ -261,32 +261,5 @@ class LayoutPersistence extends FeatureBundle
                 FormRowRecord::deleteAll(['uid' => $rowUid]);
             }
         }
-    }
-
-    private function getValidatedMetadata(\stdClass $fieldData, PersistFormEvent $event): array
-    {
-        $properties = $this->propertyProvider->getEditableProperties($fieldData->typeClass);
-
-        $metadata = [];
-        foreach ($properties as $property) {
-            $handle = $property->handle;
-            $value = $fieldData->properties->{$handle} ?? null;
-
-            $errors = [];
-            foreach ($property->validators as $validator) {
-                $errors = array_merge($errors, $validator->validate($value));
-            }
-
-            if ($errors) {
-                $event->addErrorsToResponse(
-                    'fields',
-                    [$fieldData->uid => [$property->handle => $errors]]
-                );
-            }
-
-            $metadata[$handle] = $value;
-        }
-
-        return $metadata;
     }
 }

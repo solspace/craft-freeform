@@ -161,6 +161,15 @@ class LayoutsService extends BaseService
         return $this->fieldProvider->getFields($form);
     }
 
+    public function clearCache(): void
+    {
+        $this->pages = [];
+        $this->layouts = [];
+        $this->rows = [];
+        $this->formLayouts = [];
+        $this->fieldProvider->clearCache();
+    }
+
     private function attachRows(
         Form $form,
         Layout $layout,

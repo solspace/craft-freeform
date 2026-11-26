@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 
 /**
  * Class Freeform_FormRecord.
@@ -33,6 +34,7 @@ class FormRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_forms}}';
     public const TABLE_STD = 'freeform_forms';
+    public const RETAINED_FIELD_IDS = 'retainedFieldIds';
 
     public static function tableName(): string
     {
@@ -48,6 +50,17 @@ class FormRecord extends ActiveRecord
         $form->spamBlockCount = 0;
 
         return $form;
+    }
+
+    public function replaceSettingsMetadata(array|string $metadata): void
+    {
+        $retained = $this->getIsNewRecord() ? [] : JsonHelper::decode($this->metadata)->{self::RETAINED_FIELD_IDS} ?? [];
+        $settings = (array) JsonHelper::decode($metadata);
+        unset($settings[self::RETAINED_FIELD_IDS]);
+        if ($retained) {
+            $settings[self::RETAINED_FIELD_IDS] = $retained;
+        }
+        $this->metadata = $settings;
     }
 
     public function rules(): array

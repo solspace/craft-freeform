@@ -6,7 +6,9 @@ This guide assumes you have a [HubSpot](https://www.hubspot.com) account already
 
 ## Compatibility
 
-Uses private app on `v3` of the REST API.
+Freeform connects to the HubSpot CRM REST API using the credential in the **Access Token** field.
+
+[HubSpot removed the option to create legacy Private Apps](https://developers.hubspot.com/changelog/legacy-private-app-creation-sunset). If you already have a working legacy Private App token, you do not need to replace it because of this change. For new connections, HubSpot recommends [service keys](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/account-service-keys).
 
 ### Endpoints
 Maps data to the following endpoints:
@@ -48,27 +50,26 @@ A duplicate check on records is done in the following way:
 
 ### 2. Prepare HubSpot's end for Integration
 
-- Open another browser tab and log into your [HubSpot account](https://app.hubspot.com/).
-- Click on the account name at the top right.
-- Select _Profile & Preferences_ from the menu.
-- On the left navigation, click on _Integrations_, and then select _Private Apps_.
-- On the next page, click the **Create a Private App** button, and then choose **Private** app.
-- You will be taken to a page where you will need to fill out some details:
-    - Enter a name for the app in the **Name** field.
-    - Switch to the **Scopes** tab and add the following:
-        CRM | Read | Write
-        --- | --- | ---
-        `crm.objects.companies` | ✓ | ✓
-        `crm.objects.contacts` | ✓ | ✓
-        `crm.objects.deals` | ✓ | ✓
-- Click the **Create app** button at the top right.
-- After the app saves and reloads the page, copy the token it just created.
-- Click the _Close_ button.
+If you already have a working legacy Private App token for this account, skip this step and use that token.
+
+1. In your [HubSpot account](https://app.hubspot.com/), go to **Development** → **Keys** → **Service keys**.
+2. Click **Create service key**, enter a name, and select **Add new scope**. Add the following CRM scopes:
+
+   | CRM object | Read scope | Write scope |
+   | --- | --- | --- |
+   | Companies | `crm.objects.companies.read` | `crm.objects.companies.write` |
+   | Contacts | `crm.objects.contacts.read` | `crm.objects.contacts.write` |
+   | Deals | `crm.objects.deals.read` | `crm.objects.deals.write` |
+
+3. Click **Update** to save the scope selection, then **Create** and confirm.
+4. Open the new key. Click **Show**, then **Copy**.
+
+If you do not see the option to create a key, ask a HubSpot super admin or someone with Developer tools access. See [HubSpot's service key documentation](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/account-service-keys) for details.
 
 ### 3. Finish the Integration on your site
 
 - Switch back to this integration tab.
-- Paste the HubSpot **Token** value into the **Access Token** field in Freeform.
+- Paste the service key or your existing legacy Private App token into Freeform’s **Access Token** field. Paste only the credential itself, without a `Bearer` prefix.
 
 #### Additional Configuration
 
@@ -86,6 +87,8 @@ Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
 - If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
+
+Before relying on a new service key in production, verify the connection in a test environment. After authorizing, check that the HubSpot fields load in the form builder and submit a test entry. Confirm that the expected records and associations appear in HubSpot.
 
 ### 5. Configure the Form
 
